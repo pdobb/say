@@ -1,0 +1,3 @@
+## [Unreleased]
+
+- Lay down the groundwork for a new gem...
