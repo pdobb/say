@@ -41,6 +41,10 @@ Layout/LineLength:
   Max: 80
   Exclude:
     - "say.gemspec"
+  AllowedPatterns:
+    # YARD doc `@example` output.
+    - !ruby/regexp /\A *#   \# => /
+    - !ruby/regexp /\A *#   =/
 
 Layout/MultilineMethodCallBraceLayout:
   EnforcedStyle: same_line

@@ -6,23 +6,117 @@ Say gives you the API and the output style you already know and love from [Activ
 
 ## Installation
 
-Install the gem and add to the application's Gemfile by executing:
+Add this line to your application's Gemfile:
 
-    $ bundle add UPDATE_WITH_YOUR_GEM_NAME_PRIOR_TO_RELEASE_TO_RUBYGEMS_ORG
+```ruby
+gem "say", github: "pdobb/say"
+```
 
-If bundler is not being used to manage dependencies, install the gem by executing:
+And then execute:
 
-    $ gem install UPDATE_WITH_YOUR_GEM_NAME_PRIOR_TO_RELEASE_TO_RUBYGEMS_ORG
+```bash
+bundle
+```
 
 ## Usage
 
-TODO: Write usage instructions here
+### `include Say`
+
+Typical usage is to `include Say` in your object and then call the `say` method as needed.
+
+When called with a block, `say` will output both Start and Finish banners, while still returning the result of the block.
+When called without a block, `say` will output a string of the specified type (defaults to `:success`).
+
+```ruby
+require "say"
+
+class MyClass
+  include Say
+
+  def do_something
+    result =
+      say("Doing something") do
+        # ...
+        say("Successfully did thing 1!")
+
+        # ...
+        say("Failed to do thing 2 ...", :error)
+
+        # ...
+        say("Maybe look into thing 3 ...", :warn)
+
+        # ...
+        say("Debug info about thing 4 ...", :debug)
+
+        # ...
+        say("Info about thing 5 ...", :info)
+
+        "My Result!"
+      end
+
+    # ...
+
+    result
+  end
+end
+
+MyClass.new.do_something
+= Doing something ==============================================================
+ -> Successfully did thing 1!
+ ** Failed to do thing 2 ...
+ !¡ Maybe look into thing 3 ...
+ >> Debug info about thing 4 ...
+ -- Info about thing 5 ...
+= Done =========================================================================
+
+# => "My Result!"
+```
+
+### `Say.<method>`
+
+For quick-access usage, you can just call `Say.<method>` without including `Say`.
+
+```ruby
+require "say"
+
+class MyClass
+  def do_something
+    result =
+      Say.say("Doing something") do
+        # ...
+        Say.say("Successfully did thing 1!")
+
+        "My Result!"
+      end
+
+    # ...
+
+    result
+  end
+end
+
+MyClass.new.do_something
+= Doing something ==============================================================
+ -> Successfully did thing 1!
+= Done =========================================================================
+
+# => "My Result!"
+```
 
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests. Or, run `rake` to run the tests plus linters. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
 To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, bump latest ruby target versions, etc., with `rake bump`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+
+### Documentation
+
+[YARD documentation](https://yardoc.org/index.html) can be generated and viewed live:
+1. Install YARD: `gem install yard`
+2. Run the YARD server: `yard server --reload`
+3. Open the live documentation site: `open http://localhost:8808`
+
+While the YARD server is running, documentation in the live site will be auto-updated on save.
 
 ## Contributing
 
