@@ -30,46 +30,35 @@ When called without a block, `say` will output a string of the specified type (d
 ```ruby
 require "say"
 
-class MyClass
+class IncludeProcessor
   include Say
 
-  def do_something
-    result =
-      say("Doing something") do
-        # ...
-        say("Successfully did thing 1!")
+  def run
+    say("IncludeProcessor...") {
+      say("Successfully did the thing!")
+      say("Debug details about this ...", :debug)
+      say("Info about stuff ...", :info)
+      say("Maybe look into this thing ...", :warn)
+      say("Maybe look into the above thing ...", :warning)
+      say("Failed to do a thing ...", :error)
 
-        # ...
-        say("Failed to do thing 2 ...", :error)
-
-        # ...
-        say("Maybe look into thing 3 ...", :warn)
-
-        # ...
-        say("Debug info about thing 4 ...", :debug)
-
-        # ...
-        say("Info about thing 5 ...", :info)
-
-        "My Result!"
-      end
-
-    # ...
-
-    result
+      "The Result!"
+    }
   end
 end
 
-MyClass.new.do_something
-= Doing something ==============================================================
- -> Successfully did thing 1!
- ** Failed to do thing 2 ...
- !¡ Maybe look into thing 3 ...
- >> Debug info about thing 4 ...
- -- Info about thing 5 ...
+result = IncludeProcessor.new.run
+= IncludeProcessor... ==========================================================
+ -> Successfully did the thing!
+ >> Debug details about this ...
+ -- Info about stuff ...
+ !¡ Maybe look into this thing ...
+ !¡ Maybe look into the above thing ...
+ ** Failed to do a thing ...
 = Done =========================================================================
 
-# => "My Result!"
+puts("Result: #{result.inspect}")
+Result: "The Result!"
 ```
 
 ### `Say.<method>`
@@ -79,28 +68,25 @@ For quick-access usage, you can just call `Say.<method>` without including `Say`
 ```ruby
 require "say"
 
-class MyClass
-  def do_something
-    result =
-      Say.say("Doing something") do
-        # ...
-        Say.say("Successfully did thing 1!")
+class ModuleFunctionProcessor
+  def run
+    Say.say("ModuleFunctionProcessor...") {
+      Say.say("Successfully did the thing!")
+      Say.say("Failed to do a thing ...", :error)
 
-        "My Result!"
-      end
-
-    # ...
-
-    result
+      "The Result!"
+    }
   end
 end
 
-MyClass.new.do_something
-= Doing something ==============================================================
- -> Successfully did thing 1!
+result = ModuleFunctionProcessor.new.run
+= ModuleFunctionProcessor... ===================================================
+ -> Successfully did the thing!
+ ** Failed to do a thing ...
 = Done =========================================================================
 
-# => "My Result!"
+puts("Result: #{result.inspect}")
+Result: "The Result!"
 ```
 
 ## Development

@@ -94,6 +94,7 @@ Style/ClassAndModuleChildren:
 Style/Documentation:
   Exclude:
     - "test/**/*"
+    - "script/**/*"
 
 Style/EmptyElse:
   Enabled: false # Including a comment in an empty else block shows intent.
