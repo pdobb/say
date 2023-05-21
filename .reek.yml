@@ -1,11 +1,14 @@
+detectors:
+  UtilityFunction:
+    exclude:
+      - "/Say#(do_)?say.*/"
+
 directories:
   "test":
     IrresponsibleModule:
       enabled: false
     UtilityFunction:
       enabled: false
-  "script":
-    IrresponsibleModule:
-      enabled: false
-    UtilityFunction:
-      enabled: false
+
+exclude_paths:
+  - script

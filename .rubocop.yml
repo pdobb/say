@@ -10,7 +10,7 @@ AllCops:
   DisplayStyleGuide: true
   ExtraDetails: true
   Exclude:
-    - "script/playground.rb"
+    - "script/**/*"
 
 Gemspec/DevelopmentDependencies:
   EnforcedStyle: gemspec # See: https://bundler.io/guides/creating_gem.html#testing-our-gem
@@ -83,11 +83,41 @@ Naming/MethodParameterName:
     - a
     - b
 
+Naming/RescuedExceptionsVariableName:
+  PreferredName: ex
+
 Style/Alias:
   EnforcedStyle: prefer_alias_method
 
 Style/BlockDelimiters:
   EnforcedStyle: semantic
+  AllowBracesOnProceduralOneLiners: true
+  FunctionalMethods:
+    # Minitest Spec DSL. (Rubocop defaults.)
+    - let
+    - let!
+    - subject
+    - watch
+    # Overrides (Defaulted to Procedural by Rubocop.)
+    - tap
+    # MuchStub
+    - call
+    - on_call
+    - spy
+    # - tap (Already listed above.)
+    - tap_on_call
+    - with
+  ProceduralMethods: # Defining this just to remove `tap` from the list.
+    - benchmark
+    - bm
+    - bmbm
+    - create
+    - each_with_object
+    - measure
+    - new
+    - realtime
+    # - tap (Remove from Rubocop defaults.)
+    - with_object
 
 Style/ClassAndModuleChildren:
   AutoCorrect: true
@@ -112,10 +142,6 @@ Style/Lambda:
 
 Style/LambdaCall:
   Enabled: false # Allow ServiceObject.(*). Only use on classes, not instances.
-
-# Style/OpenStructUse:
-#   Exclude:
-#     - "test/**/*"
 
 Style/RegexpLiteral:
   EnforcedStyle: mixed

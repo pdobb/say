@@ -86,7 +86,7 @@ module Say
   #   TYPES[:success]  # => " -> "
   #   TYPES[:warn]     # => " !¡ "
   #   TYPES[:warning]  # => " !¡ "
-  TYPES = {}.tap do |hash|
+  TYPES = {}.tap { |hash|
     hash.default = " -> "
     hash.update(
       debug: " >> ",
@@ -95,7 +95,7 @@ module Say
       success: hash.default,
       warn: " !¡ ")
     hash.update(warning: hash[:warn])
-  end.freeze
+  }.freeze
 
   module_function
 
