@@ -65,8 +65,9 @@ require "benchmark"
 module Say
   # The maximum number of columns for a built message or banner.
   #
-  # @constant MAX_COLUMNS [Integer] The maximum number of columns represented as
-  #   the number of characters.
+  # @!attribute [r] MAX_COLUMNS
+  #   @return [Integer] The maximum number of columns represented as
+  #     the number of characters.
   # @!scope constant
   #
   # @example
@@ -76,8 +77,9 @@ module Say
   # Mapping of message types to their corresponding prefixes for the `say`
   # method. Defaults to `:success`.
   #
-  # @constant TYPES [Hash] A hash containing the mapping of message types to
-  #   their corresponding prefixes.
+  # @!attribute [r] TYPES
+  #   @return [Hash] A hash containing the mapping of message types to
+  #     their corresponding prefixes.
   # @!scope constant
   #
   # @example
@@ -327,12 +329,21 @@ module Say
   # PUBLIC INTERFACE FOR `include Say`
 
   # rubocop:disable Style/SingleLineMethods
+
+  # @see .call Forwards to Say.call
   def say(...) Say.(...) end
+  # @see .with_block Forwards to Say.with_block
   def say_with_block(...) Say.with_block(...) end
+  # @see .header Forwards to Say.header
   def say_header(...) Say.header(...) end
+  # @see .result Forwards to Say.result
   def say_result(...) Say.result(...) end
+  # @see .footer Forwards to Say.footer
   def say_footer(...) Say.footer(...) end
+  # @see .banner Forwards to Say.banner
   def say_banner(...) Say.banner(...) end
+  # @see .message Aliases Say.message
   def say_message(...) Say.message(...) end
+
   # rubocop:enable Style/SingleLineMethods
 end
