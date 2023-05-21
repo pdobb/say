@@ -70,7 +70,7 @@ class TestSay < Minitest::Spec
 
       describe "GIVEN no block" do
         it "raises ArgumentError" do
-          value(-> { subject.say_with_block("TEST") }).must_raise(ArgumentError)
+          value(-> { subject.say_with_block }).must_raise(ArgumentError)
         end
       end
 
@@ -82,18 +82,43 @@ class TestSay < Minitest::Spec
 
         it "puts header and footer banners, "\
            "and returns the value from the block" do
-          value(subject.say_with_block("TEST") { "TEST_BLOCK_RETURN_VALUE" }).
-            must_equal("TEST_BLOCK_RETURN_VALUE")
+          value(subject.say_with_block { "TEST_RESULT" }).
+            must_equal("TEST_RESULT")
 
           # rubocop:disable Layout/LineLength
           value(@puts_calls[0].args).must_equal([
-            "= TEST ========================================================================="
+            "================================================================================"
           ])
           value(@puts_calls[1].args).must_equal([
             "= Done (0.0000s) ===============================================================",
             "\n"
           ])
           # rubocop:enable Layout/LineLength
+        end
+
+        context "GIVEN a header message" do
+          it "returns the expected header banner String" do
+            subject.say_with_block(header: "TEST_HEADER") do nil end
+
+            # rubocop:disable Layout/LineLength
+            value(@puts_calls[0].args).must_equal([
+              "= TEST_HEADER =================================================================="
+            ])
+            # rubocop:enable Layout/LineLength
+          end
+        end
+
+        context "GIVEN a footer message" do
+          it "returns the expected footer banner String" do
+            subject.say_with_block(footer: "TEST_FOOTER") do nil end
+
+            # rubocop:disable Layout/LineLength
+            value(@puts_calls[1].args).must_equal([
+              "= TEST_FOOTER (0.0000s) ========================================================",
+              "\n"
+            ])
+            # rubocop:enable Layout/LineLength
+          end
         end
       end
     end

@@ -1,5 +1,10 @@
 ## [Unreleased]
-- Display processing time info via `say_with_block`. e.g.
+- Better definition of the `Say.say_with_block` method:
+  1. Rename `footer_message` kwarg to just `footer`
+  2. Make `header_message` into a kwarg and rename to `header`
+  3. Make `header` an optional argument
+
+- Display processing time info via `Say.say_with_block`. e.g.
     ```
     # Instead of just:
     = Processing ===================================================================

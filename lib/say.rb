@@ -100,7 +100,8 @@ module Say
 
   module_function
 
-  # Prints a message, optionally specifying a type or executing a block of code.
+  # Prints either a one-line message of the given type or executes a block of
+  # code and surrounds it with header and footer banner messages.
   #
   # @param message [String] The message to be printed.
   # @param type [Symbol] (optional) The type of the message. (see #Say::TYPES)
@@ -110,40 +111,58 @@ module Say
   # @return [Object] Returns the result of the executed block if a block is
   #   given.
   # @return [String] Returns the built message if no block is given.
+  #
+  # @example No Block Given
+  #   Say.say("Hello, World!")  # => " -> Hello, World!"
+  #   Say.say("Oops", :error)   # => " ** Oops"
+  #
+  # @example Given a Block
+  #   Say.say("Hello, World!") {
+  #     Say.say("Huzzah!")
+  #     Say.say("Hmm...", :info)
+  #     "My Result!"
+  #   }
+  #   = Hello, World! ================================================================
+  #    -> Huzzah!
+  #    -- Hmm...
+  #   = Done (0.0000s) ===============================================================
+  #
+  #   # => "My Result!"
   def say(message, type = nil, &block)
     if block
-      say_with_block(message, &block)
+      say_with_block(header: message, &block)
     else
       say_item(message, type: type)
     end
   end
 
-  # Executes a block of code, surrounding it with header and footer messages.
+  # Executes a block of code, surrounding it with header and footer banner
+  # messages.
   #
-  # @param header_message [String] The message to be printed as the header.
-  # @param footer_message [String] (optional) The message to be printed as the
-  #   footer. Default is "Done".
+  # @param header [String] The message to be printed as the header.
+  # @param footer [String] (optional) The message to be printed as the footer.
+  #   Default is "Done".
   #
   # @yield [] The block of code to be executed.
   #
   # @return [Object] Returns the result of the executed block.
   #
   # @raise [ArgumentError] Raises an ArgumentError if no block is given.
-  def say_with_block(header_message, footer_message: "Done", &block)
+  def say_with_block(header: nil, footer: "Done", &block)
     raise ArgumentError, "block expected" unless block_given?
 
-    say_header(header_message)
-    result, footer_message = benchmark_block_run(footer_message, &block)
-    say_footer(footer_message)
+    say_header(header)
+    result, footer_with_time_string = benchmark_block_run(footer, &block)
+    say_footer(footer_with_time_string)
 
     result
   end
 
-  private_class_method def benchmark_block_run(footer_message, &block)
+  private_class_method def benchmark_block_run(message, &block)
     result = nil
     time = Benchmark.measure { result = block.call }
     time_string = "%.4fs" % time.real
-    [result, "#{footer_message} (#{time_string})"]
+    [result, "#{message} (#{time_string})"]
   end
 
   # Prints a header banner (i.e. banner) that fills at least the passed in
