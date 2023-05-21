@@ -9,6 +9,8 @@ AllCops:
   DisplayCopNames: true
   DisplayStyleGuide: true
   ExtraDetails: true
+  Exclude:
+    - "script/playground.rb"
 
 Gemspec/DevelopmentDependencies:
   EnforcedStyle: gemspec # See: https://bundler.io/guides/creating_gem.html#testing-our-gem
