@@ -103,7 +103,7 @@ module Say
   # Prints either a one-line message of the given type or executes a block of
   # code and surrounds it with header and footer banner messages.
   #
-  # @param message [String] (optional) The message to be printed.
+  # @param text [String] (optional) The message to be printed.
   # @param type [Symbol] (optional) The type of the message. (see #Say::TYPES)
   # @param block [Proc] (optional) A block of code to be executed with header
   #   and footer banners.
@@ -129,19 +129,19 @@ module Say
   #   = Done (0.0000s) ===============================================================
   #
   #   # => "My Result!"
-  def say(message = nil, type = nil, &block)
+  def say(text = nil, type = nil, &block)
     if block
-      say_with_block(header: message, &block)
+      say_with_block(header: text, &block)
     else
-      say_item(message, type: type)
+      say_result(text, type: type)
     end
   end
 
   # Executes a block of code, surrounding it with header and footer banner
   # messages.
   #
-  # @param header [String] The message to be printed as the header.
-  # @param footer [String] (optional) The message to be printed as the footer.
+  # @param header [String] The message to be printed in the header.
+  # @param footer [String] (optional) The message to be printed in the footer.
   #   Default is "Done".
   #
   # @yield [] The block of code to be executed.
@@ -183,9 +183,9 @@ module Say
   # `columns` number of columns. This serves as, e.g., a visual break
   # point at the end of a processing task.
   #
-  # @param message [String] (optional) The message to be printed as the header.
+  # @param text [String] (optional) The message to be printed as the header.
   # @param kwargs [Hash] Additional keyword arguments to be passed to the
-  #   `build_banner` method of the same class/module.
+  #   `say_banner` method of the same class/module.
   # @option kwargs [Symbol] :columns The maximum *preferred* column length of
   #   the header message.
   #
@@ -204,33 +204,33 @@ module Say
   #   Say.say_header("Head", columns: 20)
   #   = Head =============
   #   # => "= Head ============="
-  def say_header(message = nil, **kwargs)
-    do_say(build_banner(message, **kwargs))
+  def say_header(text = nil, **kwargs)
+    do_say(say_banner(text, **kwargs))
   end
 
   # Prints a a one-line message of the given type.
   #
-  # @param message [String] (optional) The message to be printed.
+  # @param text [String] (optional) The message to be printed.
   # @param kwargs [Hash] Additional keyword arguments to be passed to the
-  #   `build_message` method of the same class/module.
+  #   `say_message` method of the same class/module.
   #
   # @return [String] Returns the built message.
   #
   # @example
-  #   Say.say_item("Hello, World!")  # => " -> Hello, World!"
-  #   Say.say_item("Oops", :error)   # => " ** Oops"
-  #   Say.say_item                   # => " ..."
-  def say_item(message = nil, **kwargs)
-    do_say(build_message(message, **kwargs))
+  #   Say.say_result("Hello, World!")  # => " -> Hello, World!"
+  #   Say.say_result("Oops", :error)   # => " ** Oops"
+  #   Say.say_result                   # => " ..."
+  def say_result(text = nil, **kwargs)
+    do_say(say_message(text, **kwargs))
   end
 
   # Prints a footer banner (i.e. banner) that fills at least the passed in
   # `columns` number of columns. This serves as, e.g., a visual break
   # point at the end of a processing task.
   #
-  # @param message [String] The message to be printed as the footer.
+  # @param text [String] The message to be printed as the footer.
   # @param kwargs [Hash] Additional keyword arguments to be passed to the
-  #   `build_banner` method of the same class/module.
+  #   `say_banner` method of the same class/module.
   # @option kwargs [Symbol] :columns The maximum *preferred* column length of
   #   the footer message.
   #
@@ -252,64 +252,64 @@ module Say
   #   = Foot =============
   #
   #   # => "= Foot =============\n\n"
-  def say_footer(message = "Done", **kwargs)
+  def say_footer(text = "Done", **kwargs)
     do_say(
-      build_banner(message, **kwargs),
+      say_banner(text, **kwargs),
       "\n")
   end
 
   # Builds an banner String with the specified message.
   #
-  # @param message [String] (optional) The message to be included in the banner.
+  # @param text [String] (optional) The message to be included in the banner.
   # @param columns [Integer] The maximum length of the banner line.
   #   Default value is the constant `MAX_COLUMNS`.
   #
   # @return [String] Returns the formatted banner String.
   #
   # @example Default usage
-  #   Say.build_banner
+  #   Say.say_banner
   #   # => "================================================================================"
   #
   # @example Custom usage
-  #   Say.build_banner("Test")
+  #   Say.say_banner("Test")
   #   # => "= Test ========================================================================="
   #
-  #   Say.build_banner("Test", columns: 20)
+  #   Say.say_banner("Test", columns: 20)
   #   # => "= Test ============="
-  def build_banner(message = nil, columns: MAX_COLUMNS)
+  def say_banner(text = nil, columns: MAX_COLUMNS)
     full_width_banner = "=" * columns
-    return full_width_banner unless message
+    return full_width_banner unless text
 
     decorations_width = 4 # Accounts for `= ` in front and ` =` at the end.
-    minimum_width = message.size + decorations_width
+    minimum_width = text.size + decorations_width
     actual_width = [columns, minimum_width].max
 
-    "= #{message} #{full_width_banner}"[0, actual_width]
+    "= #{text} #{full_width_banner}"[0, actual_width]
   end
 
   # Builds a message with a given (or defaulted) type prefix.
   #
-  # @param message [String] (optional) The message. Defaults to `" ..."`.
+  # @param text [String] (optional) The message. Defaults to `" ..."`.
   # @param type [Symbol] (optional) One of Say::TYPES
   #
   # @return [String] Returns the built message String.
   #
   # @example Default usage
-  #   Say.build_message("Test")  # => " -> Test"
+  #   Say.say_message("Test")  # => " -> Test"
   #
   # @example Custom usage
-  #   Say.build_message("Test", type: :debug)    # => " >> Test"
-  #   Say.build_message("Test", type: :error)    # => " ** Test"
-  #   Say.build_message("Test", type: :info)     # => " -- Test"
-  #   Say.build_message("Test", type: :success)  # => " -> Test"
-  #   Say.build_message("Test")                  # => " -> Test"
-  #   Say.build_message("Test", type: :warn)     # => " !¡ Test"
-  #   Say.build_message("Test", type: :warning)  # => " !¡ Test"
-  #   Say.build_message                          # => " ..."
-  def build_message(message = nil, type: nil)
-    return " ..." unless message
+  #   Say.say_message("Test", type: :debug)    # => " >> Test"
+  #   Say.say_message("Test", type: :error)    # => " ** Test"
+  #   Say.say_message("Test", type: :info)     # => " -- Test"
+  #   Say.say_message("Test", type: :success)  # => " -> Test"
+  #   Say.say_message("Test")                  # => " -> Test"
+  #   Say.say_message("Test", type: :warn)     # => " !¡ Test"
+  #   Say.say_message("Test", type: :warning)  # => " !¡ Test"
+  #   Say.say_message                          # => " ..."
+  def say_message(text = nil, type: nil)
+    return " ..." unless text
 
-    "#{TYPES[type]}#{message}"
+    "#{TYPES[type]}#{text}"
   end
 
   # Prints messages to the console and returns them as a single,

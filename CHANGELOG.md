@@ -1,5 +1,10 @@
 ## [Unreleased]
-- When calling `Say.say`, `Say.say_item`, and `Say.build_message` without passing in a message String, the "message" result will now be `" ..."`, instead of raising ArgumentError.
+- Rename public methods:
+  - `Say.build_banner` -> `Say.say_banner`
+  - `Say.build_message` -> `Say.say_message`
+  - `Say.say_item` -> `Say.say_result`
+
+- When calling `Say.say`, `Say.say_item`, and `Say.say_message` without passing in a message String, the "message" result will now be `" ..."`, instead of raising ArgumentError.
 
 - Better definition of the `Say.say_with_block` method:
   1. Rename `footer_message` kwarg to just `footer`
