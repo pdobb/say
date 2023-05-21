@@ -45,9 +45,9 @@ require "benchmark"
 #
 #   class ModuleFunctionProcessor
 #     def run
-#       Say.say("ModuleFunctionProcessor...") {
-#         Say.say("Successfully did the thing!")
-#         Say.say("Failed to do a thing ...", :error)
+#       Say.("ModuleFunctionProcessor...") {
+#         Say.("Successfully did the thing!")
+#         Say.("Failed to do a thing ...", :error)
 #
 #         "The Result!"
 #       }
@@ -98,8 +98,6 @@ module Say
     hash.update(warning: hash[:warn])
   }.freeze
 
-  module_function
-
   # Prints either a one-line message of the given type or executes a block of
   # code and surrounds it with header and footer banner messages.
   #
@@ -113,14 +111,14 @@ module Say
   # @return [String] Returns the built message if no block is given.
   #
   # @example No Block Given
-  #   Say.say("Hello, World!")  # => " -> Hello, World!"
-  #   Say.say("Oops", :error)   # => " ** Oops"
-  #   Say.say                   # => " ..."
+  #   Say.("Hello, World!")  # => " -> Hello, World!"
+  #   Say.("Oops", :error)   # => " ** Oops"
+  #   Say.()                 # => " ..."
   #
   # @example Given a Block
-  #   Say.say("Hello, World!") {
-  #     Say.say("Huzzah!")
-  #     Say.say("Hmm...", :info)
+  #   Say.("Hello, World!") {
+  #     Say.("Huzzah!")
+  #     Say.("Hmm...", :info)
   #     "My Result!"
   #   }
   #   = Hello, World! ================================================================
@@ -129,11 +127,11 @@ module Say
   #   = Done (0.0000s) ===============================================================
   #
   #   # => "My Result!"
-  def say(text = nil, type = nil, &block)
+  def self.call(text = nil, type = nil, &block)
     if block
-      say_with_block(header: text, &block)
+      with_block(header: text, &block)
     else
-      say_result(text, type: type)
+      result(text, type: type)
     end
   end
 
@@ -151,9 +149,9 @@ module Say
   # @raise [ArgumentError] Raises an ArgumentError if no block is given.
   #
   # @example
-  #   Say.say_with_block("Hello, World!") {
-  #     Say.say("Huzzah!")
-  #     Say.say("Hmm...", :info)
+  #   Say.with_block("Hello, World!") {
+  #     Say.("Huzzah!")
+  #     Say.("Hmm...", :info)
   #     "My Result!"
   #   }
   #   = Hello, World! ================================================================
@@ -162,17 +160,17 @@ module Say
   #   = Done (0.0000s) ===============================================================
   #
   #   # => "My Result!"
-  def say_with_block(header: nil, footer: "Done", &block)
+  def self.with_block(header: nil, footer: "Done", &block)
     raise ArgumentError, "block expected" unless block_given?
 
-    say_header(header)
+    self.header(header)
     result, footer_with_time_string = benchmark_block_run(footer, &block)
-    say_footer(footer_with_time_string)
+    self.footer(footer_with_time_string)
 
     result
   end
 
-  private_class_method def benchmark_block_run(message, &block)
+  private_class_method def self.benchmark_block_run(message, &block)
     result = nil
     time = Benchmark.measure { result = block.call }
     time_string = "%.4fs" % time.real
@@ -185,43 +183,43 @@ module Say
   #
   # @param text [String] (optional) The message to be printed as the header.
   # @param kwargs [Hash] Additional keyword arguments to be passed to the
-  #   `say_banner` method of the same class/module.
+  #   `banner` method of the same class/module.
   # @option kwargs [Symbol] :columns The maximum *preferred* column length of
   #   the header message.
   #
   # @return [String] Returns the built banner message.
   #
   # @example Default (though non-standard) usage
-  #   Say.say_header
+  #   Say.header
   #   ================================================================================
   #   # => "================================================================================"
   #
   # @example Custom (standard) usage
-  #   Say.say_header("Head")
+  #   Say.header("Head")
   #   = Head =========================================================================
   #   # => "= Head ========================================================================="
   #
-  #   Say.say_header("Head", columns: 20)
+  #   Say.header("Head", columns: 20)
   #   = Head =============
   #   # => "= Head ============="
-  def say_header(text = nil, **kwargs)
-    do_say(say_banner(text, **kwargs))
+  def self.header(text = nil, **kwargs)
+    write(banner(text, **kwargs))
   end
 
   # Prints a a one-line message of the given type.
   #
   # @param text [String] (optional) The message to be printed.
   # @param kwargs [Hash] Additional keyword arguments to be passed to the
-  #   `say_message` method of the same class/module.
+  #   `message` method of the same class/module.
   #
   # @return [String] Returns the built message.
   #
   # @example
-  #   Say.say_result("Hello, World!")  # => " -> Hello, World!"
-  #   Say.say_result("Oops", :error)   # => " ** Oops"
-  #   Say.say_result                   # => " ..."
-  def say_result(text = nil, **kwargs)
-    do_say(say_message(text, **kwargs))
+  #   Say.result("Hello, World!")  # => " -> Hello, World!"
+  #   Say.result("Oops", :error)   # => " ** Oops"
+  #   Say.result                   # => " ..."
+  def self.result(text = nil, **kwargs)
+    write(message(text, **kwargs))
   end
 
   # Prints a footer banner (i.e. banner) that fills at least the passed in
@@ -230,31 +228,31 @@ module Say
   #
   # @param text [String] The message to be printed as the footer.
   # @param kwargs [Hash] Additional keyword arguments to be passed to the
-  #   `say_banner` method of the same class/module.
+  #   `banner` method of the same class/module.
   # @option kwargs [Symbol] :columns The maximum *preferred* column length of
   #   the footer message.
   #
   # @return [String] Returns the built banner message.
   #
   # @example Default usage
-  #   Say.say_footer
+  #   Say.footer
   #   = Done =========================================================================
   #
   #   # => "= Done =========================================================================\n\n"
   #
   # @example Custom usage
-  #   Say.say_footer("Foot")
+  #   Say.footer("Foot")
   #   = Foot =========================================================================
   #
   #   # => "= Foot =========================================================================\n\n"
   #
-  #   Say.say_footer("Foot", columns: 20)
+  #   Say.footer("Foot", columns: 20)
   #   = Foot =============
   #
   #   # => "= Foot =============\n\n"
-  def say_footer(text = "Done", **kwargs)
-    do_say(
-      say_banner(text, **kwargs),
+  def self.footer(text = "Done", **kwargs)
+    write(
+      banner(text, **kwargs),
       "\n")
   end
 
@@ -267,16 +265,16 @@ module Say
   # @return [String] Returns the formatted banner String.
   #
   # @example Default usage
-  #   Say.say_banner
+  #   Say.banner
   #   # => "================================================================================"
   #
   # @example Custom usage
-  #   Say.say_banner("Test")
+  #   Say.banner("Test")
   #   # => "= Test ========================================================================="
   #
-  #   Say.say_banner("Test", columns: 20)
+  #   Say.banner("Test", columns: 20)
   #   # => "= Test ============="
-  def say_banner(text = nil, columns: MAX_COLUMNS)
+  def self.banner(text = nil, columns: MAX_COLUMNS)
     full_width_banner = "=" * columns
     return full_width_banner unless text
 
@@ -295,18 +293,18 @@ module Say
   # @return [String] Returns the built message String.
   #
   # @example Default usage
-  #   Say.say_message("Test")  # => " -> Test"
+  #   Say.message("Test")  # => " -> Test"
   #
   # @example Custom usage
-  #   Say.say_message("Test", type: :debug)    # => " >> Test"
-  #   Say.say_message("Test", type: :error)    # => " ** Test"
-  #   Say.say_message("Test", type: :info)     # => " -- Test"
-  #   Say.say_message("Test", type: :success)  # => " -> Test"
-  #   Say.say_message("Test")                  # => " -> Test"
-  #   Say.say_message("Test", type: :warn)     # => " !¡ Test"
-  #   Say.say_message("Test", type: :warning)  # => " !¡ Test"
-  #   Say.say_message                          # => " ..."
-  def say_message(text = nil, type: nil)
+  #   Say.message("Test", type: :debug)    # => " >> Test"
+  #   Say.message("Test", type: :error)    # => " ** Test"
+  #   Say.message("Test", type: :info)     # => " -- Test"
+  #   Say.message("Test", type: :success)  # => " -> Test"
+  #   Say.message("Test")                  # => " -> Test"
+  #   Say.message("Test", type: :warn)     # => " !¡ Test"
+  #   Say.message("Test", type: :warning)  # => " !¡ Test"
+  #   Say.message                          # => " ..."
+  def self.message(text = nil, type: nil)
     return " ..." unless text
 
     "#{TYPES[type]}#{text}"
@@ -321,8 +319,20 @@ module Say
   #   Default is `false`.
   #
   # @return [String] Returns the messages joined by newline characters.
-  def do_say(*messages, silent: false)
+  def self.write(*messages, silent: false)
     puts(*messages) unless silent
     messages.join("\n")
   end
+
+  # PUBLIC INTERFACE FOR `include Say`
+
+  # rubocop:disable Style/SingleLineMethods
+  def say(...) Say.(...) end
+  def say_with_block(...) Say.with_block(...) end
+  def say_header(...) Say.header(...) end
+  def say_result(...) Say.result(...) end
+  def say_footer(...) Say.footer(...) end
+  def say_banner(...) Say.banner(...) end
+  def say_message(...) Say.message(...) end
+  # rubocop:enable Style/SingleLineMethods
 end

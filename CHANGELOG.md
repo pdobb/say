@@ -1,12 +1,31 @@
 ## [Unreleased]
-- Rename public methods:
-  - `Say.build_banner` -> `Say.say_banner`
-  - `Say.build_message` -> `Say.say_message`
-  - `Say.say_item` -> `Say.say_result`
 
-- When calling `Say.say`, `Say.say_item`, and `Say.say_message` without passing in a message String, the "message" result will now be `" ..."`, instead of raising ArgumentError.
+### BREAKING CHANGES:
 
-- Better definition of the `Say.say_with_block` method:
+#### Public API Updates!
+- The updated public API when not including Say is:
+  - `Say.()` (or `Say.call`)  (was `Say.say`)
+  - `Say.with_block`          (was `Say.say_with_block`)
+  - `Say.header`              (was `Say.say_header`)
+  - `Say.result`              (was `Say.say_item`)
+  - `Say.footer`              (was `Say.say_footer`)
+  - `Say.banner`              (was `Say.build_banner`)
+  - `Say.message`             (was `Say.build_message`)
+  - `Say.write`               (was `Say.do_say`)
+- The updated public API when including Say is:
+  - `say`                     (no change)
+  - `say_with_block`          (no change)
+  - `say_header`              (no change)
+  - `say_result`              (was `say_item`)
+  - `say_footer`              (no change)
+  - `say_banner`              (was `build_banner`)
+  - `say_message`             (was `build_message`)
+  -                           (`do_say` has been removed and `write` is not defined)
+
+### Non-breaking Changes:
+- When calling `Say.call`, `Say.result`, and `Say.message` without passing in a message String, the "message" result will now be `" ..."`, instead of raising ArgumentError.
+
+- Better definition of the `Say.with_block` method:
   1. Rename `footer_message` kwarg to just `footer`
   2. Make `header_message` into a kwarg and rename to `header`
   3. Make `header` an optional argument

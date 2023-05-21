@@ -59,7 +59,7 @@ result = IncludeProcessor.new.run
  ** Failed to do a thing ...
 = Done (0.0000s) ===============================================================
 
-puts("Result: #{result.inspect}")
+puts("IncludeProcessor#run Result: #{result.inspect}")
 Result: "The Result!"
 ```
 
@@ -70,27 +70,62 @@ For quick-access usage, you can just call `Say.<method>` without including `Say`
 ```ruby
 require "say"
 
-class ModuleFunctionProcessor
+class DirectAccessProcessor
   def run
-    Say.say("ModuleFunctionProcessor") {
-      Say.say("Successfully did the thing!")
-      Say.say
-      Say.say("Failed to do a thing ...", :error)
+    Say.("DirectAccessProcessor") {
+      Say.("Successfully did the thing!")
+      Say.() # Or: Say.call
+      Say.("Debug details about this ...", :debug)
+      Say.("Info about stuff ...", :info)
+      Say.("Maybe look into this thing ...", :warn)
+      Say.("Maybe look into the above thing ...", :warning)
+      Say.("Failed to do a thing ...", :error)
 
       "The Result!"
     }
   end
 end
 
-result = ModuleFunctionProcessor.new.run
-= ModuleFunctionProcessor ======================================================
+result = DirectAccessProcessor.new.run
+= DirectAccessProcessor ========================================================
  -> Successfully did the thing!
  ...
+ >> Debug details about this ...
+ -- Info about stuff ...
+ !¡ Maybe look into this thing ...
+ !¡ Maybe look into the above thing ...
  ** Failed to do a thing ...
 = Done (0.0000s) ===============================================================
 
-puts("Result: #{result.inspect}")
+puts("DirectAccessProcessor#run Result: #{result.inspect}")
 Result: "The Result!"
+```
+
+## Namespace Pollution
+
+If you choose to `include Say` then your class will gain the following instance methods:
+- `say`
+- `say_with_block`
+- `say_result`
+- `say_footer`
+- `say_banner`
+- `say_message`
+- `say_header`
+
+... though you probably really only need one: `say`.
+
+```ruby
+class WithInclude
+  include Say
+end
+
+class WithoutInclude end
+
+Say.("Class methods added by `include Say`: #{WithInclude.methods - WithoutInclude.methods}", :info)
+-- Class methods added by `include Say`: []
+
+Say.("Instance methods added by `include Say`: #{WithInclude.new.methods - WithoutInclude.new.methods}", :info)
+-- Instance methods added by `include Say`: [:say, :say_with_block, :say_result, :say_footer, :say_banner, :say_message, :say_header]
 ```
 
 ## Integration

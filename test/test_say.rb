@@ -27,7 +27,7 @@ class TestSay < Minitest::Spec
       end
     end
 
-    describe "#say" do
+    describe ".call" do
       subject { Say }
 
       describe "GIVEN no block" do
@@ -37,15 +37,20 @@ class TestSay < Minitest::Spec
 
         context "GIVEN no message" do
           it "puts and returns the expected String" do
-            value(subject.say).must_equal(" ...")
+            value(subject.call).must_equal(" ...")
             value(@puts_call.args).must_equal([" ..."])
           end
         end
 
         context "GIVEN a message" do
           it "puts and returns the expected formatted message String" do
-            value(subject.say("TEST")).must_equal(" -> TEST")
+            value(subject.call("TEST")).must_equal(" -> TEST")
             value(@puts_call.args).must_equal([" -> TEST"])
+          end
+
+          it "respects Ruby's call notation" do
+            value(subject.("TEST")).must_equal(" -> TEST")
+            value(subject.()).must_equal(" ...")
           end
         end
       end
@@ -58,7 +63,7 @@ class TestSay < Minitest::Spec
 
         it "puts the expected header and footer banner Strings, "\
            "and returns the value from the block" do
-          value(subject.say("TEST") { "TEST_BLOCK_RETURN_VALUE" }).must_equal(
+          value(subject.call("TEST") { "TEST_BLOCK_RETURN_VALUE" }).must_equal(
             "TEST_BLOCK_RETURN_VALUE")
 
           # rubocop:disable Layout/LineLength
@@ -74,12 +79,12 @@ class TestSay < Minitest::Spec
       end
     end
 
-    describe "#say_with_block" do
+    describe ".with_block" do
       subject { Say }
 
       describe "GIVEN no block" do
         it "raises ArgumentError" do
-          value(-> { subject.say_with_block }).must_raise(ArgumentError)
+          value(-> { subject.with_block }).must_raise(ArgumentError)
         end
       end
 
@@ -92,7 +97,7 @@ class TestSay < Minitest::Spec
         context "GIVEN no messages" do
           it "puts the expected header and footer banner Strings, "\
              "and returns the value from the block" do
-            value(subject.say_with_block { "TEST_RESULT" }).
+            value(subject.with_block { "TEST_RESULT" }).
               must_equal("TEST_RESULT")
 
             # rubocop:disable Layout/LineLength
@@ -109,7 +114,7 @@ class TestSay < Minitest::Spec
 
         context "GIVEN a header message" do
           it "returns the expected header banner String" do
-            subject.say_with_block(header: "TEST_HEADER") do nil end
+            subject.with_block(header: "TEST_HEADER") do nil end
 
             # rubocop:disable Layout/LineLength
             value(@puts_calls[0].args).must_equal([
@@ -121,7 +126,7 @@ class TestSay < Minitest::Spec
 
         context "GIVEN a footer message" do
           it "returns the expected footer banner String" do
-            subject.say_with_block(footer: "TEST_FOOTER") do nil end
+            subject.with_block(footer: "TEST_FOOTER") do nil end
 
             # rubocop:disable Layout/LineLength
             value(@puts_calls[1].args).must_equal([
@@ -134,7 +139,7 @@ class TestSay < Minitest::Spec
       end
     end
 
-    describe "#say_header" do
+    describe ".say_header" do
       before do
         MuchStub.on_call($stdout, :puts) { |call| @puts_call = call }
       end
@@ -143,7 +148,7 @@ class TestSay < Minitest::Spec
 
       it "puts and returns the expected String, GIVEN no message" do
         # rubocop:disable Layout/LineLength
-        value(subject.say_header).must_equal(
+        value(subject.header).must_equal(
           "================================================================================")
         value(@puts_call.args).must_equal([
           "================================================================================"
@@ -153,7 +158,7 @@ class TestSay < Minitest::Spec
 
       it "puts and returns the expected String, GIVEN a message" do
         # rubocop:disable Layout/LineLength
-        value(subject.say_header("TEST")).must_equal(
+        value(subject.header("TEST")).must_equal(
           "= TEST =========================================================================")
         value(@puts_call.args).must_equal([
           "= TEST ========================================================================="
@@ -164,7 +169,7 @@ class TestSay < Minitest::Spec
       context "GIVEN an extra long String" do
         it "puts and returns the full String anyway, with minimal decoration" do
           # rubocop:disable Layout/LineLength
-          value(subject.say_header("T" * 90)).must_equal(
+          value(subject.header("T" * 90)).must_equal(
             "= TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT =")
           value(@puts_call.args).must_equal([
             "= TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT ="
@@ -174,7 +179,7 @@ class TestSay < Minitest::Spec
       end
     end
 
-    describe "#say_result" do
+    describe ".say_result" do
       before do
         MuchStub.on_call($stdout, :puts) { |call| @puts_call = call }
       end
@@ -182,24 +187,24 @@ class TestSay < Minitest::Spec
       subject { Say }
 
       it "puts and returns the expected String, GIVEN no message" do
-        value(subject.say_result).must_equal(" ...")
+        value(subject.result).must_equal(" ...")
         value(@puts_call.args).must_equal([" ..."])
       end
 
       it "puts and returns the expected String, GIVEN a message" do
-        value(subject.say_result("TEST")).must_equal(" -> TEST")
+        value(subject.result("TEST")).must_equal(" -> TEST")
         value(@puts_call.args).must_equal([" -> TEST"])
       end
 
       it "puts and returns the expected String, GIVEN a message and type" do
-        value(subject.say_result("TEST", type: :info)).must_equal(" -- TEST")
+        value(subject.result("TEST", type: :info)).must_equal(" -- TEST")
         value(@puts_call.args).must_equal([" -- TEST"])
       end
 
       context "GIVEN an extra long message String" do
         it "puts and returns the full String" do
           # rubocop:disable Layout/LineLength
-          value(subject.say_result("T" * 90)).must_equal(
+          value(subject.result("T" * 90)).must_equal(
             " -> TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT")
           value(@puts_call.args).must_equal([
             " -> TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
@@ -209,7 +214,7 @@ class TestSay < Minitest::Spec
       end
     end
 
-    describe "#say_footer" do
+    describe ".say_footer" do
       before do
         MuchStub.on_call($stdout, :puts) { |call| @puts_call = call }
       end
@@ -218,7 +223,7 @@ class TestSay < Minitest::Spec
 
       it "puts and returns the expected String, GIVEN no message" do
         # rubocop:disable Layout/LineLength
-        value(subject.say_footer).must_equal(
+        value(subject.footer).must_equal(
           "= Done =========================================================================\n\n")
         value(@puts_call.args).must_equal([
           "= Done =========================================================================",
@@ -229,7 +234,7 @@ class TestSay < Minitest::Spec
 
       it "puts and returns the expected String, GIVEN a message" do
         # rubocop:disable Layout/LineLength
-        value(subject.say_footer("TEST")).must_equal(
+        value(subject.footer("TEST")).must_equal(
           "= TEST =========================================================================\n\n")
         value(@puts_call.args).must_equal([
           "= TEST =========================================================================",
@@ -241,7 +246,7 @@ class TestSay < Minitest::Spec
       context "GIVEN an extra long String" do
         it "puts and returns the full String anyway, with minimal decoration" do
           # rubocop:disable Layout/LineLength
-          value(subject.say_footer("T" * 90)).must_equal(
+          value(subject.footer("T" * 90)).must_equal(
             "= TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT =\n\n")
           value(@puts_call.args).must_equal([
             "= TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT =",
@@ -252,55 +257,55 @@ class TestSay < Minitest::Spec
       end
     end
 
-    describe "#say_banner" do
+    describe ".say_banner" do
       subject { Say }
 
       it "returns the expected String, GIVEN no message" do
         # rubocop:disable Layout/LineLength
-        value(subject.say_banner).must_equal(
+        value(subject.banner).must_equal(
           "================================================================================")
         # rubocop:enable Layout/LineLength
       end
 
       it "returns the expected String, GIVEN an empty message" do
         # rubocop:disable Layout/LineLength
-        value(subject.say_banner("")).must_equal(
+        value(subject.banner("")).must_equal(
           "=  =============================================================================")
         # rubocop:enable Layout/LineLength
       end
 
       it "returns the expected String, GIVEN a short message" do
         # rubocop:disable Layout/LineLength
-        value(subject.say_banner("TEST")).must_equal(
+        value(subject.banner("TEST")).must_equal(
           "= TEST =========================================================================")
         # rubocop:enable Layout/LineLength
       end
 
       it "returns the expected String, GIVEN a long message" do
         # rubocop:disable Layout/LineLength
-        value(subject.say_banner("T" * 90)).must_equal(
+        value(subject.banner("T" * 90)).must_equal(
           "= TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT =")
         # rubocop:enable Layout/LineLength
       end
     end
 
-    describe "#say_message" do
+    describe ".say_message" do
       subject { Say }
 
       it "returns the expected String, GIVEN no message" do
-        value(subject.say_message).must_equal(" ...")
+        value(subject.message).must_equal(" ...")
       end
 
       it "returns the expected String, GIVEN a message" do
-        value(subject.say_message("TEST")).must_equal(" -> TEST")
+        value(subject.message("TEST")).must_equal(" -> TEST")
       end
 
       it "returns the expected String, GIVEN a type" do
-        value(subject.say_message("TEST", type: :info)).must_equal(" -- TEST")
+        value(subject.message("TEST", type: :info)).must_equal(" -- TEST")
       end
     end
 
-    describe "#do_say" do
+    describe ".write" do
       before do
         MuchStub.on_call($stdout, :puts) { |call| @puts_call = call }
       end
@@ -309,27 +314,123 @@ class TestSay < Minitest::Spec
 
       context "GIVEN silent = false" do
         it "puts and returns the expected String, GIVEN a single message" do
-          value(subject.do_say("TEST")).must_equal("TEST")
+          value(subject.write("TEST")).must_equal("TEST")
           value(@puts_call.args).must_equal(["TEST"])
         end
 
         it "puts and returns the expected String, GIVEN many messages" do
-          value(subject.do_say("TEST 1", "TEST 2")).must_equal("TEST 1\nTEST 2")
+          value(subject.write("TEST 1", "TEST 2")).must_equal("TEST 1\nTEST 2")
           value(@puts_call.args).must_equal(["TEST 1", "TEST 2"])
         end
       end
 
       context "GIVEN silent = true" do
         it "returns the expected String, GIVEN a single message" do
-          value(subject.do_say("TEST", silent: true)).must_equal("TEST")
+          value(subject.write("TEST", silent: true)).must_equal("TEST")
           value(@puts_call).must_be_nil
         end
 
         it "returns the expected String, GIVEN more than one message" do
-          value(subject.do_say("TEST 1", "TEST 2", silent: true)).must_equal(
+          value(subject.write("TEST 1", "TEST 2", silent: true)).must_equal(
             "TEST 1\nTEST 2")
           value(@puts_call).must_be_nil
         end
+      end
+    end
+
+    describe "#say" do
+      before do
+        MuchStub.on_call(Say, :call) { |call| @say_call_call = call }
+      end
+
+      subject { Class.new { include Say }.new }
+
+      it "forwards args and the given block to Say.call" do
+        subject.say("TEST", :type) { "BLOCK" }
+        value(@say_call_call.args).must_equal(["TEST", :type])
+        value(@say_call_call.block).wont_be_nil
+      end
+    end
+
+    describe "#say_with_block" do
+      before do
+        MuchStub.on_call(Say, :with_block) { |call|
+          @say_with_block_call = call
+        }
+      end
+
+      subject { Class.new { include Say }.new }
+
+      it "forwards args and the given block to Say.with_block" do
+        subject.say_with_block(header: "HEADER", footer: "FOOTER") { "BLOCK" }
+        value(@say_with_block_call.kargs).must_equal(
+          header: "HEADER", footer: "FOOTER")
+        value(@say_with_block_call.block).wont_be_nil
+      end
+    end
+
+    describe "#say_header" do
+      before do
+        MuchStub.on_call(Say, :header) { |call| @say_header_call = call }
+      end
+
+      subject { Class.new { include Say }.new }
+
+      it "forwards args and the given block to Say.header" do
+        subject.say_header("TEST")
+        value(@say_header_call.args).must_equal(["TEST"])
+      end
+    end
+
+    describe "#say_result" do
+      before do
+        MuchStub.on_call(Say, :result) { |call| @say_result_call = call }
+      end
+
+      subject { Class.new { include Say }.new }
+
+      it "forwards args and the given block to Say.result" do
+        subject.say_result("TEST")
+        value(@say_result_call.args).must_equal(["TEST"])
+      end
+    end
+
+    describe "#say_footer" do
+      before do
+        MuchStub.on_call(Say, :footer) { |call| @say_footer_call = call }
+      end
+
+      subject { Class.new { include Say }.new }
+
+      it "forwards args and the given block to Say.footer" do
+        subject.say_footer("TEST")
+        value(@say_footer_call.args).must_equal(["TEST"])
+      end
+    end
+
+    describe "#say_banner" do
+      before do
+        MuchStub.on_call(Say, :banner) { |call| @say_banner_call = call }
+      end
+
+      subject { Class.new { include Say }.new }
+
+      it "forwards args and the given block to Say.banner" do
+        subject.say_banner("TEST")
+        value(@say_banner_call.args).must_equal(["TEST"])
+      end
+    end
+
+    describe "#say_message" do
+      before do
+        MuchStub.on_call(Say, :message) { |call| @say_message_call = call }
+      end
+
+      subject { Class.new { include Say }.new }
+
+      it "forwards args and the given block to Say.message" do
+        subject.say_message("TEST")
+        value(@say_message_call.args).must_equal(["TEST"])
       end
     end
   end
