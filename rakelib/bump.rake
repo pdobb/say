@@ -85,7 +85,7 @@ module RubyVersions
 
   def self.latest_supported_patches
     @latest_supported_patches ||= begin
-      patches = versions.fetch_values(VERSION_TYPES).compact.flatten
+      patches = versions.fetch_values(*VERSION_TYPES).compact.flatten
       patches.map { |patch| Gem::Version.new(patch) }.sort!.map(&:to_s)
     end
   end
