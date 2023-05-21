@@ -89,6 +89,25 @@ puts("Result: #{result.inspect}")
 Result: "The Result!"
 ```
 
+## Integration
+
+### iTerm2
+The standardized nature of Say's logging methods lends itself well to highlighting output types using iTerm2's Text Highlighting Triggers. To set this up, go to Settings for iTerm2 -> Profiles -> Advanced -> Triggers section: "Edit" Button.
+
+![iTerm2 Triggers Setup](/screenshots/iterm2-triggers.png?raw=true "iTerm2 Triggers Setup")
+
+For more help, see [iTerm's documentation on Triggers](https://iterm2.com/triggers.html).
+
+The regular expressions and HEX codes used in the screenshot are:
+
+```ruby
+->          # Background HEX: #54a76c
+>>          # Background HEX: #ff8e00     (Optional) Text HEX: #4c4c4c
+--          # Background HEX: #666666
+!¡          # Background HEX: #fff808     (Optional) Text HEX: #000000
+\*{2,}.*    # Background HEX: #ff0000
+```
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests. Or, run `rake` to run the tests plus linters. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
