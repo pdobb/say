@@ -1,6 +1,7 @@
 # Say
 
 [![Gem Version](https://img.shields.io/github/v/release/pdobb/say)](https://img.shields.io/github/v/release/pdobb/say)
+[![CI Actions](https://github.com/pdobb/say/actions/workflows/ci.yml/badge.svg)](https://github.com/pdobb/say/actions)
 
 Say gives you the API and the output style you already know and love from [ActiveRecord::Migration#say](https://api.rubyonrails.org/classes/ActiveRecord/Migration.html#method-i-say)... anywhere! Plus a few extra goodies for long-running processes like incremental progress indicators and remaining time estimation.
 
