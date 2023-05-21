@@ -11,6 +11,7 @@ class IncludeProcessor
   def run
     say("IncludeProcessor") {
       say("Successfully did the thing!")
+      say
       say("Debug details about this ...", :debug)
       say("Info about stuff ...", :info)
       say("Maybe look into this thing ...", :warn)
@@ -31,6 +32,7 @@ class ModuleFunctionProcessor
   def run
     Say.say("ModuleFunctionProcessor") {
       Say.say("Successfully did the thing!")
+      Say.say
       Say.say("Failed to do a thing ...", :error)
 
       "The Result!"

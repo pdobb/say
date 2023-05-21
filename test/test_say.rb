@@ -35,9 +35,18 @@ class TestSay < Minitest::Spec
           MuchStub.on_call($stdout, :puts) { |call| @puts_call = call }
         end
 
-        it "puts and returns the formatted message" do
-          value(subject.say("TEST")).must_be_instance_of(String)
-          value(@puts_call.args).must_equal([" -> TEST"])
+        context "GIVEN no message" do
+          it "puts and returns the expected String" do
+            value(subject.say).must_equal(" ...")
+            value(@puts_call.args).must_equal([" ..."])
+          end
+        end
+
+        context "GIVEN a message" do
+          it "puts and returns the expected formatted message String" do
+            value(subject.say("TEST")).must_equal(" -> TEST")
+            value(@puts_call.args).must_equal([" -> TEST"])
+          end
         end
       end
 
@@ -47,7 +56,7 @@ class TestSay < Minitest::Spec
           MuchStub.on_call($stdout, :puts) { |call| @puts_calls << call }
         end
 
-        it "puts header and footer banners, "\
+        it "puts the expected header and footer banner Strings, "\
            "and returns the value from the block" do
           value(subject.say("TEST") { "TEST_BLOCK_RETURN_VALUE" }).must_equal(
             "TEST_BLOCK_RETURN_VALUE")
@@ -80,20 +89,22 @@ class TestSay < Minitest::Spec
           MuchStub.on_call($stdout, :puts) { |call| @puts_calls << call }
         end
 
-        it "puts header and footer banners, "\
-           "and returns the value from the block" do
-          value(subject.say_with_block { "TEST_RESULT" }).
-            must_equal("TEST_RESULT")
+        context "GIVEN no messages" do
+          it "puts the expected header and footer banner Strings, "\
+             "and returns the value from the block" do
+            value(subject.say_with_block { "TEST_RESULT" }).
+              must_equal("TEST_RESULT")
 
-          # rubocop:disable Layout/LineLength
-          value(@puts_calls[0].args).must_equal([
-            "================================================================================"
-          ])
-          value(@puts_calls[1].args).must_equal([
-            "= Done (0.0000s) ===============================================================",
-            "\n"
-          ])
-          # rubocop:enable Layout/LineLength
+            # rubocop:disable Layout/LineLength
+            value(@puts_calls[0].args).must_equal([
+              "================================================================================"
+            ])
+            value(@puts_calls[1].args).must_equal([
+              "= Done (0.0000s) ===============================================================",
+              "\n"
+            ])
+            # rubocop:enable Layout/LineLength
+          end
         end
 
         context "GIVEN a header message" do
@@ -170,17 +181,22 @@ class TestSay < Minitest::Spec
 
       subject { Say }
 
-      it "puts and returns the expected String" do
+      it "puts and returns the expected String, GIVEN no message" do
+        value(subject.say_item).must_equal(" ...")
+        value(@puts_call.args).must_equal([" ..."])
+      end
+
+      it "puts and returns the expected String, GIVEN a message" do
         value(subject.say_item("TEST")).must_equal(" -> TEST")
         value(@puts_call.args).must_equal([" -> TEST"])
       end
 
-      it "puts and returns the expected String, GIVEN a type" do
+      it "puts and returns the expected String, GIVEN a message and type" do
         value(subject.say_item("TEST", type: :info)).must_equal(" -- TEST")
         value(@puts_call.args).must_equal([" -- TEST"])
       end
 
-      context "GIVEN an extra long String" do
+      context "GIVEN an extra long message String" do
         it "puts and returns the full String" do
           # rubocop:disable Layout/LineLength
           value(subject.say_item("T" * 90)).must_equal(
@@ -271,11 +287,11 @@ class TestSay < Minitest::Spec
     describe "#build_message" do
       subject { Say }
 
-      it "raises ArgumentError, GIVEN no message" do
-        value(-> { subject.build_message }).must_raise(ArgumentError)
+      it "returns the expected String, GIVEN no message" do
+        value(subject.build_message).must_equal(" ...")
       end
 
-      it "returns the expected String" do
+      it "returns the expected String, GIVEN a message" do
         value(subject.build_message("TEST")).must_equal(" -> TEST")
       end
 
