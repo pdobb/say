@@ -9,7 +9,7 @@ class IncludeProcessor
   include Say
 
   def run
-    say("IncludeProcessor...") {
+    say("IncludeProcessor") {
       say("Successfully did the thing!")
       say("Debug details about this ...", :debug)
       say("Info about stuff ...", :info)
@@ -29,7 +29,7 @@ puts("Result: #{result.inspect}", "\n")
 
 class ModuleFunctionProcessor
   def run
-    Say.say("ModuleFunctionProcessor...") {
+    Say.say("ModuleFunctionProcessor") {
       Say.say("Successfully did the thing!")
       Say.say("Failed to do a thing ...", :error)
 

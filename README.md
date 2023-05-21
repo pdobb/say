@@ -34,7 +34,7 @@ class IncludeProcessor
   include Say
 
   def run
-    say("IncludeProcessor...") {
+    say("IncludeProcessor") {
       say("Successfully did the thing!")
       say("Debug details about this ...", :debug)
       say("Info about stuff ...", :info)
@@ -48,14 +48,14 @@ class IncludeProcessor
 end
 
 result = IncludeProcessor.new.run
-= IncludeProcessor... ==========================================================
+= IncludeProcessor =============================================================
  -> Successfully did the thing!
  >> Debug details about this ...
  -- Info about stuff ...
  !¡ Maybe look into this thing ...
  !¡ Maybe look into the above thing ...
  ** Failed to do a thing ...
-= Done =========================================================================
+= Done (0.0000s) ===============================================================
 
 puts("Result: #{result.inspect}")
 Result: "The Result!"
@@ -70,7 +70,7 @@ require "say"
 
 class ModuleFunctionProcessor
   def run
-    Say.say("ModuleFunctionProcessor...") {
+    Say.say("ModuleFunctionProcessor") {
       Say.say("Successfully did the thing!")
       Say.say("Failed to do a thing ...", :error)
 
@@ -80,10 +80,10 @@ class ModuleFunctionProcessor
 end
 
 result = ModuleFunctionProcessor.new.run
-= ModuleFunctionProcessor... ===================================================
+= ModuleFunctionProcessor ======================================================
  -> Successfully did the thing!
  ** Failed to do a thing ...
-= Done =========================================================================
+= Done (0.0000s) ===============================================================
 
 puts("Result: #{result.inspect}")
 Result: "The Result!"

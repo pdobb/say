@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "say/version"
+require "benchmark"
 
 # Say is the top-level module for this gem. It utilizes `module_function` to
 # allow for module-level method calls or inclusion into a class with
@@ -128,14 +129,21 @@ module Say
   # @return [Object] Returns the result of the executed block.
   #
   # @raise [ArgumentError] Raises an ArgumentError if no block is given.
-  def say_with_block(header_message, footer_message: "Done")
+  def say_with_block(header_message, footer_message: "Done", &block)
     raise ArgumentError, "block expected" unless block_given?
 
     say_header(header_message)
-    result = yield
+    result, footer_message = benchmark_block_run(footer_message, &block)
     say_footer(footer_message)
 
     result
+  end
+
+  private_class_method def benchmark_block_run(footer_message, &block)
+    result = nil
+    time = Benchmark.measure { result = block.call }
+    time_string = "%.4fs" % time.real
+    [result, "#{footer_message} (#{time_string})"]
   end
 
   # Prints a header banner (i.e. banner) that fills at least the passed in
