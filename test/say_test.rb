@@ -2,7 +2,7 @@
 
 require "test_helper"
 
-class TestSay < Minitest::Spec
+class SayTest < Minitest::Spec
   describe "Say" do
     describe "::MAX_COLUMNS" do
       it "returns the expected Integer" do
@@ -376,7 +376,7 @@ class TestSay < Minitest::Spec
 
       subject { Class.new { include Say }.new }
 
-      it "forwards args and the given block to Say.header" do
+      it "forwards all args to Say.header" do
         subject.say_header("TEST")
         value(@say_header_call.args).must_equal(["TEST"])
       end
@@ -389,7 +389,7 @@ class TestSay < Minitest::Spec
 
       subject { Class.new { include Say }.new }
 
-      it "forwards args and the given block to Say.result" do
+      it "forwards all args to Say.result" do
         subject.say_result("TEST")
         value(@say_result_call.args).must_equal(["TEST"])
       end
@@ -402,7 +402,7 @@ class TestSay < Minitest::Spec
 
       subject { Class.new { include Say }.new }
 
-      it "forwards args and the given block to Say.footer" do
+      it "forwards all args to Say.footer" do
         subject.say_footer("TEST")
         value(@say_footer_call.args).must_equal(["TEST"])
       end
@@ -415,7 +415,7 @@ class TestSay < Minitest::Spec
 
       subject { Class.new { include Say }.new }
 
-      it "forwards args and the given block to Say.banner" do
+      it "forwards all args to Say.banner" do
         subject.say_banner("TEST")
         value(@say_banner_call.args).must_equal(["TEST"])
       end
@@ -428,7 +428,7 @@ class TestSay < Minitest::Spec
 
       subject { Class.new { include Say }.new }
 
-      it "forwards args and the given block to Say.message" do
+      it "forwards all args to Say.message" do
         subject.say_message("TEST")
         value(@say_message_call.args).must_equal(["TEST"])
       end
