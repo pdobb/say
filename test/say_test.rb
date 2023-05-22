@@ -139,7 +139,7 @@ class SayTest < Minitest::Spec
       end
     end
 
-    describe ".say_header" do
+    describe ".header" do
       before do
         MuchStub.on_call($stdout, :puts) { |call| @puts_call = call }
       end
@@ -179,7 +179,7 @@ class SayTest < Minitest::Spec
       end
     end
 
-    describe ".say_result" do
+    describe ".result" do
       before do
         MuchStub.on_call($stdout, :puts) { |call| @puts_call = call }
       end
@@ -214,7 +214,7 @@ class SayTest < Minitest::Spec
       end
     end
 
-    describe ".say_footer" do
+    describe ".footer" do
       before do
         MuchStub.on_call($stdout, :puts) { |call| @puts_call = call }
       end
@@ -257,7 +257,7 @@ class SayTest < Minitest::Spec
       end
     end
 
-    describe ".say_banner" do
+    describe ".banner" do
       subject { Say }
 
       it "returns the expected String, GIVEN no message" do
@@ -289,7 +289,7 @@ class SayTest < Minitest::Spec
       end
     end
 
-    describe ".say_message" do
+    describe ".message" do
       subject { Say }
 
       it "returns the expected String, GIVEN no message" do
@@ -302,6 +302,49 @@ class SayTest < Minitest::Spec
 
       it "returns the expected String, GIVEN a type" do
         value(subject.message("TEST", type: :info)).must_equal(" -- TEST")
+      end
+    end
+
+    describe ".progress" do
+      before do
+        MuchStub.tap_on_call(Say::Progress::Tracker, :new) { |object, call|
+          @progress_tracker_new_call = call
+
+          MuchStub.on_call(object, :call) { |inner_call|
+            @progress_tracker_object_call_call = inner_call
+          }
+        }
+
+        MuchStub.tap_on_call(Say, :with_block) { |call|
+          @say_with_bock_call = call
+        }
+        MuchStub.on_call($stdout, :puts) { |call| @puts_call = call }
+      end
+
+      subject { Say }
+
+      it "forwards all args except message to Say::Progress::Tracker.new" do
+        subject.progress("TEST", interval: 10)
+        value(@progress_tracker_new_call.args).must_equal([{ interval: 10 }])
+      end
+
+      context "GIVEN a block" do
+        it "calls Say.with_block and "\
+           "passes the block to Say::Progress::Tracker#call" do
+          subject.progress("TEST", interval: 10) { "TEST_BLOCK" }
+          value(@say_with_bock_call).wont_be_nil
+          value(@progress_tracker_object_call_call.block.call).must_equal(
+            "TEST_BLOCK")
+        end
+      end
+
+      context "GIVEN no block" do
+        it "calls Say.with_block and "\
+           "passes nil to Say::Progress::Tracker#call" do
+          subject.progress("TEST", interval: 10)
+          value(@say_with_bock_call).wont_be_nil
+          value(@progress_tracker_object_call_call.block).must_be_nil
+        end
       end
     end
 
@@ -431,6 +474,22 @@ class SayTest < Minitest::Spec
       it "forwards all args to Say.message" do
         subject.say_message("TEST")
         value(@say_message_call.args).must_equal(["TEST"])
+      end
+    end
+
+    describe "#say_progress" do
+      before do
+        MuchStub.on_call(Say, :progress) { |call|
+          @say_progress_call = call
+        }
+      end
+
+      subject { Class.new { include Say }.new }
+
+      it "forwards all args to Say.progress" do
+        subject.say_progress("TEST", index: 0, interval: 5)
+        value(@say_progress_call.args).must_equal(
+          ["TEST", { index: 0, interval: 5 }])
       end
     end
   end

@@ -81,6 +81,10 @@ Metrics/BlockLength:
     - context
 
 Metrics/ClassLength:
+  CountAsOne:
+    - array
+    - heredoc
+    - method_call
   Exclude:
     - "test/**/*"
 

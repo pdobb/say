@@ -102,11 +102,11 @@ module Say
   #
   # @param text [String] (optional) The message to be printed.
   # @param type [Symbol] (optional) The type of the message. (see #Say::TYPES)
-  # @param block [Proc] (optional) A block of code to be executed with header
-  #   and footer banners.
+  #   Note: `type` is ignored if a block is given.
+  # @param block [Proc] (optional) A block of code to be called with header and
+  #   footer banners.
   #
-  # @return [Object] Returns the result of the executed block if a block is
-  #   given.
+  # @return [] Returns the result of the called block if a block is given.
   # @return [String] Returns the built message if no block is given.
   #
   # @example No Block Given
@@ -141,9 +141,9 @@ module Say
   # @param footer [String] (optional) The message to be printed in the footer.
   #   Default is "Done".
   #
-  # @yield [] The block of code to be executed.
+  # @yield [] The block of code to be called.
   #
-  # @return [Object] Returns the result of the executed block.
+  # @return [] Returns the result of the called block.
   #
   # @raise [ArgumentError] Raises an ArgumentError if no block is given.
   #
@@ -160,7 +160,7 @@ module Say
   #
   #   # => "My Result!"
   def self.with_block(header: nil, footer: "Done", &block)
-    raise ArgumentError, "block expected" unless block_given?
+    raise ArgumentError, "block expected" unless block
 
     self.header(header)
     result, footer_with_time_string = benchmark_block_run(footer, &block)
@@ -303,6 +303,59 @@ module Say
     "#{TYPES[type]}#{text}"
   end
 
+  # Builds a {Say::Progress::Tracker} and yields an associated
+  # {Say::Progress::Interval} the user-supplied block for printing `say`
+  # messages only for on-interval ticks through the loop.
+  #
+  # @yield [Say::Progress::Interval] The interval upon which to `say` things.
+  #
+  # @return [] Returns the result of the called block.
+  #
+  # @example Simple Example
+  #   Say.progress do |interval|
+  #     3.times.with_index do |index|
+  #       interval.update
+  #       interval.say("Index: #{index}", :debug)
+  #     end
+  #   end
+  #   = Start (i=0) ==================================================================
+  #    >> Index: 0
+  #    >> Index: 1
+  #    >> Index: 2
+  #   = Done (0.0000s) ===============================================================
+  #
+  # @example A More Advanced Example
+  #   Say.progress("Progress Tracking Test", interval: 2) do |interval|
+  #     0.upto(2) do |index|
+  #       interval.update(index)
+  #       interval.say("Before Update Interval. Index: #{index}", :debug)
+  #       interval.say("Progress Interval Block.") do
+  #         sleep(0.025) # Do the work here...
+  #         Say.("Interval-Agnostic Update. Index: #{index}", :info)
+  #       end
+  #       interval.say("After Update Interval. Index: #{index}", :debug)
+  #     end
+  #   end
+  #   = Progress Tracking Test (i=0) =================================================
+  #    -- Interval-Agnostic Update. Index: 0
+  #    -- Interval-Agnostic Update. Index: 1
+  #    >> Before Update Interval. Index: 2
+  #   = Progress Interval Block. (i=2) ===============================================
+  #    -- Interval-Agnostic Update. Index: 2
+  #   = Done (0.0260s) ===============================================================
+  #
+  #    >> After Update Interval. Index: 2
+  #   = Done (0.0784s) ===============================================================
+  def self.progress(message = "Start", **kwargs, &block)
+    tracker = Say::Progress::Tracker.new(**kwargs)
+
+    header = [message, "(i=#{tracker.index})"].compact.join(" ")
+
+    with_block(header: header) do
+      tracker.call(&block)
+    end
+  end
+
   # Prints messages to the console and returns them as a single,
   # new-line-separated String.
   #
@@ -335,6 +388,8 @@ module Say
   def say_banner(...) Say.banner(...) end
   # @see .message Aliases Say.message
   def say_message(...) Say.message(...) end
+  # @see .progress Aliases Say.progress
+  def say_progress(...) Say.progress(...) end
 
   # rubocop:enable Style/SingleLineMethods
 
@@ -342,8 +397,16 @@ module Say
   def self.test
     Say::LJBanner.test
     Say::InterpolationTemplate.test
+    Say::Progress::Interval.test
+    Say::Progress::Tracker.test
   end
+end
+
+# Empty namespace holder.
+module Say::Progress
 end
 
 require "say/interpolation_template"
 require "say/banners/lj_banner"
+require "say/progress/tracker"
+require "say/progress/interval"

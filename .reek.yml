@@ -1,6 +1,17 @@
 # See: https://github.com/troessner/reek#configuration-options
 
 detectors:
+  Attribute:
+    enabled: false
+  DuplicateMethodCall:
+    exclude:
+      - "self.test"
+  TooManyStatements:
+    exclude:
+      - "self.test"
+  UncommunicativeVariableName:
+    exclude:
+      - "self.test"
   UtilityFunction:
     exclude:
       - "/Say#(do_)?say.*/"

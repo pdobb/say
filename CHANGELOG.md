@@ -1,4 +1,7 @@
 ## [Unreleased]
+- Add to public API: `Say.progress` and `say_progress`.
+  - Use this to track long-running processing loops on a given interval.
+  - See the [README](https://github.com/pdobb/say#progress-tracking) for more details.
 - Internal Changes: Abstract Say#banner using new classes/concepts:
   - Say::InterpolationTemplate
   - Say::LJBanner (Left-Justified Banner)

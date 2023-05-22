@@ -100,6 +100,69 @@ result = DirectAccessProcessor.new.run
 result  # => "The Result!"
 ```
 
+### Progress Tracking
+
+Use `Say.progress` to track long-running processing loops on a given interval. Set the interval to receive `say` updates only during on-interval ticks through the loop. The default interval is `1`, meaning every loop is considered on-interval.
+
+#### Simple
+```ruby
+# The default interval is 1.
+Say.progress do |interval|
+  3.times.with_index do |index|
+    # Increment the interval's internal index by 1.
+    interval.update
+
+    # Only "say" for on-interval ticks through the loop.
+    interval.say("Index: #{index}", :debug)
+  end
+end
+= Start (i=0) ==================================================================
+ >> Index: 0
+ >> Index: 1
+ >> Index: 2
+= Done (0.0000s) ===============================================================
+```
+
+#### Advanced
+```ruby
+Say.progress("Progress Tracking Test", interval: 3) do |interval|
+  0.upto(6) do |index|
+    # Set the interval's internal index to the current index. This may be safer.
+    interval.update(index)
+
+    # Only "say" for on-interval ticks through the loop.
+    interval.say("Before Update Interval. Index: #{index}", :debug)
+    # Optionally use a block to time a segment.
+    interval.say("Progress Interval Block.") do
+      sleep(0.025) # Do the work here.
+
+      # Always "say", regardless of interval in the usual way; with `Say.call`.
+      Say.("Interval-Agnostic Update. Index: #{index}", :info)
+    end
+    interval.say("After Update Interval. Index: #{index}", :debug)
+  end
+end
+= Progress Tracking Test (i=0) =================================================
+ -- Interval-Agnostic Update. Index: 0
+ -- Interval-Agnostic Update. Index: 1
+ -- Interval-Agnostic Update. Index: 2
+ >> Before Update Interval. Index: 3
+= Progress Interval Block. (i=3) ===============================================
+ -- Interval-Agnostic Update. Index: 3
+= Done (0.0261s) ===============================================================
+
+ >> After Update Interval. Index: 3
+ -- Interval-Agnostic Update. Index: 4
+ -- Interval-Agnostic Update. Index: 5
+ >> Before Update Interval. Index: 6
+= Progress Interval Block. (i=6) ===============================================
+ -- Interval-Agnostic Update. Index: 6
+= Done (0.0261s) ===============================================================
+
+ >> After Update Interval. Index: 6
+= Done (0.1831s) ===============================================================
+```
+
 ## Namespace Pollution
 
 If you choose to `include Say` then your class will gain the following instance methods:
@@ -108,6 +171,7 @@ If you choose to `include Say` then your class will gain the following instance 
 - `say_footer`
 - `say_header`
 - `say_message`
+- `say_progress`
 - `say_result`
 - `say_with_block`
 
@@ -118,13 +182,16 @@ class WithInclude
   include Say
 end
 
-class WithoutInclude end
+class WithoutInclude
+end
 
-Say.("Class methods added by `include Say`: #{WithInclude.methods - WithoutInclude.methods}", :info)
--- Class methods added by `include Say`: []
+added_class_methods = WithInclude.methods - WithoutInclude.methods
+Say.("Class methods added by `include Say`: #{added_class_methods}")
+ -- Class methods added by `include Say`: []
 
-Say.("Instance methods added by `include Say`: #{WithInclude.new.methods - WithoutInclude.new.methods}", :info)
--- Instance methods added by `include Say`: [:say, :say_with_block, :say_result, :say_footer, :say_banner, :say_message, :say_header]
+added_instance_methods = (WithInclude.new.methods - WithoutInclude.new.methods).sort!
+Say.("Instance methods added by `include Say`: #{added_instance_methods}")
+ -- Instance methods added by `include Say`: [:say, :say_banner, :say_footer, :say_header, :say_message, :say_progress, :say_result, :say_with_block]
 ```
 
 ## Integration

@@ -58,22 +58,54 @@ Say.call do
 end
 
 ################################################################################
+# Progress Tracking
+################################################################################
+# Simple
+# The default interval is 1.
+Say.progress do |interval|
+  3.times.with_index do |index|
+    # Increment the interval's internal index by 1.
+    interval.update
+
+    # Only "say" for on-interval ticks through the loop.
+    interval.say("Index: #{index}", :debug)
+  end
+end;
+
+# Advanced
+Say.progress("Progress Tracking Test", interval: 3) do |interval|
+  0.upto(6) do |index|
+    # Set the interval's internal index to the current index. This may be safer.
+    interval.update(index)
+
+    # Only "say" for on-interval ticks through the loop.
+    interval.say("Before Update Interval. Index: #{index}", :debug)
+    # Optionally use a block to time a segment.
+    interval.say("Progress Interval Block.") do
+      sleep(0.025) # Do the work here.
+
+      # Always "say", regardless of interval in the usual way; with `Say.call`.
+      Say.("Interval-Agnostic Update. Index: #{index}", :info)
+    end
+    interval.say("After Update Interval. Index: #{index}", :debug)
+  end
+end;
+
+################################################################################
 # Namespace Pollution
 ################################################################################
-Say.("Added Methods Test") do
+Say.("Namespace Pollution") do
   class WithInclude
     include Say
   end
 
-  class WithoutInclude end
+  class WithoutInclude
+  end
 
   added_class_methods = WithInclude.methods - WithoutInclude.methods
-  Say.("Class methods added by `include Say`: #{added_class_methods}", :info)
+  Say.("Class methods added by `include Say`: #{added_class_methods}")
 
-  added_instance_methods =
-    (WithInclude.new.methods - WithoutInclude.new.methods).sort!
-  Say.(
-    "Instance methods added by `include Say`: #{added_instance_methods}",
-    :info)
+  added_instance_methods = (WithInclude.new.methods - WithoutInclude.new.methods).sort!
+  Say.("Instance methods added by `include Say`: #{added_instance_methods}")
   puts(added_instance_methods.map { |im| "`#{im}`".to_sym }.to_yaml)
 end;
