@@ -14,8 +14,9 @@ require "benchmark"
 #     include Say
 #
 #     def run
-#       say("IncludeProcessor...") {
+#       say("IncludeProcessor") {
 #         say("Successfully did the thing!")
+#         say
 #         say("Debug details about this ...", :debug)
 #         say("Info about stuff ...", :info)
 #         say("Maybe look into this thing ...", :warn)
@@ -37,16 +38,20 @@ require "benchmark"
 #    ** Failed to do a thing ...
 #   = Done =========================================================================
 #
-#   puts("Result: #{result.inspect}")
-#   Result: "The Result!"
+#   result  # => "The Result!"
 #
-# @example Module-level access
+# @example Direct access via `Say.<method>`
 #   require "say"
 #
-#   class ModuleFunctionProcessor
+#   class DirectAccessProcessor
 #     def run
-#       Say.("ModuleFunctionProcessor...") {
+#       Say.("DirectAccessProcessor") {
 #         Say.("Successfully did the thing!")
+#         Say.() # Or: Say.call
+#         Say.("Debug details about this ...", :debug)
+#         Say.("Info about stuff ...", :info)
+#         Say.("Maybe look into this thing ...", :warn)
+#         Say.("Maybe look into the above thing ...", :warning)
 #         Say.("Failed to do a thing ...", :error)
 #
 #         "The Result!"
@@ -54,33 +59,25 @@ require "benchmark"
 #     end
 #   end
 #
-#   result = ModuleFunctionProcessor.new.run
-#   = ModuleFunctionProcessor... ===================================================
+#   result = DirectAccessProcessor.new.run
+#   = DirectAccessProcessor ========================================================
 #    -> Successfully did the thing!
+#    ...
+#    >> Debug details about this ...
+#    -- Info about stuff ...
+#    !¡ Maybe look into this thing ...
+#    !¡ Maybe look into the above thing ...
 #    ** Failed to do a thing ...
-#   = Done =========================================================================
+#   = Done (0.0000s) ===============================================================
 #
-#   puts("Result: #{result.inspect}")
-#   Result: "The Result!"
+#   result  # => "The Result!"
 module Say
-  # The maximum number of columns for a built message or banner.
-  #
-  # @!attribute [r] MAX_COLUMNS
-  #   @return [Integer] The maximum number of columns represented as
-  #     the number of characters.
-  # @!scope constant
-  #
-  # @example
-  #   MAX_COLUMNS  # => 80
+  # The maximum number of columns for message types that support it, e.g.
+  # banners.
   MAX_COLUMNS = 80
 
   # Mapping of message types to their corresponding prefixes for the `say`
   # method. Defaults to `:success`.
-  #
-  # @!attribute [r] TYPES
-  #   @return [Hash] A hash containing the mapping of message types to
-  #     their corresponding prefixes.
-  # @!scope constant
   #
   # @example
   #   TYPES[:debug]    # => " >> "

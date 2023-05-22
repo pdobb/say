@@ -60,8 +60,7 @@ result = IncludeProcessor.new.run
  ** Failed to do a thing ...
 = Done (0.0000s) ===============================================================
 
-puts("IncludeProcessor#run Result: #{result.inspect}")
-Result: "The Result!"
+result  # => "The Result!"
 ```
 
 ### `Say.<method>`
@@ -98,8 +97,7 @@ result = DirectAccessProcessor.new.run
  ** Failed to do a thing ...
 = Done (0.0000s) ===============================================================
 
-puts("DirectAccessProcessor#run Result: #{result.inspect}")
-Result: "The Result!"
+result  # => "The Result!"
 ```
 
 ## Namespace Pollution
