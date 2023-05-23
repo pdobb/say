@@ -1,14 +1,10 @@
+# See: https://github.com/troessner/reek#configuration-options
+
 detectors:
   UtilityFunction:
     exclude:
       - "/Say#(do_)?say.*/"
 
-directories:
-  "test":
-    IrresponsibleModule:
-      enabled: false
-    UtilityFunction:
-      enabled: false
-
 exclude_paths:
   - script
+  - test

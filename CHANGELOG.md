@@ -1,4 +1,7 @@
 ## [Unreleased]
+- Internal Changes: Abstract Say#banner using new classes/concepts:
+  - Say::InterpolationTemplate
+  - Say::LJBanner (Left-Justified Banner)
 
 ## [0.2.0] - 2023-05-21
 

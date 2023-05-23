@@ -176,9 +176,9 @@ module Say
     [result, "#{message} (#{time_string})"]
   end
 
-  # Prints a header banner (i.e. banner) that fills at least the passed in
-  # `columns` number of columns. This serves as, e.g., a visual break
-  # point at the end of a processing task.
+  # Prints a header banner that fills at least the passed in `columns` number of
+  # columns. This serves as, e.g., a visual break point at the start of a
+  # processing task.
   #
   # @param text [String] (optional) The message to be printed as the header.
   # @param kwargs [Hash] Additional keyword arguments to be passed to the
@@ -255,7 +255,7 @@ module Say
       "\n")
   end
 
-  # Builds an banner String with the specified message.
+  # Builds a banner String with the specified message.
   #
   # @param text [String] (optional) The message to be included in the banner.
   # @param columns [Integer] The maximum length of the banner line.
@@ -274,14 +274,8 @@ module Say
   #   Say.banner("Test", columns: 20)
   #   # => "= Test ============="
   def self.banner(text = nil, columns: MAX_COLUMNS)
-    full_width_banner = "=" * columns
-    return full_width_banner unless text
-
-    decorations_width = 4 # Accounts for `= ` in front and ` =` at the end.
-    minimum_width = text.size + decorations_width
-    actual_width = [columns, minimum_width].max
-
-    "= #{text} #{full_width_banner}"[0, actual_width]
+    type = text ? nil : :hr
+    LJBanner.new(type, columns: columns).(text)
   end
 
   # Builds a message with a given (or defaulted) type prefix.
@@ -343,4 +337,13 @@ module Say
   def say_message(...) Say.message(...) end
 
   # rubocop:enable Style/SingleLineMethods
+
+  # Usage: Say.test;
+  def self.test
+    Say::LJBanner.test
+    Say::InterpolationTemplate.test
+  end
 end
+
+require "say/interpolation_template"
+require "say/banners/lj_banner"
