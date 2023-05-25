@@ -21,7 +21,7 @@ Gem::Specification.new do |spec|
     "changelog_uri" => "https://github.com/pdobb/say/releases",
     "source_code_uri" => "https://github.com/pdobb/say",
     "homepage_uri" => spec.homepage,
-    "rubygems_mfa_required" => "true"
+    "rubygems_mfa_required" => "true",
   }
 
   # Specify which files should be added to the gem when it is released.

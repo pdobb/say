@@ -68,11 +68,11 @@ class SayTest < Minitest::Spec
 
           # rubocop:disable Layout/LineLength
           value(@puts_calls[0].args).must_equal([
-            "= TEST ========================================================================="
+            "= TEST =========================================================================",
           ])
           value(@puts_calls[1].args).must_equal([
             "= Done (0.0000s) ===============================================================",
-            "\n"
+            "\n",
           ])
           # rubocop:enable Layout/LineLength
         end
@@ -102,11 +102,11 @@ class SayTest < Minitest::Spec
 
             # rubocop:disable Layout/LineLength
             value(@puts_calls[0].args).must_equal([
-              "================================================================================"
+              "================================================================================",
             ])
             value(@puts_calls[1].args).must_equal([
               "= Done (0.0000s) ===============================================================",
-              "\n"
+              "\n",
             ])
             # rubocop:enable Layout/LineLength
           end
@@ -118,7 +118,7 @@ class SayTest < Minitest::Spec
 
             # rubocop:disable Layout/LineLength
             value(@puts_calls[0].args).must_equal([
-              "= TEST_HEADER =================================================================="
+              "= TEST_HEADER ==================================================================",
             ])
             # rubocop:enable Layout/LineLength
           end
@@ -131,7 +131,7 @@ class SayTest < Minitest::Spec
             # rubocop:disable Layout/LineLength
             value(@puts_calls[1].args).must_equal([
               "= TEST_FOOTER (0.0000s) ========================================================",
-              "\n"
+              "\n",
             ])
             # rubocop:enable Layout/LineLength
           end
@@ -151,7 +151,7 @@ class SayTest < Minitest::Spec
         value(subject.header).must_equal(
           "================================================================================")
         value(@puts_call.args).must_equal([
-          "================================================================================"
+          "================================================================================",
         ])
         # rubocop:enable Layout/LineLength
       end
@@ -161,7 +161,7 @@ class SayTest < Minitest::Spec
         value(subject.header("TEST")).must_equal(
           "= TEST =========================================================================")
         value(@puts_call.args).must_equal([
-          "= TEST ========================================================================="
+          "= TEST =========================================================================",
         ])
         # rubocop:enable Layout/LineLength
       end
@@ -172,7 +172,7 @@ class SayTest < Minitest::Spec
           value(subject.header("T" * 90)).must_equal(
             "= TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT =")
           value(@puts_call.args).must_equal([
-            "= TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT ="
+            "= TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT =",
           ])
           # rubocop:enable Layout/LineLength
         end
@@ -207,7 +207,7 @@ class SayTest < Minitest::Spec
           value(subject.result("T" * 90)).must_equal(
             " -> TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT")
           value(@puts_call.args).must_equal([
-            " -> TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
+            " -> TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
           ])
           # rubocop:enable Layout/LineLength
         end
@@ -227,7 +227,7 @@ class SayTest < Minitest::Spec
           "= Done =========================================================================\n\n")
         value(@puts_call.args).must_equal([
           "= Done =========================================================================",
-          "\n"
+          "\n",
         ])
         # rubocop:enable Layout/LineLength
       end
@@ -238,7 +238,7 @@ class SayTest < Minitest::Spec
           "= TEST =========================================================================\n\n")
         value(@puts_call.args).must_equal([
           "= TEST =========================================================================",
-          "\n"
+          "\n",
         ])
         # rubocop:enable Layout/LineLength
       end
@@ -250,7 +250,7 @@ class SayTest < Minitest::Spec
             "= TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT =\n\n")
           value(@puts_call.args).must_equal([
             "= TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT =",
-            "\n"
+            "\n",
           ])
           # rubocop:enable Layout/LineLength
         end
