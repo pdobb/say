@@ -1,8 +1,12 @@
 # frozen_string_literal: true
 
 # Play from the Pry console with:
-#   play script/test.rb
+#   play script/readme.rb
 
+require "yaml"
+
+################################################################################
+# `include Say`
 ################################################################################
 Say.call do
   class IncludeProcessor
@@ -24,9 +28,12 @@ Say.call do
   end
 
   result = IncludeProcessor.new.run
-  puts("IncludeProcessor#run Result: #{result.inspect}")
-end;
+  # ...
+  result
+end
 
+################################################################################
+# `Say.<method>`
 ################################################################################
 Say.call do
   class DirectAccessProcessor
@@ -46,9 +53,12 @@ Say.call do
   end
 
   result = DirectAccessProcessor.new.run
-  puts("DirectAccessProcessor#run Result: #{result.inspect}")
-end;
+  # ...
+  result
+end
 
+################################################################################
+# Namespace Pollution
 ################################################################################
 Say.("Added Methods Test") do
   class WithInclude
@@ -57,6 +67,13 @@ Say.("Added Methods Test") do
 
   class WithoutInclude end
 
-  Say.("Class methods added by `include Say`: #{WithInclude.methods - WithoutInclude.methods}", :info)
-  Say.("Instance methods added by `include Say`: #{WithInclude.new.methods - WithoutInclude.new.methods}", :info)
+  added_class_methods = WithInclude.methods - WithoutInclude.methods
+  Say.("Class methods added by `include Say`: #{added_class_methods}", :info)
+
+  added_instance_methods =
+    (WithInclude.new.methods - WithoutInclude.new.methods).sort!
+  Say.(
+    "Instance methods added by `include Say`: #{added_instance_methods}",
+    :info)
+  puts(added_instance_methods.map { |im| "`#{im}`".to_sym }.to_yaml)
 end;

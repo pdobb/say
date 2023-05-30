@@ -104,12 +104,12 @@ result  # => "The Result!"
 
 If you choose to `include Say` then your class will gain the following instance methods:
 - `say`
-- `say_with_block`
-- `say_result`
-- `say_footer`
 - `say_banner`
-- `say_message`
+- `say_footer`
 - `say_header`
+- `say_message`
+- `say_result`
+- `say_with_block`
 
 ... though you probably really only need one: `say`.
 
