@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+## [0.3.1] - 2023-06-02
+
 #### Public API Updates!
 - Add `Say.progress_line` and `Say#progress_line` for printing a message along with a given `index` indicator. `Say.progress` now uses this internally so that calling `say` on an Interval object automatically includes the `index` indicator.
 
