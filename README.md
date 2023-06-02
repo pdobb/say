@@ -98,6 +98,25 @@ result = DirectAccessProcessor.new.run
 result  # => "The Result!"
 ```
 
+### Say Types
+When calling `Say.call(<message>, <type>)`, the available types and output representations are:
+
+- `:debug`   -> `" >> "`
+- `:error`   -> `" ** "`
+- `:info`    -> `" -- "`
+- `:success` -> `" -> "`
+- `:warn`    -> `" !¡ "`
+
+For example:
+
+```ruby
+Say.("TEST", :debug)   # => " >> TEST"
+Say.("TEST", :error)   # => " ** TEST"
+Say.("TEST", :info)    # => " -- TEST"
+Say.("TEST", :success) # => " -> TEST"
+Say.("TEST", :warn)    # => " !¡ TEST"
+```
+
 ### Progress Tracking
 
 Use `Say.progress` to track long-running processing loops on a given interval. Set the interval to receive `say` updates only during on-interval ticks through the loop. The default interval is `1`, meaning every loop is considered on-interval.
@@ -224,7 +243,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 2. Run the YARD server: `yard server --reload`
 3. Open the live documentation site: `open http://localhost:8808`
 
-While the YARD server is running, documentation in the live site will be auto-updated on save.
+While the YARD server is running, documentation in the live site will be auto-updated on source code save (and site reload).
 
 ## Contributing
 
