@@ -50,8 +50,10 @@ class Say::Progress::Tracker
   end
 
   # rubocop:disable all
+  # :nocov:
 
   # Usage: Say::Progress::Tracker.test;
+  # @!visibility private
   def self.test
     Say.("Say::Progress::Tracker.test") do
       i1 = Say::Progress::Tracker.new
@@ -89,5 +91,6 @@ class Say::Progress::Tracker
     end
   end
 
+  # :nocov:
   # rubocop:enable all
 end

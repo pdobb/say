@@ -393,13 +393,18 @@ module Say
 
   # rubocop:enable Style/SingleLineMethods
 
+  # :nocov:
+
   # Usage: Say.test;
+  # @!visibility private
   def self.test
     Say::LJBanner.test
     Say::InterpolationTemplate.test
     Say::Progress::Interval.test
     Say::Progress::Tracker.test
   end
+
+  # :nocov:
 end
 
 # Empty namespace holder.

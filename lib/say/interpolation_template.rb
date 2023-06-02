@@ -126,8 +126,10 @@ class Say::InterpolationTemplate
   end
 
   # rubocop:disable all
+  # :nocov:
 
   # Usage: Say::InterpolationTemplate.test;
+  # @!visibility private
   def self.test
     Say.("Say::InterpolationTemplate.test") do
       interpolation_template_strings = [
@@ -205,5 +207,6 @@ class Say::InterpolationTemplate
     end
   end
 
+  # :nocov:
   # rubocop:enable all
 end

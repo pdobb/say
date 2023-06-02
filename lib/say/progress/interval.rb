@@ -80,8 +80,10 @@ class Say::Progress::Interval
   end
 
   # rubocop:disable all
+  # :nocov:
 
   # Usage: Say::Progress::Interval.test;
+  # @!visibility private
   def self.test
     Say.("Say::Progress::Interval.test") do
       tracker = Say::Progress::Tracker.new(interval: 2)
@@ -111,5 +113,6 @@ class Say::Progress::Interval
     end
   end
 
+  # :nocov:
   # rubocop:enable all
 end

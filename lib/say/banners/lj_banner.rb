@@ -161,8 +161,10 @@ class Say::LJBanner
   end
 
   # rubocop:disable all
+  # :nocov:
 
   # Usage: Say::LJBanner.test;
+  # @!visibility private
   def self.test
     Say.("Say::LJBanner.test") do
       results = [
@@ -199,5 +201,6 @@ class Say::LJBanner
     end
   end
 
+  # :nocov:
   # rubocop:enable all
 end
