@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+## [0.3.0] - 2023-06-02
+
 ### BREAKING CHANGES:
 - Remove `warning` from Say::Types (keep `warn`)
 
