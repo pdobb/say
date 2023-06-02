@@ -94,7 +94,6 @@ module Say
       info: " -- ",
       success: hash.default,
       warn: " !¡ ")
-    hash.update(warning: hash[:warn])
   }.freeze
 
   # Prints either a one-line message of the given type or executes a block of

@@ -1,6 +1,7 @@
 ## [Unreleased]
 
 ### BREAKING CHANGES:
+- Remove `warning` from Say::Types (keep `warn`)
 
 #### Public API Updates!
 - The updated public API when not including Say is:

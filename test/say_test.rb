@@ -13,7 +13,7 @@ class SayTest < Minitest::Spec
     describe "::TYPES" do
       it "defines the expected type keys" do
         value(Say::TYPES.keys).must_equal(
-          %i[debug error info success warn warning])
+          %i[debug error info success warn])
       end
 
       it "defaults to :success" do

@@ -41,7 +41,6 @@ class IncludeProcessor
       say("Debug details about this ...", :debug)
       say("Info about stuff ...", :info)
       say("Maybe look into this thing ...", :warn)
-      say("Maybe look into the above thing ...", :warning)
       say("Failed to do a thing ...", :error)
 
       "The Result!"
@@ -78,7 +77,6 @@ class DirectAccessProcessor
       Say.("Debug details about this ...", :debug)
       Say.("Info about stuff ...", :info)
       Say.("Maybe look into this thing ...", :warn)
-      Say.("Maybe look into the above thing ...", :warning)
       Say.("Failed to do a thing ...", :error)
 
       "The Result!"
