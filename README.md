@@ -223,11 +223,11 @@ For more help, see [iTerm's documentation on Triggers](https://iterm2.com/trigge
 The regular expressions and HEX codes used in the screenshot are:
 
 ```ruby
-->          # Background HEX: #54a76c
->>          # Background HEX: #ff8e00     (Optional) Text HEX: #4c4c4c
---          # Background HEX: #666666
-!¡          # Background HEX: #fff808     (Optional) Text HEX: #000000
-\*{2,}.*    # Background HEX: #ff0000
+(?<=^ )->(?= )  # Text HEX: #0ae400  Background HEX: transparent
+(?<=^ )>>(?= )  # Text HEX: #ff6500  Background HEX: transparent
+(?<=^ )--(?= )  # Text HEX: #ffffff  Background HEX: #666666
+(?<=^ )!¡(?= )  # Text HEX: #ffff00  Background HEX: transparent
+.*\*{2,}.*      # Text HEX: #ffffff  Background HEX: #ff0000
 ```
 
 ## Development
