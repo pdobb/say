@@ -79,6 +79,41 @@ class SayTest < Minitest::Spec
       end
     end
 
+    describe ".line" do
+      before do
+        MuchStub.on_call($stdout, :puts) { |call| @puts_call = call }
+      end
+
+      subject { Say }
+
+      it "puts and returns the expected String, GIVEN no message" do
+        value(subject.line).must_equal(" ...")
+        value(@puts_call.args).must_equal([" ..."])
+      end
+
+      it "puts and returns the expected String, GIVEN a message" do
+        value(subject.line("TEST")).must_equal(" -> TEST")
+        value(@puts_call.args).must_equal([" -> TEST"])
+      end
+
+      it "puts and returns the expected String, GIVEN a message and type" do
+        value(subject.line("TEST", type: :info)).must_equal(" -- TEST")
+        value(@puts_call.args).must_equal([" -- TEST"])
+      end
+
+      context "GIVEN an extra long message String" do
+        it "puts and returns the full String" do
+          # rubocop:disable Layout/LineLength
+          value(subject.line("T" * 90)).must_equal(
+            " -> TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT")
+          value(@puts_call.args).must_equal([
+            " -> TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
+          ])
+          # rubocop:enable Layout/LineLength
+        end
+      end
+    end
+
     describe ".with_block" do
       subject { Say }
 
@@ -173,41 +208,6 @@ class SayTest < Minitest::Spec
             "= TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT =")
           value(@puts_call.args).must_equal([
             "= TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT =",
-          ])
-          # rubocop:enable Layout/LineLength
-        end
-      end
-    end
-
-    describe ".result" do
-      before do
-        MuchStub.on_call($stdout, :puts) { |call| @puts_call = call }
-      end
-
-      subject { Say }
-
-      it "puts and returns the expected String, GIVEN no message" do
-        value(subject.result).must_equal(" ...")
-        value(@puts_call.args).must_equal([" ..."])
-      end
-
-      it "puts and returns the expected String, GIVEN a message" do
-        value(subject.result("TEST")).must_equal(" -> TEST")
-        value(@puts_call.args).must_equal([" -> TEST"])
-      end
-
-      it "puts and returns the expected String, GIVEN a message and type" do
-        value(subject.result("TEST", type: :info)).must_equal(" -- TEST")
-        value(@puts_call.args).must_equal([" -- TEST"])
-      end
-
-      context "GIVEN an extra long message String" do
-        it "puts and returns the full String" do
-          # rubocop:disable Layout/LineLength
-          value(subject.result("T" * 90)).must_equal(
-            " -> TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT")
-          value(@puts_call.args).must_equal([
-            " -> TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
           ])
           # rubocop:enable Layout/LineLength
         end
@@ -395,6 +395,19 @@ class SayTest < Minitest::Spec
       end
     end
 
+    describe "#say_line" do
+      before do
+        MuchStub.on_call(Say, :line) { |call| @say_line_call = call }
+      end
+
+      subject { Class.new { include Say }.new }
+
+      it "forwards all args to Say.line" do
+        subject.say_line("TEST")
+        value(@say_line_call.args).must_equal(["TEST"])
+      end
+    end
+
     describe "#say_with_block" do
       before do
         MuchStub.on_call(Say, :with_block) { |call|
@@ -422,19 +435,6 @@ class SayTest < Minitest::Spec
       it "forwards all args to Say.header" do
         subject.say_header("TEST")
         value(@say_header_call.args).must_equal(["TEST"])
-      end
-    end
-
-    describe "#say_result" do
-      before do
-        MuchStub.on_call(Say, :result) { |call| @say_result_call = call }
-      end
-
-      subject { Class.new { include Say }.new }
-
-      it "forwards all args to Say.result" do
-        subject.say_result("TEST")
-        value(@say_result_call.args).must_equal(["TEST"])
       end
     end
 

@@ -1,4 +1,14 @@
 ## [Unreleased]
+
+### BREAKING CHANGES:
+
+#### Public API Updates!
+- The updated public API when not including Say is:
+  - `Say.line`                (was `Say.result`)
+- The updated public API when including Say is:
+  - `say_line`                (was `say_result`)
+
+### Non-breaking Changes:
 - Add to public API: `Say.progress` and `say_progress`.
   - Use this to track long-running processing loops on a given interval.
   - See the [README](https://github.com/pdobb/say#progress-tracking) for more details.

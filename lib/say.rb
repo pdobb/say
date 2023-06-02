@@ -130,8 +130,24 @@ module Say
     if block
       with_block(header: text, &block)
     else
-      result(text, type: type)
+      line(text, type: type)
     end
+  end
+
+  # Prints a built one-line message of the given type.
+  #
+  # @param text [String] (optional) The message to be printed.
+  # @param kwargs [Hash] Additional keyword arguments to be passed to the
+  #   `message` method of the same class/module.
+  #
+  # @return [String] Returns the built message.
+  #
+  # @example
+  #   Say.line("Hello, World!")  # => " -> Hello, World!"
+  #   Say.line("Oops", :error)   # => " ** Oops"
+  #   Say.line                   # => " ..."
+  def self.line(text = nil, **kwargs)
+    write(message(text, **kwargs))
   end
 
   # Executes a block of code, surrounding it with header and footer banner
@@ -203,22 +219,6 @@ module Say
   #   # => "= Head ============="
   def self.header(text = nil, **kwargs)
     write(banner(text, **kwargs))
-  end
-
-  # Prints a a one-line message of the given type.
-  #
-  # @param text [String] (optional) The message to be printed.
-  # @param kwargs [Hash] Additional keyword arguments to be passed to the
-  #   `message` method of the same class/module.
-  #
-  # @return [String] Returns the built message.
-  #
-  # @example
-  #   Say.result("Hello, World!")  # => " -> Hello, World!"
-  #   Say.result("Oops", :error)   # => " ** Oops"
-  #   Say.result                   # => " ..."
-  def self.result(text = nil, **kwargs)
-    write(message(text, **kwargs))
   end
 
   # Prints a footer banner (i.e. banner) that fills at least the passed in
@@ -376,12 +376,12 @@ module Say
 
   # @see .call Forwards to Say.call
   def say(...) Say.(...) end
+  # @see .line Forwards to Say.line
+  def say_line(...) Say.line(...) end
   # @see .with_block Forwards to Say.with_block
   def say_with_block(...) Say.with_block(...) end
   # @see .header Forwards to Say.header
   def say_header(...) Say.header(...) end
-  # @see .result Forwards to Say.result
-  def say_result(...) Say.result(...) end
   # @see .footer Forwards to Say.footer
   def say_footer(...) Say.footer(...) end
   # @see .banner Forwards to Say.banner
