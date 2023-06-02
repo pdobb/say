@@ -36,7 +36,7 @@ class Say::Progress::Interval
       if block
         Say.progress(text, index: index, &block)
       else
-        Say.(text, type)
+        Say.progress_line(text, type, index: index)
       end
     elsif block
       block.call
@@ -102,7 +102,7 @@ class Say::Progress::Interval
         nil,
         nil,
         " -- S",
-        " -> T"
+        " -> T (i=2)"
       ]
 
       if results == expected_results

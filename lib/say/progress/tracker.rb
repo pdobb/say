@@ -10,6 +10,9 @@ class Say::Progress::Tracker
   attr_reader :interval,
               :index
 
+  # @param interval [Integer] Indexes at which the current tick in a loop will
+  #   be considered on-interval.
+  # @param index [Integer] the current iteration through a loop.
   def initialize(interval: DEFAULT_INTERVAL, index: 0)
     @interval = Integer(interval)
     @index = Integer(index)
@@ -61,7 +64,7 @@ class Say::Progress::Tracker
 
       results = [
         # Interval: 1
-        i1.index,
+        i1.interval,
         i1.tick?,
         i1.update(1).tick?,
         # Interval: 2
@@ -73,7 +76,7 @@ class Say::Progress::Tracker
 
       expected_results = [
         # Interval 1
-        0,
+        1,
         false,
         true,
         # Interval 2

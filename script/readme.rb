@@ -79,12 +79,11 @@ end
 # Simple
 # The default interval is 1.
 Say.progress do |interval|
-  3.times.with_index do |index|
+  3.times do
     # Increment the interval's internal index by 1.
     interval.update
 
-    # Only "say" for on-interval ticks through the loop.
-    interval.say("Index: #{index}", :debug)
+    interval.say("Test", :debug)
   end
 end;
 
@@ -95,17 +94,27 @@ Say.progress("Progress Tracking Test", interval: 3) do |interval|
     interval.update(index)
 
     # Only "say" for on-interval ticks through the loop.
-    interval.say("Before Update Interval. Index: #{index}", :debug)
+    interval.say("Before Update Interval.", :debug)
     # Optionally use a block to time a segment.
     interval.say("Progress Interval Block.") do
       sleep(0.025) # Do the work here.
 
-      # Always "say", regardless of interval in the usual way; with `Say.call`.
+      # Always "say", regardless of interval, in the usual way: with `Say.call`.
       Say.("Interval-Agnostic Update. Index: #{index}", :info)
     end
-    interval.say("After Update Interval. Index: #{index}", :debug)
+    interval.say("After Update Interval.", :debug)
   end
 end;
+
+# Manual
+Say.("Manual Usage: Say.progress_line") do
+  # Given a message. (The default Type is :info.)
+  Say.progress_line("TEST", index: 3)
+  Say.progress_line("TEST", :success, index: 3)
+
+  # Given no message.
+  Say.progress_line(index: 3)
+end
 
 ################################################################################
 # Namespace Pollution

@@ -46,16 +46,17 @@ class Say::Progress::IntervalTest < Minitest::Spec
 
         context "GIVEN no block" do
           before do
-            MuchStub.on_call(Say, :call) { |call|
+            MuchStub.on_call(Say, :progress_line) { |call|
               @say_call_call = call
             }
           end
 
-          it "calls Say.call with the expected args" do
+          it "calls Say.progress_line with the expected args" do
             result = subject.say("TEST", :debug)
 
             value(result).wont_be_nil
-            value(@say_call_call.args).must_equal(["TEST", :debug])
+            value(@say_call_call.args).must_equal(
+              ["TEST", :debug, { index: 5 }])
           end
         end
       end

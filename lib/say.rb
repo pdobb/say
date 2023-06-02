@@ -96,6 +96,9 @@ module Say
       warn: " !¡ ")
   }.freeze
 
+  # The default message to print when one is not supplied.
+  DEFAULT_MESSAGE = " ..."
+
   # Prints either a one-line message of the given type or executes a block of
   # code and surrounds it with header and footer banner messages.
   #
@@ -297,7 +300,7 @@ module Say
   #   Say.message("Test", type: :warning)  # => " !¡ Test"
   #   Say.message                          # => " ..."
   def self.message(text = nil, type: nil)
-    return " ..." unless text
+    return DEFAULT_MESSAGE unless text
 
     "#{TYPES[type]}#{text}"
   end
@@ -305,6 +308,8 @@ module Say
   # Builds a {Say::Progress::Tracker} and yields an associated
   # {Say::Progress::Interval} the user-supplied block for printing `say`
   # messages only for on-interval ticks through the loop.
+  #
+  # @param message [String] The String to be printed in the header banner.
   #
   # @yield [Say::Progress::Interval] The interval upon which to `say` things.
   #
@@ -348,11 +353,35 @@ module Say
   def self.progress(message = "Start", **kwargs, &block)
     tracker = Say::Progress::Tracker.new(**kwargs)
 
-    header = [message, "(i=#{tracker.index})"].compact.join(" ")
+    header = progress_message(message, index: tracker.index)
 
     with_block(header: header) do
       tracker.call(&block)
     end
+  end
+
+  # Prints a {#progress_message} (one that includes the original text plus an
+  # indicator of the given `index`) via {Say.say}.
+  #
+  # @param text [String] The String to be printed, which will be appended with
+  #   an indicator of the given `index`.
+  # @param type [Symbol] (optional) The type of the message. (see #Say::TYPES)
+  #
+  # @example Typical Usage
+  #   Say.progress_line("TEST", index: 3)            # => " -- TEST (i=3)"
+  #   Say.progress_line("TEST", :success, index: 3)  # => " -> TEST (i=3)"
+  #
+  # @example Given No Message
+  #   Say.progress_line(index: 3)                    # => " ... (i=3)"
+  def self.progress_line(text = nil, type = :info, index:)
+    message_text = message(text, type: type)
+    full_message_text = progress_message(message_text, index: index)
+
+    write(full_message_text)
+  end
+
+  private_class_method def self.progress_message(message, index:)
+    [message, "(i=#{index})"].compact.join(" ")
   end
 
   # Prints messages to the console and returns them as a single,
@@ -389,6 +418,8 @@ module Say
   def say_message(...) Say.message(...) end
   # @see .progress Aliases Say.progress
   def say_progress(...) Say.progress(...) end
+  # @see .progress_line Aliases Say.progress_line
+  def say_progress_line(...) Say.progress_line(...) end
 
   # rubocop:enable Style/SingleLineMethods
 

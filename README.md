@@ -107,14 +107,18 @@ When calling `Say.call(<message>, <type>)`, the available types and output repre
 - `:success` -> `" -> "`
 - `:warn`    -> `" !¡ "`
 
-For example:
-
 ```ruby
 Say.("TEST", :debug)   # => " >> TEST"
 Say.("TEST", :error)   # => " ** TEST"
 Say.("TEST", :info)    # => " -- TEST"
 Say.("TEST", :success) # => " -> TEST"
 Say.("TEST", :warn)    # => " !¡ TEST"
+```
+
+The default type is `:success`.
+
+```ruby
+Say.("TEST")  # => " -> TEST"
 ```
 
 ### Progress Tracking
@@ -125,19 +129,18 @@ Use `Say.progress` to track long-running processing loops on a given interval. S
 ```ruby
 # The default interval is 1.
 Say.progress do |interval|
-  3.times.with_index do |index|
+  3.times do
     # Increment the interval's internal index by 1.
     interval.update
 
-    # Only "say" for on-interval ticks through the loop.
-    interval.say("Index: #{index}", :debug)
+    interval.say("Test", :debug)
   end
 end
 = Start (i=0) ==================================================================
- >> Index: 0
- >> Index: 1
- >> Index: 2
-= Done (0.0000s) ===============================================================
+ >> Test (i=1)
+ >> Test (i=2)
+ >> Test (i=3)
+= Done (0.0001s) ===============================================================
 ```
 
 #### Advanced
@@ -148,36 +151,49 @@ Say.progress("Progress Tracking Test", interval: 3) do |interval|
     interval.update(index)
 
     # Only "say" for on-interval ticks through the loop.
-    interval.say("Before Update Interval. Index: #{index}", :debug)
+    interval.say("Before Update Interval.", :debug)
     # Optionally use a block to time a segment.
     interval.say("Progress Interval Block.") do
       sleep(0.025) # Do the work here.
 
-      # Always "say", regardless of interval in the usual way; with `Say.call`.
+      # Always "say", regardless of interval, in the usual way: with `Say.call`.
       Say.("Interval-Agnostic Update. Index: #{index}", :info)
     end
-    interval.say("After Update Interval. Index: #{index}", :debug)
+    interval.say("After Update Interval.", :debug)
   end
 end
 = Progress Tracking Test (i=0) =================================================
  -- Interval-Agnostic Update. Index: 0
  -- Interval-Agnostic Update. Index: 1
  -- Interval-Agnostic Update. Index: 2
- >> Before Update Interval. Index: 3
+ >> Before Update Interval. (i=3)
 = Progress Interval Block. (i=3) ===============================================
  -- Interval-Agnostic Update. Index: 3
 = Done (0.0261s) ===============================================================
 
- >> After Update Interval. Index: 3
+ >> After Update Interval. (i=3)
  -- Interval-Agnostic Update. Index: 4
  -- Interval-Agnostic Update. Index: 5
- >> Before Update Interval. Index: 6
+ >> Before Update Interval. (i=6)
 = Progress Interval Block. (i=6) ===============================================
  -- Interval-Agnostic Update. Index: 6
 = Done (0.0261s) ===============================================================
 
- >> After Update Interval. Index: 6
+ >> After Update Interval. (i=6)
 = Done (0.1831s) ===============================================================
+```
+
+#### Manual
+
+Internally, calling `say` on a Say::Progress::Interval object uses `Say.progress_line` to output the given message and index indicator. You may do the same even without an Interval object.
+
+```ruby
+# Given a message. (The default Type is :info.)
+Say.progress_line("TEST", index: 3)            # => " -- TEST (i=3)"
+Say.progress_line("TEST", :success, index: 3)  # => " -> TEST (i=3)"
+
+# Given no message.
+Say.progress_line(index: 3)                    # => " ... (i=3)"
 ```
 
 ## Namespace Pollution
@@ -189,6 +205,7 @@ If you choose to `include Say` then your class will gain the following instance 
 - `say_header`
 - `say_message`
 - `say_progress`
+- `say_progress_line`
 - `say_result`
 - `say_with_block`
 

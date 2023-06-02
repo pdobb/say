@@ -348,6 +348,31 @@ class SayTest < Minitest::Spec
       end
     end
 
+    describe ".progress_line" do
+      before do
+        MuchStub.on_call($stdout, :puts) { |call| @puts_call = call }
+      end
+
+      subject { Say }
+
+      it "puts and returns the expected String, GIVEN no message" do
+        value(subject.progress_line(index: 9)).must_equal(" ... (i=9)")
+        value(@puts_call.args).must_equal([" ... (i=9)"])
+      end
+
+      it "puts and returns the expected String, GIVEN a message" do
+        value(subject.progress_line("TEST", index: 9)).must_equal(
+          " -- TEST (i=9)")
+        value(@puts_call.args).must_equal([" -- TEST (i=9)"])
+      end
+
+      it "puts and returns the expected String, GIVEN a message and type" do
+        value(subject.progress_line("TEST", :success, index: 9)).
+          must_equal(" -> TEST (i=9)")
+        value(@puts_call.args).must_equal([" -> TEST (i=9)"])
+      end
+    end
+
     describe ".write" do
       before do
         MuchStub.on_call($stdout, :puts) { |call| @puts_call = call }
@@ -487,9 +512,25 @@ class SayTest < Minitest::Spec
       subject { Class.new { include Say }.new }
 
       it "forwards all args to Say.progress" do
-        subject.say_progress("TEST", index: 0, interval: 5)
+        subject.say_progress("TEST", index: 9, interval: 5)
         value(@say_progress_call.args).must_equal(
-          ["TEST", { index: 0, interval: 5 }])
+          ["TEST", { index: 9, interval: 5 }])
+      end
+    end
+
+    describe "#say_progress_line" do
+      before do
+        MuchStub.on_call(Say, :progress_line) { |call|
+          @say_progress_line_call = call
+        }
+      end
+
+      subject { Class.new { include Say }.new }
+
+      it "forwards all args to Say.progress_line" do
+        subject.say_progress_line("TEST", index: 9)
+        value(@say_progress_line_call.args).must_equal(
+          ["TEST", { index: 9 }])
       end
     end
   end
