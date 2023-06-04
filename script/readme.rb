@@ -37,6 +37,8 @@ end
 ################################################################################
 # `Say.<method>`
 ################################################################################
+Say.banner; Say.banner; Say.footer(nil)
+
 Say.call do
   class DirectAccessProcessor
     def run
@@ -61,6 +63,8 @@ end
 ################################################################################
 # Say Types
 ################################################################################
+Say.banner; Say.banner; Say.footer(nil)
+
 Say.("Say::TYPES") do
   puts(
     Say::TYPES.map { |key, value|
@@ -79,6 +83,8 @@ end
 ################################################################################
 # Progress Tracking
 ################################################################################
+Say.banner; Say.banner; Say.footer(nil)
+
 # Simple
 # The default interval is 1.
 Say.progress do |interval|
@@ -122,6 +128,8 @@ end
 ################################################################################
 # Namespace Pollution
 ################################################################################
+Say.banner; Say.banner; Say.footer(nil)
+
 Say.("Namespace Pollution") do
   class WithInclude
     include Say

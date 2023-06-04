@@ -1,5 +1,14 @@
 ## [Unreleased]
 
+### BREAKING CHANGES:
+
+#### Public API Updates!
+- `Say.message` was renamed to `Say.build_message` and is no longer part of the public API.
+- When using `include Say`, `say_message` has been removed.
+
+### Non-breaking Changes:
+
+- `Say.banner` will now call `Say.write`, internally. This means it now outputs directly as well, instead of only returning a String.
 - Prepend a timestamp to the output text from `Say.progress` and `Say.progress_line`.
 
 ## [0.3.1] - 2023-06-02

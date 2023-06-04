@@ -136,7 +136,7 @@ module Say
     end
   end
 
-  # Prints a built one-line message of the given type.
+  # Prints a built one-line message of the given type using {Say.write}.
   #
   # @param text [String] (optional) The message to be printed.
   # @param kwargs [Hash] Additional keyword arguments to be passed to the
@@ -149,7 +149,7 @@ module Say
   #   Say.line("Oops", :error)   # => " ** Oops"
   #   Say.line                   # => " ..."
   def self.line(text = nil, **kwargs)
-    write(message(text, **kwargs))
+    write(build_message(text, **kwargs))
   end
 
   # Executes a block of code, surrounding it with header and footer banner
@@ -195,9 +195,9 @@ module Say
   end
   private_class_method :benchmark_block_run
 
-  # Prints a header banner that fills at least the passed in `columns` number of
-  # columns. This serves as, e.g., a visual break point at the start of a
-  # processing task.
+  # Prints a header banner (using {Say.write}) that fills at least the passed in
+  # `columns` number of columns. This serves as, e.g., a visual break point at
+  # the start of a processing task.
   #
   # @param text [String] (optional) The message to be printed as the header.
   # @param kwargs [Hash] Additional keyword arguments to be passed to the
@@ -221,10 +221,10 @@ module Say
   #   = Head =============
   #   # => "= Head ============="
   def self.header(text = nil, **kwargs)
-    write(banner(text, **kwargs))
+    banner(text, **kwargs)
   end
 
-  # Prints a footer banner (i.e. banner) that fills at least the passed in
+  # Prints a footer banner (using {Say.write}) that fills at least the passed in
   # `columns` number of columns. This serves as, e.g., a visual break
   # point at the end of a processing task.
   #
@@ -253,12 +253,13 @@ module Say
   #
   #   # => "= Foot =============\n\n"
   def self.footer(text = "Done", **kwargs)
-    write(
-      banner(text, **kwargs),
-      "\n")
+    result = banner(text, **kwargs)
+    write("\n")
+    result
   end
 
-  # Builds a banner String with the specified message.
+  # Prints a banner String with the specified message using {Say.write}. If no
+  # message is supplied, just prints a full-width banner String.
   #
   # @param text [String] (optional) The message to be included in the banner.
   # @param columns [Integer] The maximum length of the banner line.
@@ -278,7 +279,7 @@ module Say
   #   # => "= Test ============="
   def self.banner(text = nil, columns: MAX_COLUMNS)
     type = text ? nil : :hr
-    LJBanner.new(type, columns: columns).(text)
+    write(LJBanner.new(type, columns: columns).(text))
   end
 
   # Builds a message with a given (or defaulted) type prefix.
@@ -289,22 +290,23 @@ module Say
   # @return [String] Returns the built message String.
   #
   # @example Default usage
-  #   Say.message("Test")  # => " -> Test"
+  #   Say.build_message("Test")  # => " -> Test"
   #
   # @example Custom usage
-  #   Say.message("Test", type: :debug)    # => " >> Test"
-  #   Say.message("Test", type: :error)    # => " ** Test"
-  #   Say.message("Test", type: :info)     # => " -- Test"
-  #   Say.message("Test", type: :success)  # => " -> Test"
-  #   Say.message("Test")                  # => " -> Test"
-  #   Say.message("Test", type: :warn)     # => " !¡ Test"
-  #   Say.message("Test", type: :warning)  # => " !¡ Test"
-  #   Say.message                          # => " ..."
-  def self.message(text = nil, type: nil)
+  #   Say.build_message("Test", type: :debug)    # => " >> Test"
+  #   Say.build_message("Test", type: :error)    # => " ** Test"
+  #   Say.build_message("Test", type: :info)     # => " -- Test"
+  #   Say.build_message("Test", type: :success)  # => " -> Test"
+  #   Say.build_message("Test")                  # => " -> Test"
+  #   Say.build_message("Test", type: :warn)     # => " !¡ Test"
+  #   Say.build_message("Test", type: :warning)  # => " !¡ Test"
+  #   Say.build_message                          # => " ..."
+  def self.build_message(text = nil, type: nil)
     return DEFAULT_MESSAGE unless text
 
     "#{TYPES[type]}#{text}"
   end
+  private_class_method :build_message
 
   # Builds a {Say::Progress::Tracker} and yields an associated
   # {Say::Progress::Interval} the user-supplied block for printing `say`
@@ -384,10 +386,10 @@ module Say
   #   Say.progress_line(index: 3)
   #   # => "[12340506123456]  ... (i=3)"
   def self.progress_line(text = nil, type = :info, index: nil)
-    message_text = message(text, type: type)
-    full_message_text = progress_message(message_text, index: index)
+    message = build_message(text, type: type)
+    full_message = progress_message(message, index: index)
 
-    write(full_message_text)
+    write(full_message)
   end
 
   # @example
@@ -440,8 +442,6 @@ module Say
   def say_footer(...) Say.footer(...) end
   # @see .banner Forwards to Say.banner
   def say_banner(...) Say.banner(...) end
-  # @see .message Aliases Say.message
-  def say_message(...) Say.message(...) end
   # @see .progress Aliases Say.progress
   def say_progress(...) Say.progress(...) end
   # @see .progress_line Aliases Say.progress_line

@@ -207,13 +207,12 @@ If you choose to `include Say` then your class will gain the following instance 
 - `say_banner`
 - `say_footer`
 - `say_header`
-- `say_message`
+- `say_line`
 - `say_progress`
 - `say_progress_line`
-- `say_result`
 - `say_with_block`
 
-... though you probably really only need one: `say`.
+... though you probably really only need `say`, and sometimes: `say_progress` and/or `say_progress_line`.
 
 ```ruby
 class WithInclude
@@ -229,7 +228,7 @@ Say.("Class methods added by `include Say`: #{added_class_methods}")
 
 added_instance_methods = (WithInclude.new.methods - WithoutInclude.new.methods).sort!
 Say.("Instance methods added by `include Say`: #{added_instance_methods}")
- -- Instance methods added by `include Say`: [:say, :say_banner, :say_footer, :say_header, :say_message, :say_progress, :say_result, :say_with_block]
+ -> Instance methods added by `include Say`: [:say, :say_banner, :say_footer, :say_header, :say_line, :say_progress, :say_progress_line, :say_with_block]
 ```
 
 ## Integration
