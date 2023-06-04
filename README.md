@@ -136,11 +136,11 @@ Say.progress do |interval|
     interval.say("Test", :debug)
   end
 end
-= Start (i=0) ==================================================================
- >> Test (i=1)
- >> Test (i=2)
- >> Test (i=3)
-= Done (0.0001s) ===============================================================
+= [20230604151646] Start (i=0) =================================================
+[20230604151646]  >> Test (i=1)
+[20230604151646]  >> Test (i=2)
+[20230604151646]  >> Test (i=3)
+= Done (0.0000s) ===============================================================
 ```
 
 #### Advanced
@@ -162,25 +162,25 @@ Say.progress("Progress Tracking Test", interval: 3) do |interval|
     interval.say("After Update Interval.", :debug)
   end
 end
-= Progress Tracking Test (i=0) =================================================
+= [20230604151646] Progress Tracking Test (i=0) ================================
  -- Interval-Agnostic Update. Index: 0
  -- Interval-Agnostic Update. Index: 1
  -- Interval-Agnostic Update. Index: 2
- >> Before Update Interval. (i=3)
-= Progress Interval Block. (i=3) ===============================================
+[20230604151646]  >> Before Update Interval. (i=3)
+= [20230604151646] Progress Interval Block. (i=3) ==============================
  -- Interval-Agnostic Update. Index: 3
 = Done (0.0261s) ===============================================================
 
- >> After Update Interval. (i=3)
+[20230604151646]  >> After Update Interval. (i=3)
  -- Interval-Agnostic Update. Index: 4
  -- Interval-Agnostic Update. Index: 5
- >> Before Update Interval. (i=6)
-= Progress Interval Block. (i=6) ===============================================
+[20230604151647]  >> Before Update Interval. (i=6)
+= [20230604151647] Progress Interval Block. (i=6) ==============================
  -- Interval-Agnostic Update. Index: 6
 = Done (0.0261s) ===============================================================
 
- >> After Update Interval. (i=6)
-= Done (0.1831s) ===============================================================
+[20230604151647]  >> After Update Interval. (i=6)
+= Done (0.1828s) ===============================================================
 ```
 
 #### Manual
@@ -189,11 +189,15 @@ Internally, calling `say` on a Say::Progress::Interval object uses `Say.progress
 
 ```ruby
 # Given a message. (The default Type is :info.)
-Say.progress_line("TEST", index: 3)            # => " -- TEST (i=3)"
-Say.progress_line("TEST", :success, index: 3)  # => " -> TEST (i=3)"
+Say.progress_line("TEST", index: 3)
+# => [20230604151647]  -- TEST (i=3)
+
+Say.progress_line("TEST", :success, index: 3)
+# => [20230604151647]  -> TEST (i=3)
 
 # Given no message.
-Say.progress_line(index: 3)                    # => " ... (i=3)"
+Say.progress_line(index: 3)
+# => [20230604151647]  ... (i=3)
 ```
 
 ## Namespace Pollution

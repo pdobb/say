@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+- Prepend a timestamp to the output text from `Say.progress` and `Say.progress_line`.
+
 ## [0.3.1] - 2023-06-02
 
 #### Public API Updates!

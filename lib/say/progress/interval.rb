@@ -85,6 +85,9 @@ class Say::Progress::Interval
   # Usage: Say::Progress::Interval.test;
   # @!visibility private
   def self.test
+    require "timecop"
+    Timecop.freeze(Say::Time.test_sample)
+
     Say.("Say::Progress::Interval.test") do
       tracker = Say::Progress::Tracker.new(interval: 2)
 
@@ -102,7 +105,7 @@ class Say::Progress::Interval
         nil,
         nil,
         " -- S",
-        " -> T (i=2)"
+        "[12340506123456]  -> T (i=2)",
       ]
 
       if results == expected_results
@@ -111,6 +114,8 @@ class Say::Progress::Interval
         ap(["❌", { "Got:" => results, "Expected:" => expected_results }])
       end
     end
+
+    Timecop.return
   end
 
   # :nocov:

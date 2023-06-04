@@ -181,18 +181,19 @@ module Say
     raise ArgumentError, "block expected" unless block
 
     self.header(header)
-    result, footer_with_time_string = benchmark_block_run(footer, &block)
-    self.footer(footer_with_time_string)
+    result, footer_with_runtime_string = benchmark_block_run(footer, &block)
+    self.footer(footer_with_runtime_string)
 
     result
   end
 
-  private_class_method def self.benchmark_block_run(message, &block)
+  def self.benchmark_block_run(message, &block)
     result = nil
     time = Benchmark.measure { result = block.call }
     time_string = "%.4fs" % time.real
     [result, "#{message} (#{time_string})"]
   end
+  private_class_method :benchmark_block_run
 
   # Prints a header banner that fills at least the passed in `columns` number of
   # columns. This serves as, e.g., a visual break point at the start of a
@@ -317,15 +318,15 @@ module Say
   #
   # @example Simple Example
   #   Say.progress do |interval|
-  #     3.times.with_index do |index|
+  #     3.times do
   #       interval.update
-  #       interval.say("Index: #{index}", :debug)
+  #       interval.say("Test", :debug)
   #     end
   #   end
-  #   = Start (i=0) ==================================================================
-  #    >> Index: 0
-  #    >> Index: 1
-  #    >> Index: 2
+  #   = [20230604151646] Start (i=0) =================================================
+  #   [20230604151646]  >> Test (i=1)
+  #   [20230604151646]  >> Test (i=2)
+  #   [20230604151646]  >> Test (i=3)
   #   = Done (0.0000s) ===============================================================
   #
   # @example A More Advanced Example
@@ -340,16 +341,16 @@ module Say
   #       interval.say("After Update Interval. Index: #{index}", :debug)
   #     end
   #   end
-  #   = Progress Tracking Test (i=0) =================================================
+  #   = [12340506123456] Progress Tracking Test (i=0) ================================
   #    -- Interval-Agnostic Update. Index: 0
   #    -- Interval-Agnostic Update. Index: 1
-  #    >> Before Update Interval. Index: 2
-  #   = Progress Interval Block. (i=2) ===============================================
+  #   [12340506123456]  >> Before Update Interval. Index: 2 (i=2)
+  #   = [12340506123456] Progress Interval Block. (i=2) ==============================
   #    -- Interval-Agnostic Update. Index: 2
-  #   = Done (0.0260s) ===============================================================
+  #   = Done (0.0265s) ===============================================================
   #
-  #    >> After Update Interval. Index: 2
-  #   = Done (0.0784s) ===============================================================
+  #   [12340506123456]  >> After Update Interval. Index: 2 (i=2)
+  #   = Done (0.0797s) ===============================================================
   def self.progress(message = "Start", **kwargs, &block)
     tracker = Say::Progress::Tracker.new(**kwargs)
 
@@ -366,23 +367,48 @@ module Say
   # @param text [String] The String to be printed, which will be appended with
   #   an indicator of the given `index`.
   # @param type [Symbol] (optional) The type of the message. (see #Say::TYPES)
+  # @param index [Integer] (optional)
   #
   # @example Typical Usage
-  #   Say.progress_line("TEST", index: 3)            # => " -- TEST (i=3)"
-  #   Say.progress_line("TEST", :success, index: 3)  # => " -> TEST (i=3)"
+  #   Say.progress_line("TEST", index: 3)
+  #   # => "[12340506123456]  -- TEST (i=3)"
+  #
+  #   Say.progress_line("TEST", :success, index: 3)
+  #   # => "[12340506123456]  -> TEST (i=3)"
+  #
+  # @example Given no Index
+  #   Say.progress_line("TEST", :success)
+  #   # => "[12340506123456]  -> TEST"
   #
   # @example Given No Message
-  #   Say.progress_line(index: 3)                    # => " ... (i=3)"
-  def self.progress_line(text = nil, type = :info, index:)
+  #   Say.progress_line(index: 3)
+  #   # => "[12340506123456]  ... (i=3)"
+  def self.progress_line(text = nil, type = :info, index: nil)
     message_text = message(text, type: type)
     full_message_text = progress_message(message_text, index: index)
 
     write(full_message_text)
   end
 
-  private_class_method def self.progress_message(message, index:)
-    [message, "(i=#{index})"].compact.join(" ")
+  # @example
+  #   Say.__send__(:progress_message, "TEST")
+  #   # => "[12340506123456] TEST"
+  #
+  #   Say.__send__(:progress_message, "TEST", index: 1)
+  #   # => "[12340506123456] TEST (i=1)"
+  #
+  #   Say.__send__(:progress_message, "TEST", index: 1, time_format: :long)
+  #   # => "[05/06/1234 12:34:56 CST] TEST (i=1)"
+  def self.progress_message(message, index: nil, time_format: :web_service)
+    timestamp = Say::Time.timestamp(format: time_format)
+
+    [
+      "[#{timestamp}]",
+      message,
+      ("(i=#{index})" if index),
+    ].compact.join(" ")
   end
+  private_class_method :progress_message
 
   # Prints messages to the console and returns them as a single,
   # new-line-separated String.
@@ -445,3 +471,4 @@ require "say/interpolation_template"
 require "say/banners/lj_banner"
 require "say/progress/tracker"
 require "say/progress/interval"
+require "say/time"

@@ -10,6 +10,8 @@ require "support/reporters"
 
 require "much-stub"
 
+require "timecop"
+
 class Minitest::Spec
   after do
     MuchStub.unstub!

@@ -356,20 +356,27 @@ class SayTest < Minitest::Spec
       subject { Say }
 
       it "puts and returns the expected String, GIVEN no message" do
-        value(subject.progress_line(index: 9)).must_equal(" ... (i=9)")
-        value(@puts_call.args).must_equal([" ... (i=9)"])
+        Timecop.freeze(Say::Time.test_sample) do
+          value(subject.progress_line(index: 9)).must_equal(
+            "[12340506123456]  ... (i=9)")
+          value(@puts_call.args).must_equal(["[12340506123456]  ... (i=9)"])
+        end
       end
 
       it "puts and returns the expected String, GIVEN a message" do
-        value(subject.progress_line("TEST", index: 9)).must_equal(
-          " -- TEST (i=9)")
-        value(@puts_call.args).must_equal([" -- TEST (i=9)"])
+        Timecop.freeze(Say::Time.test_sample) do
+          value(subject.progress_line("TEST", index: 9)).must_equal(
+            "[12340506123456]  -- TEST (i=9)")
+          value(@puts_call.args).must_equal(["[12340506123456]  -- TEST (i=9)"])
+        end
       end
 
       it "puts and returns the expected String, GIVEN a message and type" do
-        value(subject.progress_line("TEST", :success, index: 9)).
-          must_equal(" -> TEST (i=9)")
-        value(@puts_call.args).must_equal([" -> TEST (i=9)"])
+        Timecop.freeze(Say::Time.test_sample) do
+          value(subject.progress_line("TEST", :success, index: 9)).
+            must_match("[12340506123456]  -> TEST (i=9)")
+          value(@puts_call.args).must_equal(["[12340506123456]  -> TEST (i=9)"])
+        end
       end
     end
 
