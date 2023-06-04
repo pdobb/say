@@ -20,7 +20,6 @@ require "benchmark"
 #         say("Debug details about this ...", :debug)
 #         say("Info about stuff ...", :info)
 #         say("Maybe look into this thing ...", :warn)
-#         say("Maybe look into the above thing ...", :warning)
 #         say("Failed to do a thing ...", :error)
 #
 #         "The Result!"
@@ -51,7 +50,6 @@ require "benchmark"
 #         Say.("Debug details about this ...", :debug)
 #         Say.("Info about stuff ...", :info)
 #         Say.("Maybe look into this thing ...", :warn)
-#         Say.("Maybe look into the above thing ...", :warning)
 #         Say.("Failed to do a thing ...", :error)
 #
 #         "The Result!"
@@ -85,7 +83,6 @@ module Say
   #   TYPES[:info]     # => " -- "
   #   TYPES[:success]  # => " -> "
   #   TYPES[:warn]     # => " !¡ "
-  #   TYPES[:warning]  # => " !¡ "
   TYPES = {}.tap { |hash|
     hash.default = " -> "
     hash.update(
@@ -98,6 +95,9 @@ module Say
 
   # The default message to print when one is not supplied.
   DEFAULT_MESSAGE = " ..."
+
+  DONE_MESSAGE = "Done"
+  START_MESSAGE = "Start"
 
   # Prints either a one-line message of the given type or executes a block of
   # code and surrounds it with header and footer banner messages.
@@ -157,7 +157,7 @@ module Say
   #
   # @param header [String] The message to be printed in the header.
   # @param footer [String] (optional) The message to be printed in the footer.
-  #   Default is "Done".
+  #   Default is {Say::DONE_MESSAGE}.
   #
   # @yield [] The block of code to be called.
   #
@@ -177,7 +177,7 @@ module Say
   #   = Done (0.0000s) ===============================================================
   #
   #   # => "My Result!"
-  def self.with_block(header: nil, footer: "Done", &block)
+  def self.with_block(header: nil, footer: DONE_MESSAGE, &block)
     raise ArgumentError, "block expected" unless block
 
     self.header(header)
@@ -252,7 +252,7 @@ module Say
   #   = Foot =============
   #
   #   # => "= Foot =============\n\n"
-  def self.footer(text = "Done", **kwargs)
+  def self.footer(text = DONE_MESSAGE, **kwargs)
     result = banner(text, **kwargs)
     write("\n")
     result
@@ -299,7 +299,6 @@ module Say
   #   Say.build_message("Test", type: :success)  # => " -> Test"
   #   Say.build_message("Test")                  # => " -> Test"
   #   Say.build_message("Test", type: :warn)     # => " !¡ Test"
-  #   Say.build_message("Test", type: :warning)  # => " !¡ Test"
   #   Say.build_message                          # => " ..."
   def self.build_message(text = nil, type: nil)
     return DEFAULT_MESSAGE unless text
@@ -353,7 +352,7 @@ module Say
   #
   #   [12340506123456]  >> After Update Interval. Index: 2 (i=2)
   #   = Done (0.0797s) ===============================================================
-  def self.progress(message = "Start", **kwargs, &block)
+  def self.progress(message = START_MESSAGE, **kwargs, &block)
     tracker = Say::Progress::Tracker.new(**kwargs)
 
     header = progress_message(message, index: tracker.index)
