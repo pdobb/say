@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+## [0.4.0] - 2023-06-04
+
 ### BREAKING CHANGES:
 
 #### Public API Updates!
