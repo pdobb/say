@@ -75,10 +75,6 @@ class Say::Progress::Interval
     tracker.index
   end
 
-  def interval
-    tracker.interval
-  end
-
   # rubocop:disable all
   # :nocov:
 

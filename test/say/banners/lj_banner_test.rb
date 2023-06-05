@@ -66,6 +66,14 @@ class Say::LJBannerTest < Minitest::Spec
             end
           end
         end
+
+        context "GIVEN columns arg < the given String" do
+          subject { Say::LJBanner.new(columns: 0) }
+
+          it "returns the expected String" do
+            value(subject.call("TEST")).must_equal("= TEST =")
+          end
+        end
       end
 
       context "GIVEN a custom interpolation template" do
@@ -117,6 +125,15 @@ class Say::LJBannerTest < Minitest::Spec
           end
         end
       end
+
+      context "GIVEN a block" do
+        subject { Say::LJBanner.new(columns: 0) }
+
+        it "uses the result of the block as the text for the banner" do
+          value(subject.call("NOPE") { "TEST_BLOCK" }).must_equal(
+            "= TEST_BLOCK =")
+        end
+      end
     end
 
     describe "Say::LJBanner::ITFiller" do
@@ -130,6 +147,32 @@ class Say::LJBannerTest < Minitest::Spec
           value(result.interpolated_text).must_be_kind_of(String)
         end
       end
+
+      describe "#call" do
+        context "GIVEN a fill pattern" do
+          subject {
+            Say::LJBanner::ITFiller.new(
+              banner: Say::LJBanner.new("-{}-", columns: 20),
+              interpolated_text: "-TEST-")
+          }
+
+          it "returns the text as is" do
+            value(subject.call).must_equal("-TEST---------------")
+          end
+        end
+
+        context "GIVEN no fill pattern" do
+          subject {
+            Say::LJBanner::ITFiller.new(
+              banner: Say::LJBanner.new("{}"),
+              interpolated_text: "TEST")
+          }
+
+          it "returns the text as is" do
+            value(subject.call).must_equal("TEST")
+          end
+        end
+      end
     end
 
     describe "Say::LJBanner::ITBuilder" do
@@ -140,7 +183,20 @@ class Say::LJBannerTest < Minitest::Spec
 
         it "defines a singleton method for each key" do
           types.each_key do |key|
-            value(subject).must_respond_to(key)
+            value(subject.public_send(key)).must_be_kind_of(
+              Say::InterpolationTemplate)
+          end
+        end
+      end
+
+      describe ".call" do
+        subject { Say::LJBanner::ITBuilder }
+
+        context "GIVEN a Say::InterpolationTemplate object" do
+          it "returns the given Say::InterpolationTemplate object" do
+            interpolation_template = Say::InterpolationTemplate.new("^{}^")
+            value(subject.call(interpolation_template)).must_equal(
+              interpolation_template)
           end
         end
       end

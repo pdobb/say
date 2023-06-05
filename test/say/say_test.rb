@@ -420,6 +420,14 @@ class SayTest < Minitest::Spec
 
       subject { Say }
 
+      it "puts and returns the expected String, GIVEN no index" do
+        Timecop.freeze(Say::Time.test_sample) do
+          value(subject.progress_line).must_equal(
+            "[12340506123456]  ...")
+          value(@puts_call.args).must_equal(["[12340506123456]  ..."])
+        end
+      end
+
       it "puts and returns the expected String, GIVEN no message" do
         Timecop.freeze(Say::Time.test_sample) do
           value(subject.progress_line(index: 9)).must_equal(
