@@ -88,6 +88,12 @@ Metrics/ClassLength:
   Exclude:
     - "test/**/*"
 
+Metrics/ModuleLength:
+  CountAsOne:
+    - array
+    - heredoc
+    - method_call
+
 Naming/MethodParameterName:
   AllowedNames:
     - a

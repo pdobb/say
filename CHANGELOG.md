@@ -3,6 +3,7 @@
 ### BREAKING CHANGES:
 
 #### Public API Updates!
+- Add `Say.section` and `say_section` for 3-line banners that really visually split up your output into major sections.
 - `Say.message` was renamed to `Say.build_message` and is no longer part of the public API.
 - When using `include Say`, `say_message` has been removed.
 

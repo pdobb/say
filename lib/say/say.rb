@@ -219,8 +219,8 @@ module Say
   #   Say.header("Head", columns: 20)
   #   = Head =============
   #   # => "= Head ============="
-  def self.header(text = nil, **kwargs)
-    banner(text, **kwargs)
+  def self.header(text = nil, **banner_kwargs)
+    banner(text, **banner_kwargs)
   end
 
   # Prints a footer banner (using {Say.write}) that fills at least the passed in
@@ -251,8 +251,8 @@ module Say
   #   = Foot =============
   #
   #   # => "= Foot =============\n\n"
-  def self.footer(text = DONE_MESSAGE, **kwargs)
-    result = banner(text, **kwargs)
+  def self.footer(text = DONE_MESSAGE, **banner_kwargs)
+    result = banner(text, **banner_kwargs)
     write("\n")
     result
   end
@@ -277,8 +277,52 @@ module Say
   #   Say.banner("Test", columns: 20)
   #   # => "= Test ============="
   def self.banner(text = nil, columns: MAX_COLUMNS)
+    write(build_banner(text, columns: columns))
+  end
+
+  def self.build_banner(text = nil, columns: MAX_COLUMNS)
     type = text ? nil : :hr
-    write(LJBanner.new(type, columns: columns).(text))
+    LJBanner.new(type, columns: columns).(text)
+  end
+  private_class_method :build_banner
+
+  # Prints a set of 3 banner Strings with the specified message using
+  # {Say.write}. If no message is supplied, just prints 3 full-width banner
+  # String. The final banner string is printed using {Say.footer}, so includes
+  # an extra newline character.
+  #
+  # @param text [String] (optional) The message to be included in the 2nd
+  #   banner.
+  # @param columns [Integer] The maximum length of the banner lines.
+  #   Default value is the constant `MAX_COLUMNS`.
+  #
+  # @return [String] Returns the formatted banner String.
+  #
+  # @example Default usage
+  #   Say.section  # =>
+  #   ================================================================================
+  #   ================================================================================
+  #   ================================================================================
+  #
+  # @example Custom usage
+  #   Say.section("Test")  # =>
+  #   ================================================================================
+  #   = Test =========================================================================
+  #   ================================================================================
+  #
+  #   Say.section("Test", columns: 20)  # =>
+  #   ====================
+  #   = Test =============
+  #   ====================
+  def self.section(text = nil, columns: MAX_COLUMNS)
+    primary_message_text = build_banner(text, columns: columns)
+    columns_actual = primary_message_text.length
+
+    [
+      banner(columns: columns_actual),
+      write(primary_message_text),
+      footer(nil, columns: columns_actual),
+    ]
   end
 
   # Builds a message with a given (or defaulted) type prefix.
@@ -440,6 +484,8 @@ module Say
   def say_footer(...) Say.footer(...) end
   # @see .banner Forwards to Say.banner
   def say_banner(...) Say.banner(...) end
+  # @see .section Forwards to Say.section
+  def say_section(...) Say.section(...) end
   # @see .progress Forwards to Say.progress
   def say_progress(...) Say.progress(...) end
   # @see .progress_line Forwards to Say.progress_line

@@ -9,61 +9,56 @@ require "timecop"
 Timecop.freeze(Say::Time.test_sample)
 
 ################################################################################
-# `include Say`
+Say.section("`include Say`")
 ################################################################################
-Say.call do
-  class IncludeProcessor
-    include Say
 
-    def run
-      say("IncludeProcessor") {
-        say("Successfully did the thing!")
-        say
-        say("Debug details about this ...", :debug)
-        say("Info about stuff ...", :info)
-        say("Maybe look into this thing ...", :warn)
-        say("Failed to do a thing ...", :error)
+class IncludeProcessor
+  include Say
 
-        "The Result!"
-      }
-    end
+  def run
+    say("IncludeProcessor") {
+      say("Successfully did the thing!")
+      say
+      say("Debug details about this ...", :debug)
+      say("Info about stuff ...", :info)
+      say("Maybe look into this thing ...", :warn)
+      say("Failed to do a thing ...", :error)
+
+      "The Result!"
+    }
   end
-
-  result = IncludeProcessor.new.run
-  # ...
-  result
 end
 
-################################################################################
-# `Say.<method>`
-################################################################################
-Say.banner; Say.banner; Say.footer(nil)
+result = IncludeProcessor.new.run
+# ...
+result
 
-Say.call do
-  class DirectAccessProcessor
-    def run
-      Say.("DirectAccessProcessor") {
-        Say.("Successfully did the thing!")
-        Say.() # Or: Say.call
-        Say.("Debug details about this ...", :debug)
-        Say.("Info about stuff ...", :info)
-        Say.("Maybe look into this thing ...", :warn)
-        Say.("Failed to do a thing ...", :error)
+################################################################################
+Say.section("`Say.<method>`")
+################################################################################
 
-        "The Result!"
-      }
-    end
+class DirectAccessProcessor
+  def run
+    Say.("DirectAccessProcessor") {
+      Say.("Successfully did the thing!")
+      Say.() # Or: Say.call
+      Say.("Debug details about this ...", :debug)
+      Say.("Info about stuff ...", :info)
+      Say.("Maybe look into this thing ...", :warn)
+      Say.("Failed to do a thing ...", :error)
+
+      "The Result!"
+    }
   end
-
-  result = DirectAccessProcessor.new.run
-  # ...
-  result
 end
 
+result = DirectAccessProcessor.new.run
+# ...
+result
+
 ################################################################################
-# Say Types
+Say.section("Say Types")
 ################################################################################
-Say.banner; Say.banner; Say.footer(nil)
 
 Say.("Say::TYPES") do
   puts(
@@ -81,9 +76,19 @@ Say.("Say::TYPES") do
 end
 
 ################################################################################
-# Progress Tracking
+Say.section("`Say.section`")
 ################################################################################
-Say.banner; Say.banner; Say.footer(nil)
+
+Say.section
+
+Say.section("TEST")
+
+Say.section("TEST", columns: 0)
+
+
+################################################################################
+Say.section("Progress Tracking")
+################################################################################
 
 # Simple
 # The default interval is 1.
@@ -126,9 +131,8 @@ Say.("Manual Usage: Say.progress_line") do
 end
 
 ################################################################################
-# Namespace Pollution
+Say.section("Namespace Pollution")
 ################################################################################
-Say.banner; Say.banner; Say.footer(nil)
 
 Say.("Namespace Pollution") do
   class WithInclude

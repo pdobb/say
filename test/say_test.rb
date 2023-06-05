@@ -103,12 +103,11 @@ class SayTest < Minitest::Spec
       context "GIVEN an extra long message String" do
         it "puts and returns the full String" do
           # rubocop:disable Layout/LineLength
-          value(subject.line("T" * 90)).must_equal(
-            " -> TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT")
-          value(@puts_call.args).must_equal([
-            " -> TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
-          ])
+          expected_result =
+            " -> TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
           # rubocop:enable Layout/LineLength
+          value(subject.line("T" * 90)).must_equal(expected_result)
+          value(@puts_call.args).must_equal([expected_result])
         end
       end
     end
@@ -180,33 +179,30 @@ class SayTest < Minitest::Spec
 
       it "puts and returns the expected String, GIVEN no message" do
         # rubocop:disable Layout/LineLength
-        value(subject.header).must_equal(
-          "================================================================================")
-        value(@puts_call.args).must_equal([
-          "================================================================================",
-        ])
+        expected_result =
+          "================================================================================"
         # rubocop:enable Layout/LineLength
+        value(subject.header).must_equal(expected_result)
+        value(@puts_call.args).must_equal([expected_result])
       end
 
       it "puts and returns the expected String, GIVEN a message" do
         # rubocop:disable Layout/LineLength
-        value(subject.header("TEST")).must_equal(
-          "= TEST =========================================================================")
-        value(@puts_call.args).must_equal([
-          "= TEST =========================================================================",
-        ])
+        expected_result =
+          "= TEST ========================================================================="
         # rubocop:enable Layout/LineLength
+        value(subject.header("TEST")).must_equal(expected_result)
+        value(@puts_call.args).must_equal([expected_result])
       end
 
       context "GIVEN an extra long String" do
         it "puts and returns the full String anyway, with minimal decoration" do
           # rubocop:disable Layout/LineLength
-          value(subject.header("T" * 90)).must_equal(
-            "= TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT =")
-          value(@puts_call.args).must_equal([
-            "= TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT =",
-          ])
+          expected_result =
+            "= TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT ="
           # rubocop:enable Layout/LineLength
+          value(subject.header("T" * 90)).must_equal(expected_result)
+          value(@puts_call.args).must_equal([expected_result])
         end
       end
     end
@@ -221,36 +217,33 @@ class SayTest < Minitest::Spec
 
       it "puts and returns the expected String, GIVEN no message" do
         # rubocop:disable Layout/LineLength
-        value(subject.footer).must_equal(
-          "= Done =========================================================================")
-        value(@puts_calls[0].args).must_equal([
-          "= Done =========================================================================",
-        ])
-        value(@puts_calls[1].args).must_equal(["\n"])
+        expected_result =
+          "= Done ========================================================================="
         # rubocop:enable Layout/LineLength
+        value(subject.footer).must_equal(expected_result)
+        value(@puts_calls.map(&:args).flatten).must_equal(
+          [expected_result, "\n"])
       end
 
       it "puts and returns the expected String, GIVEN a message" do
         # rubocop:disable Layout/LineLength
-        value(subject.footer("TEST")).must_equal(
-          "= TEST =========================================================================")
-        value(@puts_calls[0].args).must_equal([
-          "= TEST =========================================================================",
-        ])
-        value(@puts_calls[1].args).must_equal(["\n"])
+        expected_result =
+          "= TEST ========================================================================="
         # rubocop:enable Layout/LineLength
+        value(subject.footer("TEST")).must_equal(expected_result)
+        value(@puts_calls.map(&:args).flatten).must_equal(
+          [expected_result, "\n"])
       end
 
       context "GIVEN an extra long String" do
         it "puts and returns the full String anyway, with minimal decoration" do
           # rubocop:disable Layout/LineLength
-          value(subject.footer("T" * 90)).must_equal(
-            "= TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT =")
-          value(@puts_calls[0].args).must_equal([
-            "= TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT =",
-          ])
-          value(@puts_calls[1].args).must_equal(["\n"])
+          expected_result =
+            "= TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT ="
           # rubocop:enable Layout/LineLength
+          value(subject.footer("T" * 90)).must_equal(expected_result)
+          value(@puts_calls.map(&:args).flatten).must_equal(
+            [expected_result, "\n"])
         end
       end
     end
@@ -264,42 +257,99 @@ class SayTest < Minitest::Spec
 
       it "returns the expected String, GIVEN no message" do
         # rubocop:disable Layout/LineLength
-        value(subject.banner).must_equal(
-          "================================================================================")
-        value(@puts_call.args).must_equal([
-          "================================================================================",
-        ])
+        expected_result =
+          "================================================================================"
         # rubocop:enable Layout/LineLength
+        value(subject.banner).must_equal(expected_result)
+        value(@puts_call.args).must_equal([expected_result])
       end
 
       it "returns the expected String, GIVEN an empty message" do
         # rubocop:disable Layout/LineLength
-        value(subject.banner("")).must_equal(
-          "=  =============================================================================")
-        value(@puts_call.args).must_equal([
-          "=  =============================================================================",
-        ])
+        expected_result =
+          "=  ============================================================================="
         # rubocop:enable Layout/LineLength
+        value(subject.banner("")).must_equal(expected_result)
+        value(@puts_call.args).must_equal([expected_result])
       end
 
       it "returns the expected String, GIVEN a short message" do
         # rubocop:disable Layout/LineLength
-        value(subject.banner("TEST")).must_equal(
-          "= TEST =========================================================================")
-        value(@puts_call.args).must_equal([
-          "= TEST =========================================================================",
-        ])
+        expected_result =
+          "= TEST ========================================================================="
         # rubocop:enable Layout/LineLength
+        value(subject.banner("TEST")).must_equal(expected_result)
+        value(@puts_call.args).must_equal([expected_result])
       end
 
       it "returns the expected String, GIVEN a long message" do
         # rubocop:disable Layout/LineLength
-        value(subject.banner("T" * 90)).must_equal(
-          "= TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT =")
-        value(@puts_call.args).must_equal([
-          "= TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT =",
-        ])
+        expected_result =
+          "= TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT ="
         # rubocop:enable Layout/LineLength
+        value(subject.banner("T" * 90)).must_equal(expected_result)
+        value(@puts_call.args).must_equal([expected_result])
+      end
+    end
+
+    describe ".section" do
+      before do
+        @puts_calls = []
+        MuchStub.on_call($stdout, :puts) { |call| @puts_calls << call }
+      end
+
+      subject { Say }
+
+      it "returns the expected String, GIVEN no message" do
+        # rubocop:disable Layout/LineLength
+        expected_result = [
+          "================================================================================",
+          "================================================================================",
+          "================================================================================",
+        ]
+        # rubocop:enable Layout/LineLength
+        value(subject.section).must_equal(expected_result)
+        value(@puts_calls.map(&:args).flatten).must_equal(
+          expected_result + ["\n"])
+      end
+
+      it "returns the expected String, GIVEN an empty message" do
+        # rubocop:disable Layout/LineLength
+        expected_result = [
+          "================================================================================",
+          "=  =============================================================================",
+          "================================================================================",
+        ]
+        # rubocop:enable Layout/LineLength
+        value(subject.section("")).must_equal(expected_result)
+        value(@puts_calls.map(&:args).flatten).must_equal(
+          expected_result + ["\n"])
+      end
+
+      it "returns the expected String, GIVEN a short message" do
+        # rubocop:disable Layout/LineLength
+        expected_result = [
+          "================================================================================",
+          "= TEST =========================================================================",
+          "================================================================================",
+        ]
+        # rubocop:enable Layout/LineLength
+        value(subject.section("TEST")).must_equal(expected_result)
+        value(@puts_calls.map(&:args).flatten).must_equal(
+          expected_result + ["\n"])
+      end
+
+      it "returns the expected String, GIVEN a long message" do
+        # rubocop:disable Layout/LineLength
+        expected_result = [
+          "==============================================================================================",
+          "= TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT =",
+          "==============================================================================================",
+        ]
+        # rubocop:enable Layout/LineLength
+        value(subject.section("T" * 90)).must_equal(expected_result)
+        value(@puts_calls.map(&:args).flatten).must_equal(
+          expected_result + ["\n"])
       end
     end
 
@@ -508,6 +558,19 @@ class SayTest < Minitest::Spec
       it "forwards all args to Say.banner" do
         subject.say_banner("TEST")
         value(@say_banner_call.args).must_equal(["TEST"])
+      end
+    end
+
+    describe "#say_section" do
+      before do
+        MuchStub.on_call(Say, :section) { |call| @say_section_call = call }
+      end
+
+      subject { Class.new { include Say }.new }
+
+      it "forwards all args to Say.section" do
+        subject.say_section("TEST")
+        value(@say_section_call.args).must_equal(["TEST"])
       end
     end
 
