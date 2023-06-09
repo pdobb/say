@@ -458,13 +458,10 @@ module Say
   # new-line-separated String.
   #
   # @param messages [Array<String>] The messages to be printed.
-  # @param silent [Boolean] (optional) Controls whether the messages should be
-  #   printed or not. If set to `true`, the messages will not be printed.
-  #   Default is `false`.
   #
   # @return [String] Returns the messages joined by newline characters.
-  def self.write(*messages, silent: false)
-    puts(*messages) unless silent
+  def self.write(*messages)
+    puts(*messages)
     messages.join("\n")
   end
 

@@ -460,29 +460,14 @@ class SayTest < Minitest::Spec
 
       subject { Say }
 
-      context "GIVEN silent = false" do
-        it "puts and returns the expected String, GIVEN a single message" do
-          value(subject.write("TEST")).must_equal("TEST")
-          value(@puts_call.args).must_equal(["TEST"])
-        end
-
-        it "puts and returns the expected String, GIVEN many messages" do
-          value(subject.write("TEST 1", "TEST 2")).must_equal("TEST 1\nTEST 2")
-          value(@puts_call.args).must_equal(["TEST 1", "TEST 2"])
-        end
+      it "puts and returns the expected String, GIVEN a single message" do
+        value(subject.write("TEST")).must_equal("TEST")
+        value(@puts_call.args).must_equal(["TEST"])
       end
 
-      context "GIVEN silent = true" do
-        it "returns the expected String, GIVEN a single message" do
-          value(subject.write("TEST", silent: true)).must_equal("TEST")
-          value(@puts_call).must_be_nil
-        end
-
-        it "returns the expected String, GIVEN more than one message" do
-          value(subject.write("TEST 1", "TEST 2", silent: true)).must_equal(
-            "TEST 1\nTEST 2")
-          value(@puts_call).must_be_nil
-        end
+      it "puts and returns the expected String, GIVEN many messages" do
+        value(subject.write("TEST 1", "TEST 2")).must_equal("TEST 1\nTEST 2")
+        value(@puts_call.args).must_equal(["TEST 1", "TEST 2"])
       end
     end
 
