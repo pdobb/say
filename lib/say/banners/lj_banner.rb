@@ -114,8 +114,8 @@ class Say::LJBanner
   end
 
   # Say::LJBanner::ITBuilder is a factory for creating Interpolation Template
-  # objects. The default Interpolation Template class is
-  # {Say::InterpolationTemplate}.
+  # objects from the optionally given interpolation template String. The default
+  # Interpolation Template class is {Say::InterpolationTemplate}.
   module ITBuilder
     DEFAULT_INTERPOLATION_TEMPLATE_CLASS = Say::InterpolationTemplate
     INTERPOLATION_SENTINEL =
@@ -131,7 +131,7 @@ class Say::LJBanner
     # rubocop:disable Layout/LineLength
     TYPES.each_key do |name|
       define_singleton_method(name) do                # def self.<name>
-        call(to_interpolation_template_string(name))  #   build(to_interpolation_template_string(<name>))
+        call(to_interpolation_template_string(name))  #   call(to_interpolation_template_string(<name>))
       end                                             # end
     end
     # rubocop:enable Layout/LineLength
