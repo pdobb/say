@@ -146,7 +146,7 @@ class SayTest < Minitest::Spec
 
         context "GIVEN a header message" do
           it "returns the expected header banner String" do
-            subject.with_block(header: "TEST_HEADER") do nil end
+            subject.with_block(header: "TEST_HEADER") { nil }
 
             # rubocop:disable Layout/LineLength
             value(@puts_calls[0].args).must_equal([
@@ -158,7 +158,7 @@ class SayTest < Minitest::Spec
 
         context "GIVEN a footer message" do
           it "returns the expected footer banner String" do
-            subject.with_block(footer: "TEST_FOOTER") do nil end
+            subject.with_block(footer: "TEST_FOOTER") { nil }
 
             # rubocop:disable Layout/LineLength
             value(@puts_calls[1].args).must_equal([
