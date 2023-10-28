@@ -52,16 +52,19 @@ class Say::LJBanner
   #   fill in the right side of the passed in `interpolated_text` String with
   #   the interpolation_template fill pattern.
   def left_justify(interpolated_text = "")
-    it_filler = ITFiller.new(banner: self, interpolated_text: interpolated_text)
+    it_filler =
+      InterpolationTemplateFiller.new(
+        banner: self,
+        interpolated_text: interpolated_text)
     it_filler.call
   end
 
-  # Say::LJBanner::ITFiller is an Interpolation Template Filler specific to the
-  # Say::LJBaner object. It appeals to {Say::InterpolationTemplate#right_side}
-  # to determine the "fill pattern" and will then left-justify the given
-  # {#interpolated_text} by repeating the fill pattern onto the end, up to
-  # {Say::LJBanner#columns} in length.
-  class ITFiller
+  # Say::LJBanner::InterpolationTemplateFiller is an Interpolation Template
+  # Filler specific to the Say::LJBaner object. It appeals to
+  # {Say::InterpolationTemplate#right_side} to determine the "fill pattern" and
+  # will then left-justify the given {#interpolated_text} by repeating the fill
+  # pattern onto the end, up to {Say::LJBanner#columns} in length.
+  class InterpolationTemplateFiller
     attr_reader :banner,
                 :interpolated_text
 

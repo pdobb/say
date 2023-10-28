@@ -4,6 +4,7 @@
 - Internal Changes:
   - Abstract Say#build_message using a new class/concept: Say::Message
   - Rename Say::LJBanner::ITBuilder -> Say::LJBanner::InterpolationTemplateBuilder
+  - Rename Say::LJBanner::ITFiller -> Say::LJBanner::InterpolationTemplateFiller
 
 ### BREAKING CHANGES:
 

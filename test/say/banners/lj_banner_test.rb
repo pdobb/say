@@ -136,9 +136,9 @@ class Say::LJBannerTest < Minitest::Spec
       end
     end
 
-    describe "Say::LJBanner::ITFiller" do
+    describe "Say::LJBanner::InterpolationTemplateFiller" do
       describe "#initialize" do
-        subject { Say::LJBanner::ITFiller }
+        subject { Say::LJBanner::InterpolationTemplateFiller }
 
         it "has the expected attributes" do
           result =
@@ -151,7 +151,7 @@ class Say::LJBannerTest < Minitest::Spec
       describe "#call" do
         context "GIVEN a fill pattern" do
           subject {
-            Say::LJBanner::ITFiller.new(
+            Say::LJBanner::InterpolationTemplateFiller.new(
               banner: Say::LJBanner.new("-{}-", columns: 20),
               interpolated_text: "-TEST-")
           }
@@ -163,7 +163,7 @@ class Say::LJBannerTest < Minitest::Spec
 
         context "GIVEN no fill pattern" do
           subject {
-            Say::LJBanner::ITFiller.new(
+            Say::LJBanner::InterpolationTemplateFiller.new(
               banner: Say::LJBanner.new("{}"),
               interpolated_text: "TEST")
           }
