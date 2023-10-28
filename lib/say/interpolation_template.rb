@@ -141,8 +141,6 @@ class Say::InterpolationTemplate
       interpolation_template_strings = [
         "{}",
         "{}=",
-        "~= {} ~=",
-        "^.^  {}  ^.^",
         "( •_•)O*¯`·.{}.·´¯`°Q(•_• )",
         "╰(⇀︿⇀)つ-]═{}-"
       ]
@@ -154,6 +152,7 @@ class Say::InterpolationTemplate
           {
             interpolation_template_string: obj.interpolation_template_string,
             decoration_length: obj.decoration_length,
+            left_side: obj.left_side,
             right_side: obj.right_side,
             result: obj.interpolate("TEST"),
             result_for_nil: obj.interpolate(nil)
@@ -164,6 +163,7 @@ class Say::InterpolationTemplate
         {
           interpolation_template_string:  "{}",
           decoration_length:              0,
+          left_side:                      "",
           right_side:                     "",
           result:                         "TEST",
           result_for_nil:                 ""
@@ -171,27 +171,15 @@ class Say::InterpolationTemplate
         {
           interpolation_template_string:  "{}=",
           decoration_length:              1,
+          left_side:                      "",
           right_side:                     "=",
           result:                         "TEST=",
           result_for_nil:                 "="
         },
         {
-          interpolation_template_string:  "~= {} ~=",
-          decoration_length:              6,
-          right_side:                     "~=",
-          result:                         "~= TEST ~=",
-          result_for_nil:                 "~=  ~="
-        },
-        {
-          interpolation_template_string:  "^.^  {}  ^.^",
-          decoration_length:              10,
-          right_side:                     "^.^",
-          result:                         "^.^  TEST  ^.^",
-          result_for_nil:                 "^.^    ^.^"
-        },
-        {
           interpolation_template_string:  "( •_•)O*¯`·.{}.·´¯`°Q(•_• )",
           decoration_length:              25,
+          left_side:                      "( •_•)O*¯`·.",
           right_side:                     ".·´¯`°Q(•_• )",
           result:                         "( •_•)O*¯`·.TEST.·´¯`°Q(•_• )",
           result_for_nil:                 "( •_•)O*¯`·..·´¯`°Q(•_• )"
@@ -199,6 +187,7 @@ class Say::InterpolationTemplate
         {
           interpolation_template_string:  "╰(⇀︿⇀)つ-]═{}-",
           decoration_length:              11,
+          left_side:                      "╰(⇀︿⇀)つ-]═",
           right_side:                     "-",
           result:                         "╰(⇀︿⇀)つ-]═TEST-",
           result_for_nil:                 "╰(⇀︿⇀)つ-]═-"
