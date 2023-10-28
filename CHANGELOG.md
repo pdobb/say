@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+### Non-breaking Changes:
+- Internal Changes: Abstract Say#build_message using a new class/concept:
+  - Say::Message
+
 ### BREAKING CHANGES:
 
 #### Public API Updates!

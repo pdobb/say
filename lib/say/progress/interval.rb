@@ -25,7 +25,8 @@ class Say::Progress::Interval
   # will always be called, regardless.
   #
   # @param text [String] (optional) The message to be printed.
-  # @param type [Symbol] (optional) The type of the message. (see #Say::TYPES)
+  # @param type [Symbol] (optional) The type of the message.
+  #   (see Say::Message::TYPES)
   #   Note: `type` is ignored if a block is given.
   # @param block [Proc] (optional) A block of code to be called with header and
   #   footer banners.

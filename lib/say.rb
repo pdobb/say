@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
-# Say is the top-level module for this gem.
+# Say is the top-level namespace/module for this gem.
 module Say
 end
 
 require "say/say"
 require "say/interpolation_template"
+require "say/message"
 require "say/time"
 require "say/version"
 

@@ -60,9 +60,9 @@ result
 Say.section("Say Types")
 ################################################################################
 
-Say.("Say::TYPES") do
+Say.("Say::Message::TYPES") do
   puts(
-    Say::TYPES.map { |key, value|
+    Say::Message::TYPES.map { |key, value|
       "#{"`:#{key}`".to_sym} -> #{"`#{value.inspect}`"}"
     }.to_yaml)
 

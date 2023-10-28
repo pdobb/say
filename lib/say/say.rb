@@ -73,28 +73,6 @@ module Say
   # banners.
   MAX_COLUMNS = 80
 
-  # Mapping of message types to their corresponding prefixes for the `say`
-  # method. Defaults to `:success`.
-  #
-  # @example
-  #   TYPES[:debug]    # => " >> "
-  #   TYPES[:error]    # => " ** "
-  #   TYPES[:info]     # => " -- "
-  #   TYPES[:success]  # => " -> "
-  #   TYPES[:warn]     # => " !¡ "
-  TYPES = {}.tap { |hash|
-    hash.default = " -> "
-    hash.update(
-      debug: " >> ",
-      error: " ** ",
-      info: " -- ",
-      success: hash.default,
-      warn: " !¡ ")
-  }.freeze
-
-  # The default message to print when one is not supplied.
-  DEFAULT_MESSAGE = " ..."
-
   DONE_MESSAGE = "Done"
   START_MESSAGE = "Start"
 
@@ -102,7 +80,8 @@ module Say
   # code and surrounds it with header and footer banner messages.
   #
   # @param text [String] (optional) The message to be printed.
-  # @param type [Symbol] (optional) The type of the message. (see #Say::TYPES)
+  # @param type [Symbol] (optional) The type of the message.
+  #   (see Say::Message::TYPES)
   #   Note: `type` is ignored if a block is given.
   # @param block [Proc] (optional) A block of code to be called with header and
   #   footer banners.
@@ -148,7 +127,7 @@ module Say
   #   Say.line("Oops", :error)   # => " ** Oops"
   #   Say.line                   # => " ..."
   def self.line(text = nil, **kwargs)
-    write(build_message(text, **kwargs))
+    write(Say::Message.new(text, **kwargs))
   end
 
   # Executes a block of code, surrounding it with header and footer banner
@@ -325,36 +304,11 @@ module Say
     ]
   end
 
-  # Builds a message with a given (or defaulted) type prefix.
-  #
-  # @param text [String] (optional) The message. Defaults to `" ..."`.
-  # @param type [Symbol] (optional) One of Say::TYPES
-  #
-  # @return [String] Returns the built message String.
-  #
-  # @example Default usage
-  #   Say.build_message("Test")  # => " -> Test"
-  #
-  # @example Custom usage
-  #   Say.build_message("Test", type: :debug)    # => " >> Test"
-  #   Say.build_message("Test", type: :error)    # => " ** Test"
-  #   Say.build_message("Test", type: :info)     # => " -- Test"
-  #   Say.build_message("Test", type: :success)  # => " -> Test"
-  #   Say.build_message("Test")                  # => " -> Test"
-  #   Say.build_message("Test", type: :warn)     # => " !¡ Test"
-  #   Say.build_message                          # => " ..."
-  def self.build_message(text = nil, type: nil)
-    return DEFAULT_MESSAGE unless text
-
-    "#{TYPES[type]}#{text}"
-  end
-  private_class_method :build_message
-
   # Builds a {Say::Progress::Tracker} and yields an associated
   # {Say::Progress::Interval} the user-supplied block for printing `say`
   # messages only for on-interval ticks through the loop.
   #
-  # @param message [String] The String to be printed in the header banner.
+  # @param text [String] The String to be printed in the header banner.
   #
   # @yield [Say::Progress::Interval] The interval upon which to `say` things.
   #
@@ -395,10 +349,10 @@ module Say
   #
   #   [12340506123456]  >> After Update Interval. Index: 2 (i=2)
   #   = Done (0.0797s) ===============================================================
-  def self.progress(message = START_MESSAGE, **kwargs, &block)
+  def self.progress(text = START_MESSAGE, **kwargs, &block)
     tracker = Say::Progress::Tracker.new(**kwargs)
 
-    header = progress_message(message, index: tracker.index)
+    header = progress_message(text, index: tracker.index)
 
     with_block(header: header) do
       tracker.call(&block)
@@ -410,7 +364,8 @@ module Say
   #
   # @param text [String] The String to be printed, which will be appended with
   #   an indicator of the given `index`.
-  # @param type [Symbol] (optional) The type of the message. (see #Say::TYPES)
+  # @param type [Symbol] (optional) The type of the message.
+  #   (see Say::Message::TYPES)
   # @param index [Integer] (optional)
   #
   # @example Typical Usage
@@ -428,12 +383,14 @@ module Say
   #   Say.progress_line(index: 3)
   #   # => "[12340506123456]  ... (i=3)"
   def self.progress_line(text = nil, type = :info, index: nil)
-    message = build_message(text, type: type)
+    message = Say::Message.new(text, type: type)
     full_message = progress_message(message, index: index)
 
     write(full_message)
   end
 
+  # @param message [Say::Message, #to_s] the message text to be output
+  #
   # @example
   #   Say.__send__(:progress_message, "TEST")
   #   # => "[12340506123456] TEST"

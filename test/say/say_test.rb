@@ -10,23 +10,6 @@ class SayTest < Minitest::Spec
       end
     end
 
-    describe "::TYPES" do
-      it "defines the expected type keys" do
-        value(Say::TYPES.keys).must_equal(
-          %i[debug error info success warn])
-      end
-
-      it "defaults to :success" do
-        value(Say::TYPES.default).must_equal(Say::TYPES[:success])
-      end
-
-      it "has an immutable default value" do
-        assert_raises(FrozenError) do
-          Say::TYPES[:unknown_type] << "NOPE"
-        end
-      end
-    end
-
     describe ".call" do
       subject { Say }
 
@@ -38,14 +21,14 @@ class SayTest < Minitest::Spec
         context "GIVEN no message" do
           it "puts and returns the expected String" do
             value(subject.call).must_equal(" ...")
-            value(@puts_call.args).must_equal([" ..."])
+            value(@puts_call.args.first.to_s).must_equal(" ...")
           end
         end
 
         context "GIVEN a message" do
           it "puts and returns the expected formatted message String" do
             value(subject.call("TEST")).must_equal(" -> TEST")
-            value(@puts_call.args).must_equal([" -> TEST"])
+            value(@puts_call.args.first.to_s).must_equal(" -> TEST")
           end
 
           it "respects Ruby's call notation" do
@@ -87,17 +70,17 @@ class SayTest < Minitest::Spec
 
       it "puts and returns the expected String, GIVEN no message" do
         value(subject.line).must_equal(" ...")
-        value(@puts_call.args).must_equal([" ..."])
+        value(@puts_call.args.first.to_s).must_equal(" ...")
       end
 
       it "puts and returns the expected String, GIVEN a message" do
         value(subject.line("TEST")).must_equal(" -> TEST")
-        value(@puts_call.args).must_equal([" -> TEST"])
+        value(@puts_call.args.first.to_s).must_equal(" -> TEST")
       end
 
       it "puts and returns the expected String, GIVEN a message and type" do
         value(subject.line("TEST", type: :info)).must_equal(" -- TEST")
-        value(@puts_call.args).must_equal([" -- TEST"])
+        value(@puts_call.args.first.to_s).must_equal(" -- TEST")
       end
 
       context "GIVEN an extra long message String" do
@@ -107,7 +90,7 @@ class SayTest < Minitest::Spec
             " -> TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
           # rubocop:enable Layout/LineLength
           value(subject.line("T" * 90)).must_equal(expected_result)
-          value(@puts_call.args).must_equal([expected_result])
+          value(@puts_call.args.first.to_s).must_equal(expected_result)
         end
       end
     end
@@ -350,23 +333,6 @@ class SayTest < Minitest::Spec
         value(subject.section("T" * 90)).must_equal(expected_result)
         value(@puts_calls.map(&:args).flatten).must_equal(
           expected_result + ["\n"])
-      end
-    end
-
-    describe ".build_message" do
-      subject { Say }
-
-      it "returns the expected String, GIVEN no message" do
-        value(subject.__send__(:build_message)).must_equal(" ...")
-      end
-
-      it "returns the expected String, GIVEN a message" do
-        value(subject.__send__(:build_message, "TEST")).must_equal(" -> TEST")
-      end
-
-      it "returns the expected String, GIVEN a type" do
-        value(subject.__send__(:build_message, "TEST", type: :info)).must_equal(
-          " -- TEST")
       end
     end
 
