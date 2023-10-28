@@ -4,10 +4,10 @@
 # passed in `interpolation_template` and exposes useful API methods for
 # operating on it.
 #
-# The default `interpolation_template_string` is: `"= {} =", and the default
-# `interpolation_sentinel` is `"{}"`. The "interpolation symbol" indicates the
-# portion of the string which should be replaced with the passed in `text`
-# during interpolation.
+# The default `interpolation_template_string` is: `"{}=", and the default
+# `interpolation_sentinel` is `"{}"`. The "interpolation sentinel" indicates the
+# portion of the string that should be replaced with the passed in `text` during
+# interpolation.
 #
 # @example Default Template
 #   interpolation_template = Say::InterpolationTemplate.new

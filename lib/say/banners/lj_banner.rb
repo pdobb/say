@@ -8,9 +8,9 @@
 # `interpolation_template`.
 #
 # Specifying the `interpolation_template` is aided by
-# {Say::LJBanner::ITBuilder}.
+# {Say::LJBanner::InterpolationTemplateBuilder}.
 #
-# @see Say::LJBanner::ITBuilder
+# @see Say::LJBanner::InterpolationTemplateBuilder
 # @see Say::InterpolationTemplate The Default Interpolation Template Class
 #
 # @example Default Interpolation Template (`title`)
@@ -18,13 +18,14 @@
 #   # => "= My Banner ===================================================================="
 #
 # @example The `hr` Interpolation Template
-#   interpolation_template = Say::LJBanner::ITBuilder.hr
+#   interpolation_template = Say::LJBanner::InterpolationTemplateBuilder.hr
 #   banner = Say::LJBanner.new(interpolation_template)
 #   banner.call
 #   # => "================================================================================"
 #
 # @example Custom Interpolation Template
-#   interpolation_template = Say::LJBanner::ITBuilder("╰(⇀︿⇀)つ-]═----{}-")
+#   interpolation_template =
+#     Say::LJBanner::InterpolationTemplateBuilder("╰(⇀︿⇀)つ-]═----{}-")
 #   banner = Say::LJBanner.new(interpolation_template, columns: 60)
 #   banner.("¡EN GARDE!")
 #   # => "╰(⇀︿⇀)つ-]═----¡EN GARDE!------------------------------------"
@@ -33,7 +34,8 @@ class Say::LJBanner
               :interpolation_template
 
   def initialize(type_or_template_string = nil, columns: Say::MAX_COLUMNS)
-    @interpolation_template = ITBuilder.(type_or_template_string)
+    @interpolation_template =
+      InterpolationTemplateBuilder.(type_or_template_string)
     @columns = Integer(columns)
   end
 
@@ -113,10 +115,17 @@ class Say::LJBanner
     end
   end
 
-  # Say::LJBanner::ITBuilder is a factory for creating Interpolation Template
-  # objects from the optionally given interpolation template String. The default
-  # Interpolation Template class is {Say::InterpolationTemplate}.
-  module ITBuilder
+  # Say::LJBanner::InterpolationTemplateBuilder is a factory for creating
+  # Interpolation Template objects from the optionally given type or
+  # interpolation template String.
+  #
+  # If a type is given to the {.call} method, it passes through directly.
+  # Else, if a Symbol or String is given, it is converted into the appropriate
+  # InterpolationTemplate type (class) by referencing the
+  # {Say::LJBanner::InterpolationTemplateBuilder::TYPES} hash.
+  #
+  # The default Interpolation Template class is {Say::InterpolationTemplate}.
+  module InterpolationTemplateBuilder
     DEFAULT_INTERPOLATION_TEMPLATE_CLASS = Say::InterpolationTemplate
     INTERPOLATION_SENTINEL =
       Say::InterpolationTemplate::DEFAULT_INTERPOLATION_SENTINEL
@@ -167,17 +176,18 @@ class Say::LJBanner
   # @!visibility private
   def self.test
     Say.("Say::LJBanner.test") do
+      itb = InterpolationTemplateBuilder
       results = [
         new.("DEFAULT"),
-        new(ITBuilder.title, columns: 20).("TITLE + SHORT"),
-        new(ITBuilder.("~= {} ~=")).("CUSTOM"),
-        new(ITBuilder.("^.^  {}  ^.^"), columns: 40).("CUSTOM + SHORT"),
-        new(ITBuilder.("( •_•)O*¯`·.{}.·´¯`°Q(•_• )")).("." * 30), # Begs for Left/Right Split Justification...
-        new(ITBuilder.("╰(⇀︿⇀)つ-]═----{}-")).("¡EN GARDE!"),
-        new(ITBuilder.hr).call,
-        new(ITBuilder.(:hr)).("HR"),
-        new(ITBuilder.wtf).() {
-          (new(ITBuilder.(:unknown)).("UNKNOWN TEMPLATE TYPE") rescue "CAUGHT: #{$!.message}")
+        new(itb.title, columns: 20).("TITLE + SHORT"),
+        new(itb.("~= {} ~=")).("CUSTOM"),
+        new(itb.("^.^  {}  ^.^"), columns: 40).("CUSTOM + SHORT"),
+        new(itb.("( •_•)O*¯`·.{}.·´¯`°Q(•_• )")).("." * 30), # Begs for Left/Right Split Justification...
+        new(itb.("╰(⇀︿⇀)つ-]═----{}-")).("¡EN GARDE!"),
+        new(itb.hr).call,
+        new(itb.(:hr)).("HR"),
+        new(itb.wtf).() {
+          (new(itb.(:unknown)).("UNKNOWN TEMPLATE TYPE") rescue "CAUGHT: #{$!.message}")
         },
       ]
 

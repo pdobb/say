@@ -1,8 +1,9 @@
 ## [Unreleased]
 
 ### Non-breaking Changes:
-- Internal Changes: Abstract Say#build_message using a new class/concept:
-  - Say::Message
+- Internal Changes:
+  - Abstract Say#build_message using a new class/concept: Say::Message
+  - Rename Say::LJBanner::ITBuilder -> Say::LJBanner::InterpolationTemplateBuilder
 
 ### BREAKING CHANGES:
 

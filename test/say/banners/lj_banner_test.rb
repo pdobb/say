@@ -175,11 +175,11 @@ class Say::LJBannerTest < Minitest::Spec
       end
     end
 
-    describe "Say::LJBanner::ITBuilder" do
+    describe "Say::LJBanner::InterpolationTemplateBuilder" do
       describe "::TYPES" do
-        subject { Say::LJBanner::ITBuilder }
+        subject { Say::LJBanner::InterpolationTemplateBuilder }
 
-        let(:types) { Say::LJBanner::ITBuilder::TYPES }
+        let(:types) { Say::LJBanner::InterpolationTemplateBuilder::TYPES }
 
         it "defines a singleton method for each key" do
           types.each_key do |key|
@@ -190,7 +190,7 @@ class Say::LJBannerTest < Minitest::Spec
       end
 
       describe ".call" do
-        subject { Say::LJBanner::ITBuilder }
+        subject { Say::LJBanner::InterpolationTemplateBuilder }
 
         context "GIVEN a Say::InterpolationTemplate object" do
           it "returns the given Say::InterpolationTemplate object" do
