@@ -1,12 +1,16 @@
 # frozen_string_literal: true
 
 # Say::InterpolationTemplate is a value object that assigns meaning to the
-# passed in `interpolation_template` and exposes useful API methods for
-# operating on it.
+# passed in `interpolation_template_string` and exposes useful API methods for
+# interrogating it.
 #
-# The default `interpolation_template_string` is: `"{}=", and the default
-# `interpolation_sentinel` is `"{}"`. The "interpolation sentinel" indicates the
-# portion of the string that should be replaced with the passed in `text` during
+# The default `interpolation_sentinel` is `"{}"`.
+# The default `interpolation_template_string` is: `"{}"` (i.e. no flourishes
+# are added on top of the default interpolation sentinel, in an attempt to be
+# neutral or to "know nothing" about "preferred" use cases.)
+#
+# The "interpolation sentinel" indicates the portion of the interpolation
+# template string that should be replaced with the given `text` during
 # interpolation.
 #
 # @example Default Template
@@ -22,7 +26,9 @@ class Say::InterpolationTemplate
 
   # The default interpolation template, using the default interpolation
   # sentinel.
-  DEFAULT_INTERPOLATION_TEMPLATE_STRING = "#{DEFAULT_INTERPOLATION_SENTINEL}="
+  # rubocop:disable Style/RedundantInterpolation
+  DEFAULT_INTERPOLATION_TEMPLATE_STRING = "#{DEFAULT_INTERPOLATION_SENTINEL}"
+  # rubocop:enable Style/RedundantInterpolation
 
   attr_reader :interpolation_template_string,
               :interpolation_sentinel

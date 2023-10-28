@@ -10,7 +10,7 @@ class Say::InterpolationTemplateTest < Minitest::Spec
       context "GIVEN no args" do
         it "has the expected attributes" do
           result = subject.new
-          value(result.interpolation_template_string).must_equal("{}=")
+          value(result.interpolation_template_string).must_equal("{}")
           value(result.interpolation_sentinel).must_equal("{}")
         end
       end
@@ -64,11 +64,11 @@ class Say::InterpolationTemplateTest < Minitest::Spec
         subject { Say::InterpolationTemplate.new }
 
         it "returns the expected String" do
-          value(subject.interpolate("TEST")).must_equal("TEST=")
+          value(subject.interpolate("TEST")).must_equal("TEST")
         end
 
         it "returns just the decoration string, GIVEN nil" do
-          value(subject.interpolate(nil)).must_equal("=")
+          value(subject.interpolate(nil)).must_equal("")
         end
       end
 
@@ -98,7 +98,7 @@ class Say::InterpolationTemplateTest < Minitest::Spec
         subject { Say::InterpolationTemplate.new }
 
         it "returns 1" do
-          value(subject.decoration_length).must_equal(1)
+          value(subject.decoration_length).must_equal(0)
         end
       end
 
@@ -124,7 +124,7 @@ class Say::InterpolationTemplateTest < Minitest::Spec
         subject { Say::InterpolationTemplate.new }
 
         it "returns the expected Array" do
-          value(subject.split).must_equal(["", "="])
+          value(subject.split).must_equal([])
         end
       end
 
@@ -176,7 +176,7 @@ class Say::InterpolationTemplateTest < Minitest::Spec
         subject { Say::InterpolationTemplate.new }
 
         it "returns the expected String" do
-          value(subject.right_side).must_equal("=")
+          value(subject.right_side).must_equal("")
         end
       end
 
