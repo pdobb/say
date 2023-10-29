@@ -27,14 +27,14 @@ require "benchmark"
 #   end
 #
 #   result = IncludeProcessor.new.run
-#   = IncludeProcessor... ==========================================================
+#   = IncludeProcessor =============================================================
 #    -> Successfully did the thing!
+#    ...
 #    >> Debug details about this ...
 #    -- Info about stuff ...
 #    !¡ Maybe look into this thing ...
-#    !¡ Maybe look into the above thing ...
 #    ** Failed to do a thing ...
-#   = Done =========================================================================
+#   = Done (0.0000s) ===============================================================
 #
 #   result  # => "The Result!"
 #
@@ -63,7 +63,6 @@ require "benchmark"
 #    >> Debug details about this ...
 #    -- Info about stuff ...
 #    !¡ Maybe look into this thing ...
-#    !¡ Maybe look into the above thing ...
 #    ** Failed to do a thing ...
 #   = Done (0.0000s) ===============================================================
 #
@@ -256,14 +255,14 @@ module Say
   #   Say.banner("Test", columns: 20)
   #   # => "= Test ============="
   def self.banner(text = nil, columns: MAX_COLUMNS)
-    write(build_banner(text, columns: columns))
+    write(generate_banner(text, columns: columns))
   end
 
-  def self.build_banner(text = nil, columns: MAX_COLUMNS)
-    type = text ? nil : :hr
-    LJBanner.new(type, columns: columns).(text)
+  def self.generate_banner(text = nil, columns: MAX_COLUMNS)
+    type = text ? :title : :hr
+    Say::LJBanner.new(type, columns: columns).(text)
   end
-  private_class_method :build_banner
+  private_class_method :generate_banner
 
   # Prints a set of 3 banner Strings with the specified message using
   # {Say.write}. If no message is supplied, just prints 3 full-width banner
@@ -293,14 +292,16 @@ module Say
   #   ====================
   #   = Test =============
   #   ====================
+  #
+  # :reek:DuplicateMethodCall
   def self.section(text = nil, columns: MAX_COLUMNS)
-    primary_message_text = build_banner(text, columns: columns)
-    columns_actual = primary_message_text.length
+    banner = generate_banner(text, columns: columns)
+    decorative_banner = generate_banner(columns: banner.length)
 
     [
-      banner(columns: columns_actual),
-      write(primary_message_text),
-      footer(nil, columns: columns_actual),
+      write(decorative_banner),
+      write(banner),
+      write(decorative_banner).tap { write("\n") },
     ]
   end
 

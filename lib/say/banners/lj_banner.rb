@@ -13,17 +13,20 @@
 # @see Say::LJBanner::InterpolationTemplateBuilder
 # @see Say::InterpolationTemplate The Default Interpolation Template Class
 #
-# @example Default Interpolation Template (`:title`)
+# @example Default Interpolation Template (type: `:title`)
 #   Say::LJBanner.new.("My Banner")
 #   # => "= My Banner ===================================================================="
 #
-# @example The `hr` Interpolation Template
-#   interpolation_template = Say::LJBanner::InterpolationTemplateBuilder.hr
-#   banner = Say::LJBanner.new(interpolation_template)
-#   banner.call
+# @example `hr` Interpolation Template (type: `:hr`)
+#   Say::LJBanner.new(:hr).call
 #   # => "================================================================================"
 #
 # @example Custom Interpolation Template
+#   Say::LJBanner.new("╰(⇀︿⇀)つ-]═----{}-", columns: 60).call("¡EN GARDE!")
+#   # => "╰(⇀︿⇀)つ-]═----¡EN GARDE!------------------------------------------"
+#
+#   OR:
+#
 #   interpolation_template =
 #     Say::LJBanner::InterpolationTemplateBuilder("╰(⇀︿⇀)つ-]═----{}-")
 #   banner = Say::LJBanner.new(interpolation_template, columns: 60)
