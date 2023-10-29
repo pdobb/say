@@ -13,7 +13,7 @@
 # @see Say::LJBanner::InterpolationTemplateBuilder
 # @see Say::InterpolationTemplate The Default Interpolation Template Class
 #
-# @example Default Interpolation Template (`title`)
+# @example Default Interpolation Template (`:title`)
 #   Say::LJBanner.new.("My Banner")
 #   # => "= My Banner ===================================================================="
 #
@@ -59,35 +59,49 @@ class Say::LJBanner
     it_filler.call
   end
 
-  # Say::LJBanner::InterpolationTemplateFiller is an Interpolation Template
-  # Filler specific to the Say::LJBaner object. It appeals to
-  # {Say::InterpolationTemplate#right_side} to determine the "fill pattern" and
-  # will then left-justify the given {#interpolated_text} by repeating the fill
-  # pattern onto the end, up to {Say::LJBanner#columns} in length.
+  # Say::LJBanner::InterpolationTemplateFiller is an "Interpolation Template
+  # Filler" that is specific to the needs of the Say::LJBaner object. It appeals
+  # to {Say::InterpolationTemplate#right_side} to determine the "fill pattern"
+  # (found on the right side of the interpolation sentinel) and will then
+  # left-justify the given {#interpolated_text} by repeating the fill pattern
+  # onto the end, up to {Say::LJBanner#columns} total characters.
   class InterpolationTemplateFiller
     attr_reader :banner,
                 :interpolated_text
 
+    # @param banner [Say::LJBanner]
+    # @param interpolated_text [String] The text String after interpolation has
+    #   occurred, but before the filler pattern has been applied.
+    #   e.g.: `= TEST =` (which will then become `"= TEST ======[...]")
     def initialize(banner:, interpolated_text:)
       @banner = banner
       @interpolated_text = interpolated_text
     end
 
+    # If there is a non-empty fill pattern:
+    #   Left-justify the given {#interpolated_text} by repeating the fill
+    #   pattern onto the end, up to {#target_length} total characters.
+    # Else:
+    #   Return {#interpolated_text} directly. (Because, otherwise, `ljust`
+    #   raises an ArgumentError.)
     def call
-      if fill_pattern?
-        interpolated_text.ljust(target_length, fill_pattern)
-      else
-        interpolated_text
-      end
+      return interpolated_text unless fill_pattern?
+
+      interpolated_text.ljust(target_length, fill_pattern)
     end
 
     private
 
     def target_length
-      [
-        columns,
-        interpolated_text.size - interpolation_template.decoration_length,
-      ].max
+      [columns, interpolated_text.size].max
+    end
+
+    def columns
+      banner.columns
+    end
+
+    def interpolation_template
+      banner.interpolation_template
     end
 
     # Extracts the fill pattern from the {#interpolation_template}.
@@ -108,14 +122,6 @@ class Say::LJBanner
     def fill_pattern?
       fill_pattern != ""
     end
-
-    def interpolation_template
-      banner.interpolation_template
-    end
-
-    def columns
-      banner.columns
-    end
   end
 
   # Say::LJBanner::InterpolationTemplateBuilder is a factory for creating
@@ -133,9 +139,10 @@ class Say::LJBanner
     INTERPOLATION_SENTINEL =
       Say::InterpolationTemplate::DEFAULT_INTERPOLATION_SENTINEL
 
+    DEFAULT_TYPE = :title
     TYPES = {
       hr: "#{INTERPOLATION_SENTINEL}=",
-      title: "= #{INTERPOLATION_SENTINEL} =",
+      DEFAULT_TYPE => "= #{INTERPOLATION_SENTINEL} =",
       wtf: "? #{INTERPOLATION_SENTINEL} ?",
     }.freeze
 
@@ -167,7 +174,8 @@ class Say::LJBanner
       end
 
       interpolation_template_string =
-        to_interpolation_template_string(type_or_template_string || :title)
+        to_interpolation_template_string(
+          type_or_template_string || DEFAULT_TYPE)
       interpolation_template_class.new(interpolation_template_string)
     end
   end
@@ -182,7 +190,7 @@ class Say::LJBanner
       itb = InterpolationTemplateBuilder
       results = [
         new.("DEFAULT"),
-        new(itb.title, columns: 20).("TITLE + SHORT"),
+        new(itb.title, columns: 0).("TITLE + MIN LENGTH"),
         new(itb.("~= {} ~=")).("CUSTOM"),
         new(itb.("^.^  {}  ^.^"), columns: 40).("CUSTOM + SHORT"),
         new(itb.("( •_•)O*¯`·.{}.·´¯`°Q(•_• )")).("." * 30), # Begs for Left/Right Split Justification...
@@ -190,13 +198,13 @@ class Say::LJBanner
         new(itb.hr).call,
         new(itb.(:hr)).("HR"),
         new(itb.wtf).() {
-          (new(itb.(:unknown)).("UNKNOWN TEMPLATE TYPE") rescue "CAUGHT: #{$!.message}")
+          new(itb.(:unknown)).("UNKNOWN TEMPLATE TYPE") rescue "CAUGHT: #{$!.message}"
         },
       ]
 
       expected_results = [
         "= DEFAULT ======================================================================",
-        "= TITLE + SHORT ====",
+        "= TITLE + MIN LENGTH =",
         "~= CUSTOM ~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=",
         "^.^  CUSTOM + SHORT  ^.^^.^^.^^.^^.^^.^^",
         "( •_•)O*¯`·................................·´¯`°Q(•_• ).·´¯`°Q(•_• ).·´¯`°Q(•_• ",

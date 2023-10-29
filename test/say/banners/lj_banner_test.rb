@@ -156,7 +156,7 @@ class Say::LJBannerTest < Minitest::Spec
               interpolated_text: "-TEST-")
           }
 
-          it "returns the text as is" do
+          it "returns the expected String" do
             value(subject.call).must_equal("-TEST---------------")
           end
         end
