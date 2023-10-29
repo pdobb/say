@@ -23,7 +23,7 @@ def run_tasks(tasks)
 end
 
 def annotate_run(name)
-  puts "== Running #{name} #{"=" * (70 - name.size)}\n"
+  puts "= Running #{name} #{"=" * (71 - name.size)}\n"
   yield
-  puts "== Done #{"=" * 74}"
+  puts "= Done #{"=" * 75}"
 end
