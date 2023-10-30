@@ -93,7 +93,7 @@ module Say
   #   Say.("Oops", :error)   # => " ** Oops"
   #   Say.()                 # => " ..."
   #
-  # @example Given a Block
+  # @example Given a Block, Left-Justified (Default)
   #   Say.("Hello, World!") {
   #     Say.("Huzzah!")
   #     Say.("Hmm...", :info)
@@ -105,9 +105,15 @@ module Say
   #   = Done (0.0000s) ===============================================================
   #
   #   # => "My Result!"
-  def self.call(text = nil, type = nil, &block)
+  #
+  # @example Given a Block, Right-Justified
+  #   Say.("Hello, World!", justify: :right) { Say.("Huzzah!") }
+  #   ================================================================ Hello, World! =
+  #    -> Huzzah!
+  #   =============================================================== Done (0.0000s) =
+  def self.call(text = nil, type = nil, **with_block_kwargs, &block)
     if block
-      with_block(header: text, &block)
+      with_block(header: text, **with_block_kwargs, &block)
     else
       line(text, type: type)
     end
@@ -125,8 +131,8 @@ module Say
   #   Say.line("Hello, World!")  # => " -> Hello, World!"
   #   Say.line("Oops", :error)   # => " ** Oops"
   #   Say.line                   # => " ..."
-  def self.line(text = nil, **kwargs)
-    write(Say::Message.new(text, **kwargs))
+  def self.line(text = nil, **message_kwargs)
+    write(Say::Message.new(text, **message_kwargs))
   end
 
   # Executes a block of code, surrounding it with header and footer banner
@@ -142,8 +148,8 @@ module Say
   #
   # @raise [ArgumentError] Raises an ArgumentError if no block is given.
   #
-  # @example
-  #   Say.with_block("Hello, World!") {
+  # @example Left-Justified (Default)
+  #   Say.with_block(header: "Hello, World!") {
   #     Say.("Huzzah!")
   #     Say.("Hmm...", :info)
   #     "My Result!"
@@ -154,12 +160,18 @@ module Say
   #   = Done (0.0000s) ===============================================================
   #
   #   # => "My Result!"
-  def self.with_block(header: nil, footer: DONE_MESSAGE, &block)
+  #
+  # @example Right-Justified
+  #   Say.with_block(header: "Start", justify: :right) { Say.("Hello, World!") }
+  #   ================================================================ Hello, World! =
+  #    -> Huzzah!
+  #   =============================================================== Done (0.0000s) =
+  def self.with_block(header: nil, footer: DONE_MESSAGE, justify: :left, &block)
     raise ArgumentError, "block expected" unless block
 
-    self.header(header)
+    self.header(header, justify: justify)
     result, footer_with_runtime_string = benchmark_block_run(footer, &block)
-    self.footer(footer_with_runtime_string)
+    self.footer(footer_with_runtime_string, justify: justify)
 
     result
   end
@@ -186,16 +198,13 @@ module Say
   #
   # @example Default (though non-standard) usage
   #   Say.header
-  #   ================================================================================
   #   # => "================================================================================"
   #
   # @example Custom (standard) usage
   #   Say.header("Head")
-  #   = Head =========================================================================
   #   # => "= Head ========================================================================="
   #
   #   Say.header("Head", columns: 20)
-  #   = Head =============
   #   # => "= Head ============="
   def self.header(text = nil, **banner_kwargs)
     banner(text, **banner_kwargs)
@@ -215,20 +224,17 @@ module Say
   #
   # @example Default usage
   #   Say.footer
-  #   = Done =========================================================================
-  #
   #   # => "= Done =========================================================================\n\n"
   #
   # @example Custom usage
   #   Say.footer("Foot")
-  #   = Foot =========================================================================
-  #
   #   # => "= Foot =========================================================================\n\n"
   #
   #   Say.footer("Foot", columns: 20)
-  #   = Foot =============
-  #
   #   # => "= Foot =============\n\n"
+  #
+  #   Say.footer("Foot", columns: 20, justify: :right)
+  #   # => "============= Foot ="
   def self.footer(text = DONE_MESSAGE, **banner_kwargs)
     result = banner(text, **banner_kwargs)
     write("\n")
@@ -254,15 +260,25 @@ module Say
   #
   #   Say.banner("Test", columns: 20)
   #   # => "= Test ============="
-  def self.banner(text = nil, columns: MAX_COLUMNS)
-    write(generate_banner(text, columns: columns))
+  #
+  #   Say.banner("Test", columns: 20, justify: :right)
+  #   # => "============= Test ="
+  def self.banner(text = nil, columns: MAX_COLUMNS, justify: :left)
+    write(generate_banner(text, columns: columns, justify: justify))
   end
 
-  def self.generate_banner(text = nil, columns: MAX_COLUMNS)
+  def self.generate_banner(text = nil, columns: MAX_COLUMNS, justify: :left)
     type = text ? :title : :hr
-    Say::LJBanner.new(type, columns: columns).(text)
+    klass = determine_banner_class(justify)
+    klass.new(type, columns: columns).(text)
   end
   private_class_method :generate_banner
+
+  def self.determine_banner_class(justification)
+    initial = justification.to_s[0].capitalize
+    Object.const_get("Say::#{initial}JBanner")
+  end
+  private_class_method :determine_banner_class
 
   # Prints a set of 3 banner Strings with the specified message using
   # {Say.write}. If no message is supplied, just prints 3 full-width banner
@@ -293,9 +309,14 @@ module Say
   #   = Test =============
   #   ====================
   #
+  #   Say.section("Test", columns: 20, justify: :right)  # =>
+  #   ====================
+  #   ============= TEST =
+  #   ====================
+  #
   # :reek:DuplicateMethodCall
-  def self.section(text = nil, columns: MAX_COLUMNS)
-    banner = generate_banner(text, columns: columns)
+  def self.section(text = nil, columns: MAX_COLUMNS, justify: :left)
+    banner = generate_banner(text, columns: columns, justify: justify)
     decorative_banner = generate_banner(columns: banner.length)
 
     [
@@ -454,6 +475,7 @@ module Say
   # @!visibility private
   def self.test
     Say::LJBanner.test
+    Say::RJBanner.test
     Say::InterpolationTemplate.test
     Say::Progress::Interval.test
     Say::Progress::Tracker.test

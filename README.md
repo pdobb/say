@@ -142,6 +142,37 @@ Say.section("TEST", columns: 0)
 ========
 ```
 
+### Justification
+The various banner-producing methods also support left/right justification. Just pass in e.g. `justify: :right`. The default, if nothing is supplied, is `justify: :left`.
+
+```ruby
+Say.("Hello, World!", justify: :right) { Say.("Huzzah!") }
+================================================================ Hello, World! =
+ -> Huzzah!
+=============================================================== Done (0.0000s) =
+
+Say.banner("TEST", justify: :right)
+========================================================================= TEST =
+
+Say.header("TEST", justify: :right)
+========================================================================= TEST =
+
+Say.footer(justify: :right)
+========================================================================= Done =
+
+Say.section("TEST", justify: :right)
+================================================================================
+========================================================================= TEST =
+================================================================================
+```
+
+NOTE: The "line" methods will ignore justification attempts as there is no built in concept of columns for these.
+
+```ruby
+Say.("TEST", justify: :right)  # `justify: :right` is ignored.
+ -> TEST
+```
+
 ### Progress Tracking
 
 Use `Say.progress` to track long-running processing loops on a given interval. Set the interval to receive `say` updates only during on-interval ticks through the loop. The default interval is `1`, meaning every loop is considered on-interval.

@@ -13,6 +13,7 @@ require "say/version"
 # BANNERS
 
 require "say/banners/lj_banner"
+require "say/banners/rj_banner"
 
 # PROGRESS
 
