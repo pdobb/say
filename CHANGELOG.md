@@ -1,15 +1,15 @@
 ## [Unreleased]
 
 ### Non-breaking Changes:
-- Add Say::RJBanner, for right-justified banners. Can now use `justify: :left` (the default) and `justify: :right` on banner-related calls:
-  - `Say.(..., justify: :right) { ... }`
-  - `Say.banner(..., justify: :right)`
-  - `Say.header(..., justify: :right)`
-  - `Say.footer(..., justify: :right)`
-  - `Say.section(..., justify: :right)`
+- Add Say::CJBanner and Say::RJBanner, for center-justified and right-justified banners. Can now use `justify: :left` (the default, if not specified), `justify: :center`, and `justify: :right` on banner-related calls:
+  - `Say.(..., justify: :[left|center|right]) { ... }`
+  - `Say.banner(..., justify: :[left|center|right])`
+  - `Say.header(..., justify: :[left|center|right])`
+  - `Say.footer(..., justify: :[left|center|right])`
+  - `Say.section(..., justify: :[left|center|right])`
 
 - Internal Changes:
-  - Abstract Say#build_message using a new class/concept: Say::Message
+  - Add Say::Message as an abstract class/concept for the old Say#build_message
   - Rename Say::LJBanner::ITBuilder -> Say::LJBanner::InterpolationTemplateBuilder
   - Rename Say::LJBanner::ITFiller -> Say::LJBanner::InterpolationTemplateFiller
 

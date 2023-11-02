@@ -94,17 +94,16 @@ module Say
   #   Say.()                 # => " ..."
   #
   # @example Given a Block, Left-Justified (Default)
-  #   Say.("Hello, World!") {
-  #     Say.("Huzzah!")
-  #     Say.("Hmm...", :info)
-  #     "My Result!"
-  #   }
+  #   Say.("Hello, World!")  { Say.("Huzzah!") }
   #   = Hello, World! ================================================================
   #    -> Huzzah!
-  #    -- Hmm...
   #   = Done (0.0000s) ===============================================================
   #
-  #   # => "My Result!"
+  # @example Given a Block, Center-Justified
+  #   Say.("Hello, World!", justify: :center) { Say.("Huzzah!") }
+  #   ================================ Hello, World! =================================
+  #    -> Huzzah!
+  #   ================================ Done (0.0000s) ================================
   #
   # @example Given a Block, Right-Justified
   #   Say.("Hello, World!", justify: :right) { Say.("Huzzah!") }
@@ -149,17 +148,18 @@ module Say
   # @raise [ArgumentError] Raises an ArgumentError if no block is given.
   #
   # @example Left-Justified (Default)
-  #   Say.with_block(header: "Hello, World!") {
-  #     Say.("Huzzah!")
-  #     Say.("Hmm...", :info)
-  #     "My Result!"
-  #   }
-  #   = Hello, World! ================================================================
-  #    -> Huzzah!
-  #    -- Hmm...
+  #   Say.with_block(header: "Start") { Say.("Hello, World!") }
+  #   = Start ========================================================================
+  #    -> Hello, World!
   #   = Done (0.0000s) ===============================================================
   #
-  #   # => "My Result!"
+  # @example Center-Justified
+  #   Say.with_block(header: "Start", justify: :center) {
+  #     Say.("Hello, World!")
+  #   }
+  #   ==================================== Start =====================================
+  #    -> Hello, World!
+  #   ================================ Done (0.0000s) ================================
   #
   # @example Right-Justified
   #   Say.with_block(header: "Start", justify: :right) { Say.("Hello, World!") }
@@ -227,14 +227,14 @@ module Say
   #   # => "= Done =========================================================================\n\n"
   #
   # @example Custom usage
-  #   Say.footer("Foot")
-  #   # => "= Foot =========================================================================\n\n"
-  #
   #   Say.footer("Foot", columns: 20)
   #   # => "= Foot =============\n\n"
   #
+  #   Say.footer("Foot", columns: 20, justify: :center)
+  #   # => "======= Foot =======\n\n"
+  #
   #   Say.footer("Foot", columns: 20, justify: :right)
-  #   # => "============= Foot ="
+  #   # => "============= Foot =\n\n"
   def self.footer(text = DONE_MESSAGE, **banner_kwargs)
     result = banner(text, **banner_kwargs)
     write("\n")
@@ -255,11 +255,11 @@ module Say
   #   # => "================================================================================"
   #
   # @example Custom usage
-  #   Say.banner("Test")
-  #   # => "= Test ========================================================================="
-  #
   #   Say.banner("Test", columns: 20)
   #   # => "= Test ============="
+  #
+  #   Say.banner("Test", columns: 20, justify: :center)
+  #   # => "======= Test ======="
   #
   #   Say.banner("Test", columns: 20, justify: :right)
   #   # => "============= Test ="
@@ -299,14 +299,14 @@ module Say
   #   ================================================================================
   #
   # @example Custom usage
-  #   Say.section("Test")  # =>
-  #   ================================================================================
-  #   = Test =========================================================================
-  #   ================================================================================
-  #
   #   Say.section("Test", columns: 20)  # =>
   #   ====================
   #   = Test =============
+  #   ====================
+  #
+  #   Say.section("Test", columns: 20, justify: :center)  # =>
+  #   ====================
+  #   ======= Test =======
   #   ====================
   #
   #   Say.section("Test", columns: 20, justify: :right)  # =>
@@ -475,6 +475,7 @@ module Say
   # @!visibility private
   def self.test
     Say::LJBanner.test
+    Say::CJBanner.test
     Say::RJBanner.test
     Say::InterpolationTemplate.test
     Say::Progress::Interval.test
