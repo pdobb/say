@@ -55,9 +55,8 @@ result = IncludeProcessor.new.run
  >> Debug details about this ...
  -- Info about stuff ...
  !¡ Maybe look into this thing ...
- !¡ Maybe look into the above thing ...
  ** Failed to do a thing ...
-= Done (0.0000s) ===============================================================
+= Done (0.0001s) ===============================================================
 
 result  # => "The Result!"
 ```
@@ -91,9 +90,8 @@ result = DirectAccessProcessor.new.run
  >> Debug details about this ...
  -- Info about stuff ...
  !¡ Maybe look into this thing ...
- !¡ Maybe look into the above thing ...
  ** Failed to do a thing ...
-= Done (0.0000s) ===============================================================
+= Done (0.0001s) ===============================================================
 
 result  # => "The Result!"
 ```
@@ -142,7 +140,7 @@ Say.section("TEST", columns: 0)
 ========
 ```
 
-### Justification
+### Justifiers
 The various banner-producing methods also support left/center/right justification. Just pass in e.g. `justify: :left`, `justify: :center`, or `justify: :right`. The default, if nothing is supplied, is `justify: :left`.
 
 ```ruby
@@ -160,7 +158,7 @@ Say.("Hello, World!", justify: :left) { Say.("Huzzah!") }
 = Done (0.0000s) ===============================================================
 
 Say.("Hello, World!", justify: :center) { Say.("Huzzah!") }
-================================ Hello, World! =================================
+================================= Hello, World! ================================
  -> Huzzah!
 ================================ Done (0.0000s) ================================
 
@@ -239,6 +237,86 @@ NOTE: The "line" methods will ignore justification attempts as there is no built
 ```ruby
 Say.("TEST", justify: :right)  # `justify: :right` is ignored.
  -> TEST
+```
+
+### Advanced Usage
+
+All of the above examples are using the default interpolation template accessed via the `Say.<method>` methods. For advanced usage, one may access the Say::InterpolationTemplate directly and either use the predefined templates or specify their own.
+
+#### Predefined interpolation templates
+
+```ruby
+# :hr
+interpolation_template = Say::InterpolationTemplate::Builder.hr
+
+interpolation_template.inspect                            # => "['=', ...]{}['=', ...]"
+interpolation_template.interpolate                        # => "=="
+interpolation_template.left_justify(length: 20)           # => "===================="
+
+# :title (the default template, if none is specified)
+interpolation_template = Say::InterpolationTemplate::Builder.title
+
+interpolation_template.inspect                            # => ['=', ...] {} ['=', ...]
+interpolation_template.interpolate("TEST")                # => "= TEST ="
+interpolation_template.left_justify("TEST", length: 20)   # => "= TEST ============="
+interpolation_template.center_justify("TEST", length: 20) # => "======= TEST ======="
+interpolation_template.right_justify("TEST", length: 20)  # => "============= TEST ="
+
+# :wtf
+interpolation_template = Say::InterpolationTemplate::Builder.wtf
+
+interpolation_template.inspect                            # => "['?', ...] {} ['?', ...]"
+interpolation_template.interpolate("TEST")                # => "? TEST ?"
+interpolation_template.left_justify("TEST", length: 20)   # => "? TEST ?????????????"
+interpolation_template.center_justify("TEST", length: 20) # => "??????? TEST ???????"
+interpolation_template.right_justify("TEST", length: 20)  # => "????????????? TEST ?"
+```
+
+#### Custom interpolation templates
+
+```ruby
+# Example 1
+interpolation_template =
+  Say::InterpolationTemplate.new(left_bookend: "╰(⇀︿⇀)つ-]═", left_fill: "-", right_fill: "-")
+
+interpolation_template.inspect
+# => "╰(⇀︿⇀)つ-]═['-', ...]{}['-', ...]"
+
+interpolation_template.interpolate("TEST")
+# => "╰(⇀︿⇀)つ-]═-TEST-"
+
+interpolation_template.left_justify("TEST", length: 40)
+# => "╰(⇀︿⇀)つ-]═-TEST-------------------------"
+
+interpolation_template.center_justify("TEST", length: 40)
+# => "╰(⇀︿⇀)つ-]═--------TEST------------------"
+
+interpolation_template.right_justify("TEST", length: 40)
+# => "╰(⇀︿⇀)つ-]═-------------------------TEST-"
+
+
+# Example 2
+interpolation_template =
+  Say::InterpolationTemplate.new(
+    left_bookend: "( •_•)O*¯",
+    left_fill: "`·.·´",
+    right_fill: "`·.·´",
+    right_bookend: "¯°Q(•_• )")
+
+interpolation_template.inspect
+# => "( •_•)O*¯['`·.·´', ...]{}['`·.·´', ...]¯°Q(•_• )"
+
+interpolation_template.interpolate("TEST")
+# => "( •_•)O*¯`·.·´TEST`·.·´¯°Q(•_• )"
+
+interpolation_template.left_justify("TEST")
+# => "( •_•)O*¯`·.·´TEST`·.·´`·.·´`·.·´`·.·´`·.·´`·.·´`·.·´`·.·´`·.·´`·.·´`·.¯°Q(•_• )"
+
+interpolation_template.center_justify("TEST")
+# => "( •_•)O*¯`·.·´`·.·´`·.·´`·.·´`·.·`·.·´TEST`·.·´`·.·´`·.·´`·.·´`·.·´`·.·¯°Q(•_• )"
+
+interpolation_template.right_justify("TEST")
+# => "( •_•)O*¯`·.·´`·.·´`·.·´`·.·´`·.·´`·.·´`·.·´`·.·´`·.·´`·.`·.·´TEST`·.·´¯°Q(•_• )"
 ```
 
 ### Progress Tracking

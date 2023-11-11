@@ -10,11 +10,12 @@ require "say/message"
 require "say/time"
 require "say/version"
 
-# BANNERS
+# JUSTIFIERS
 
-require "say/banners/lj_banner"
-require "say/banners/cj_banner"
-require "say/banners/rj_banner"
+require "say/justifiers/justifier_behaviors"
+require "say/justifiers/left_justifier"
+require "say/justifiers/center_justifier"
+require "say/justifiers/right_justifier"
 
 # PROGRESS
 

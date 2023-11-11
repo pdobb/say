@@ -1,5 +1,21 @@
 ## [Unreleased]
 
+Complete rewrite of Say::InterpolationTemplate.
+- Say::InterpolationTemplate is now defined through piecemeal attributes, instead of by passing in a representative interpolation template String. This allows for very obvious and fine-grained control of which parts of the template are which.
+- Add the ability to specify left/right bookends on Say::InterpolationTemplate. These allow for specifying text that should always appear on the left/right end of the interpolated text, regardless of length restrictions.
+
+Remove the Say::LJBanner, Say::CJBanner, and Say::RJBanner classes.
+- Instead, we now have Say::JustifierBehaviors and implementing classes: Say::LeftJustifier, Say::CenterJustifier, and Say::RightJustifier.
+- These new classes are internally instantiated when calling Say::InterpolationTemplate#left_justify, Say::InterpolationTemplate#center_justify, and Say::InterpolationTemplate#right_justify, respectively.
+
+Updates to README to show advanced usage using the newly rewritten Say::InterpolationTemplate class.
+
+### BREAKING CHANGES:
+- Internal classes and associated invocations have changed... see above and see new README section on Advanced Usage.
+
+
+## [Unreleased Version -- Internal Only]
+
 ### Non-breaking Changes:
 - Add Say::CJBanner and Say::RJBanner, for center-justified and right-justified banners. Can now use `justify: :left` (the default, if not specified), `justify: :center`, and `justify: :right` on banner-related calls:
   - `Say.(..., justify: :[left|center|right]) { ... }`
@@ -14,13 +30,16 @@
   - Rename Say::LJBanner::ITFiller -> Say::LJBanner::InterpolationTemplateFiller
 
 ### BREAKING CHANGES:
+- None
 
 #### Public API Updates!
 - `Say.write` no longer takes arg: `silent`.
 
+
 ## [0.4.0] - 2023-06-04
 
 ### BREAKING CHANGES:
+- None
 
 #### Public API Updates!
 - Add `Say.section` and `say_section` for 3-line banners that really visually split up your output into major sections.
@@ -32,10 +51,12 @@
 - `Say.banner` will now call `Say.write`, internally. This means it now outputs directly as well, instead of only returning a String.
 - Prepend a timestamp to the output text from `Say.progress` and `Say.progress_line`.
 
+
 ## [0.3.1] - 2023-06-02
 
 #### Public API Updates!
 - Add `Say.progress_line` and `Say#progress_line` for printing a message along with a given `index` indicator. `Say.progress` now uses this internally so that calling `say` on an Interval object automatically includes the `index` indicator.
+
 
 ## [0.3.0] - 2023-06-02
 
@@ -56,9 +77,11 @@
   - Say::InterpolationTemplate
   - Say::LJBanner (Left-Justified Banner)
 
+
 ## [0.2.0] - 2023-05-21
 
 ### BREAKING CHANGES:
+- None
 
 #### Public API Updates!
 - The updated public API when not including Say is:

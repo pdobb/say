@@ -267,18 +267,14 @@ module Say
     write(generate_banner(text, columns: columns, justify: justify))
   end
 
+  # TODO: Extract out to a Say::Banner factory method.
   def self.generate_banner(text = nil, columns: MAX_COLUMNS, justify: :left)
     type = text ? :title : :hr
-    klass = determine_banner_class(justify)
-    klass.new(type, columns: columns).(text)
+    interpolation_template = Say::InterpolationTemplate::Builder.call(type)
+    interpolation_template.public_send(
+      "#{justify}_justify", text, length: columns)
   end
   private_class_method :generate_banner
-
-  def self.determine_banner_class(justification)
-    initial = justification.to_s[0].capitalize
-    Object.const_get("Say::#{initial}JBanner")
-  end
-  private_class_method :determine_banner_class
 
   # Prints a set of 3 banner Strings with the specified message using
   # {Say.write}. If no message is supplied, just prints 3 full-width banner
@@ -474,9 +470,6 @@ module Say
   # Usage: Say.test;
   # @!visibility private
   def self.test
-    Say::LJBanner.test
-    Say::CJBanner.test
-    Say::RJBanner.test
     Say::InterpolationTemplate.test
     Say::Progress::Interval.test
     Say::Progress::Tracker.test

@@ -1,134 +1,225 @@
 # frozen_string_literal: true
 
-# Say::InterpolationTemplate is a value object that assigns meaning to the
-# passed in `interpolation_template_string` and exposes useful API methods for
-# interrogating it.
+# Say::InterpolationTemplate is a value object that represents an
+# interpolation template for interpolating text and creating banners of a
+# specified length.
 #
-# The default `interpolation_sentinel` is `"{}"`.
-# The default `interpolation_template_string` is: `"{}"` (i.e. no flourishes
-# are added on top of the default interpolation sentinel, in an attempt to be
-# neutral or to "know nothing" about "preferred" use cases.)
-#
-# The "interpolation sentinel" indicates the portion of the interpolation
-# template string that should be replaced with the given `text` during
-# interpolation.
+# Each segment of the interpolation template affects the output string as
+# specified:
+# - {#left_bookend} always anchored to left side of the output string; does
+#     not factor into string length for justification purposes.
+# - {#left_fill} the repeatable portion of the string to the left of the spacer
+#     and the given text.
+# - {#left_spacer} a static string inserted to the left of the given text.
+# - `text` is the given text that is to be interpolated into the template.
+# - {#right_spacer} a static string inserted to the right of the given text.
+# - {#right_fill} the repeatable portion of the string to the right of the
+#     spacer and the given text.
+# - {#right_bookend} always anchored to right side of the output string; does
+#     not factor into string length for justification purposes.
 #
 # @example Default Template
 #   interpolation_template = Say::InterpolationTemplate.new
-#   interpolation_template.interpolate("TEST")  # => "TEST="
+#   interpolation_template.interpolate("TEST")  # => "TEST"
 #
 # @example Custom Template
-#   interpolation_template = Say::InterpolationTemplate.new("=~{}~=")
-#   interpolation_template.interpolate("TEST")  # => "=~TEST~="
+#   interpolation_template =
+#     Say::InterpolationTemplate.new(
+#       left_bookend: "LBE",
+#       left_fill: "<",
+#       left_spacer: " ",
+#       right_spacer: " ",
+#       right_fill: ">",
+#       right_bookend: "RBE")
+#   interpolation_template.interpolate("TEST")  # => "LBE< TEST >RBE"
+#
+# @see Say::InterpolationTemplate::Builder For built-in/pre-defined
+#   templates.
+#
+# :reek:TooManyInstanceVariables
+# :reek:DataClump
 class Say::InterpolationTemplate
-  # The default interpolation sentinel used for interpolation templates.
-  DEFAULT_INTERPOLATION_SENTINEL = "{}"
+  DEFAULT_LENGTH = Say::MAX_COLUMNS
 
-  # The default interpolation template, using the default interpolation
-  # sentinel.
-  # rubocop:disable Style/RedundantInterpolation
-  DEFAULT_INTERPOLATION_TEMPLATE_STRING = "#{DEFAULT_INTERPOLATION_SENTINEL}"
-  # rubocop:enable Style/RedundantInterpolation
+  # A symbolic representation of the portion of the interpolation template
+  # string that should be replaced with the given `text` during interpolation.
+  INTERPOLATION_SENTINEL = "{}"
 
-  attr_reader :interpolation_template_string,
-              :interpolation_sentinel
+  attr_reader :left_bookend,
+              :left_fill,
+              :left_spacer,
+              :right_spacer,
+              :right_fill,
+              :right_bookend
 
-  # @param [String] interpolation_template_string The template String to be used
-  #   for interpolation.
-  # @param [String] interpolation_sentinel The sentinel value for indicating
-  #   where interpolation should happen within the
-  #   {#interpolation_template_string} String.
+  # @return [Say::InterpolationTemplate] The newly created interpolation
+  #   template object.
   #
-  # @raise [ArgumentError] if {#interpolation_template_string} doesn't include
-  #   {#interpolation_sentinel}.
-  #
-  # @return [Say::InterpolationTemplate] The newly created
-  #   Say::InterpolationTemplate object.
+  # rubocop:disable Metrics/ParameterLists
+  # :reek:LongParameterList
+  # :reek:TooManyStatements
   def initialize(
-        interpolation_template_string = DEFAULT_INTERPOLATION_TEMPLATE_STRING,
-        interpolation_sentinel: DEFAULT_INTERPOLATION_SENTINEL)
-    @interpolation_sentinel = String(interpolation_sentinel).freeze
-
-    interpolation_template_string = String(interpolation_template_string)
-    unless interpolation_template_string.include?(@interpolation_sentinel)
-      raise(
-        ArgumentError,
-        "interpolation_template_string "\
-        "(#{interpolation_template_string.inspect}) doesn't "\
-        "include interpolation_sentinel: `#{@interpolation_sentinel}`")
-    end
-
-    @interpolation_template_string = interpolation_template_string.freeze
+        left_bookend: nil,
+        left_fill: nil,
+        left_spacer: nil,
+        right_spacer: nil,
+        right_fill: nil,
+        right_bookend: nil)
+    @left_bookend = String(left_bookend).freeze
+    @left_fill = String(left_fill).freeze
+    @left_spacer = String(left_spacer).freeze
+    @right_spacer = String(right_spacer).freeze
+    @right_fill = String(right_fill).freeze
+    @right_bookend = String(right_bookend).freeze
   end
+  # rubocop:enable Metrics/ParameterLists
 
-  # Interpolates the given `text` into the {#interpolation_template_string}
-  # String.
+  # All attributes needed to represent the initialization of this object.
+  #
+  # @return [Hash]
+  def to_h
+    {
+      left_bookend: left_bookend,
+      left_fill: left_fill,
+      left_spacer: left_spacer,
+      right_spacer: right_spacer,
+      right_fill: right_fill,
+      right_bookend: right_bookend,
+    }
+  end
+  alias_method :attributes, :to_h
+
+  # A "template"-style String representation of all attributes in this object.
   #
   # @return [String]
+  def inspect
+    [
+      left_bookend,
+      (left_fill? ? "['#{left_fill}', ...]" : ""),
+      left_spacer,
+      INTERPOLATION_SENTINEL,
+      right_spacer,
+      (right_fill? ? "['#{right_fill}', ...]" : ""),
+      right_bookend,
+    ].join
+  end
+
+  # Apply direct interpolation of the given `text`, ignorant of any target
+  # lengths (ignoring repetition of left/right fills).
   #
-  # @example Using the Default #interpolation_template_string (`"{}="`)
-  #   Say::InterpolationTemplate.new.interpolate("TEST")  # => "TEST="
-  def interpolate(text)
-    message = interpolation_template_string.dup
-    message[interpolation_index_range] = String(text)
-    message
+  # @return [String]
+  def interpolate(text = "")
+    [
+      left_bookend,
+      left_fill,
+      left_spacer,
+      text,
+      right_spacer,
+      right_fill,
+      right_bookend,
+    ].join
   end
 
-  # Calculates the length of the "decoration" portion of the
-  # {#interpolation_template_string} String. This can be used to determine how
-  # many columns all but the actual to-be-interpolated text/message will take
-  # up.
+  def left_justify(text = "", length: DEFAULT_LENGTH)
+    justifier =
+      Say::LeftJustifier.new(interpolation_template: self, length: length)
+    justifier.call(text)
+  end
+
+  def center_justify(text = "", length: DEFAULT_LENGTH)
+    justifier =
+      Say::CenterJustifier.new(interpolation_template: self, length: length)
+    justifier.call(text)
+  end
+
+  def right_justify(text = "", length: DEFAULT_LENGTH)
+    justifier =
+      Say::RightJustifier.new(interpolation_template: self, length: length)
+    justifier.call(text)
+  end
+
+  # Wrap the given `text` with the {#left_spacer} and {#right_spacer}.
   #
-  # @return [Integer] The length of the decoration String.
-  def decoration_length
-    [0, interpolation_template_string.size - interpolation_sentinel_length].max
+  # @return [String]
+  def wrap(text)
+    [
+      left_fill,
+      left_spacer,
+      text,
+      right_spacer,
+      right_fill,
+    ].join
   end
 
-  # Splits the {#interpolation_template_string} String around the
-  # {#interpolation_sentinel} (plus any white space on either side). From this,
-  # we can extract e.g. the left-side and right-side fill patterns for banners.
+  # Presence check for {#left_fill}.
   #
-  # @return [Array] The left and right sides of the split interpolation
-  #   template string. Note: Will be empty if
-  #   `interpolation_template_string` == `interpolation_sentinel`.
-  def split
-    @split ||=
-      interpolation_template_string.split(
-        /\s*#{Regexp.escape(interpolation_sentinel)}\s*/)
+  # @return [True, False]
+  def left_fill?
+    left_fill != ""
   end
 
-  # Returns the left side of the {#split}.
+  # Presence check for {#right_fill}.
   #
-  # @return [String] the left side of the {#split}, or an empty String if not
-  #   split-able
-  def left_side
-    split.first.to_s
+  # @return [True, False]
+  def right_fill?
+    right_fill != ""
   end
 
-  # Returns the right side of the {#split}.
+  # Say::InterpolationTemplate::Builder is a factory for creating
+  # Say::InterpolationTemplate objects from the given type name or template
+  # attributes.
   #
-  # @return [String] the right side of the {#split}, or an empty String if not
-  #   split-able
-  def right_side
-    split.last.to_s
-  end
+  # The default Interpolation Template class is {Say::InterpolationTemplate}.
+  module Builder
+    DEFAULT_INTERPOLATION_TEMPLATE_CLASS = Say::InterpolationTemplate
 
-  private
+    DEFAULT_TYPE = :title
+    TYPES = {
+      hr: {
+        left_fill: "=", right_fill: "="
+      },
+      DEFAULT_TYPE => {
+        left_fill: "=", left_spacer: " ", right_spacer: " ", right_fill: "="
+      },
+      wtf: {
+        left_fill: "?", left_spacer: " ", right_spacer: " ", right_fill: "?"
+      },
+    }.freeze
 
-  def interpolation_index_range
-    left_insertion_index..right_insertion_index
-  end
+    # rubocop:disable Style/CommentedKeyword
+    TYPES.each_key do |type_name|
+      define_singleton_method(type_name) do   # def self.<type_name>
+        call(type_name)                       #   call(<type_name))
+      end                                     # end
+    end
+    # rubocop:enable Style/CommentedKeyword
 
-  def left_insertion_index
-    interpolation_template_string.index(interpolation_sentinel)
-  end
+    # @param type_or_template [#to_sym, `interpolation_template_class`] A type
+    #   name -- representing a set of interpolation template attributes.
+    #   Or, an object of type `interpolation_template_class` -- to be passed
+    #   through untouched.
+    def self.call(
+          type_or_template = nil,
+          interpolation_template_class: DEFAULT_INTERPOLATION_TEMPLATE_CLASS)
+      if type_or_template.is_a?(interpolation_template_class)
+        return type_or_template
+      end
 
-  def right_insertion_index
-    left_insertion_index.pred + interpolation_sentinel_length
-  end
+      interpolation_template_attributes =
+        to_interpolation_template_attributes(type_or_template || DEFAULT_TYPE)
+      interpolation_template_class.new(**interpolation_template_attributes)
+    end
 
-  def interpolation_sentinel_length
-    interpolation_sentinel.size
+    # @param type_or_template [#to_sym] one of `TYPES.keys`.
+    def self.to_interpolation_template_attributes(
+          type_name_or_template_attributes)
+      case type_name_or_template_attributes
+      when Hash
+        type_name_or_template_attributes
+      else
+        TYPES.fetch(type_name_or_template_attributes.to_sym)
+      end
+    end
   end
 
   # rubocop:disable all
@@ -138,60 +229,63 @@ class Say::InterpolationTemplate
   # @!visibility private
   def self.test
     Say.("Say::InterpolationTemplate.test") do
-      interpolation_template_strings = [
-        "{}",
-        "{}=",
-        "( •_•)O*¯`·.{}.·´¯`°Q(•_• )",
-        "╰(⇀︿⇀)つ-]═{}-"
+      interpolation_template_attributes_set = [
+        Say::InterpolationTemplate::Builder.call.to_h,
+        { left_fill: "=" },
+        { right_fill: "=" },
+        { left_bookend: "( •_•)O*¯", left_fill: "`·.·´", right_fill: "`·.·´", right_bookend: "¯°Q(•_• )" },
+        { left_bookend: "╰(⇀︿⇀)つ-]═", left_fill: "-", right_fill: "-" },
       ]
 
       results =
-        interpolation_template_strings.map { |interpolation_template_string|
-          obj = new(interpolation_template_string)
+        interpolation_template_attributes_set.map { |interpolation_template_attributes|
+          interpolation_template = new(**interpolation_template_attributes)
 
           {
-            interpolation_template_string: obj.interpolation_template_string,
-            decoration_length: obj.decoration_length,
-            left_side: obj.left_side,
-            right_side: obj.right_side,
-            result: obj.interpolate("TEST"),
-            result_for_nil: obj.interpolate(nil)
+            inspect: interpolation_template.inspect,
+            interpolate: interpolation_template.interpolate("TEST"),
+            left_justify: interpolation_template.left_justify("TEST"),
+            center_justify: interpolation_template.center_justify("TEST"),
+            right_justify: interpolation_template.right_justify("TEST"),
           }
         }
 
       expected_results = [
         {
-          interpolation_template_string:  "{}",
-          decoration_length:              0,
-          left_side:                      "",
-          right_side:                     "",
-          result:                         "TEST",
-          result_for_nil:                 ""
+          inspect:        "['=', ...] {} ['=', ...]",
+          interpolate:    "= TEST =",
+          left_justify:   "= TEST =========================================================================",
+          center_justify: "===================================== TEST =====================================",
+          right_justify:  "========================================================================= TEST =",
         },
         {
-          interpolation_template_string:  "{}=",
-          decoration_length:              1,
-          left_side:                      "",
-          right_side:                     "=",
-          result:                         "TEST=",
-          result_for_nil:                 "="
+          inspect:        "['=', ...]{}",
+          interpolate:    "=TEST",
+          left_justify:   "=TEST                                                                           ",
+          center_justify: "=======================================TEST                                     ",
+          right_justify:  "============================================================================TEST",
         },
         {
-          interpolation_template_string:  "( •_•)O*¯`·.{}.·´¯`°Q(•_• )",
-          decoration_length:              25,
-          left_side:                      "( •_•)O*¯`·.",
-          right_side:                     ".·´¯`°Q(•_• )",
-          result:                         "( •_•)O*¯`·.TEST.·´¯`°Q(•_• )",
-          result_for_nil:                 "( •_•)O*¯`·..·´¯`°Q(•_• )"
+          inspect:        "{}['=', ...]",
+          interpolate:    "TEST=",
+          left_justify:   "TEST============================================================================",
+          center_justify: "                                      TEST======================================",
+          right_justify:  "                                                                           TEST=",
         },
         {
-          interpolation_template_string:  "╰(⇀︿⇀)つ-]═{}-",
-          decoration_length:              11,
-          left_side:                      "╰(⇀︿⇀)つ-]═",
-          right_side:                     "-",
-          result:                         "╰(⇀︿⇀)つ-]═TEST-",
-          result_for_nil:                 "╰(⇀︿⇀)つ-]═-"
-        }
+          inspect:        "( •_•)O*¯['`·.·´', ...]{}['`·.·´', ...]¯°Q(•_• )",
+          interpolate:    "( •_•)O*¯`·.·´TEST`·.·´¯°Q(•_• )",
+          left_justify:   "( •_•)O*¯`·.·´TEST`·.·´`·.·´`·.·´`·.·´`·.·´`·.·´`·.·´`·.·´`·.·´`·.·´`·.¯°Q(•_• )",
+          center_justify: "( •_•)O*¯`·.·´`·.·´`·.·´`·.·´`·.·`·.·´TEST`·.·´`·.·´`·.·´`·.·´`·.·´`·.·¯°Q(•_• )",
+          right_justify:  "( •_•)O*¯`·.·´`·.·´`·.·´`·.·´`·.·´`·.·´`·.·´`·.·´`·.·´`·.`·.·´TEST`·.·´¯°Q(•_• )",
+        },
+        {
+          inspect:        "╰(⇀︿⇀)つ-]═['-', ...]{}['-', ...]",
+          interpolate:    "╰(⇀︿⇀)つ-]═-TEST-",
+          left_justify:   "╰(⇀︿⇀)つ-]═-TEST-----------------------------------------------------------------",
+          center_justify: "╰(⇀︿⇀)つ-]═----------------------------TEST--------------------------------------",
+          right_justify:  "╰(⇀︿⇀)つ-]═-----------------------------------------------------------------TEST-",
+        },
       ]
 
       if results == expected_results
