@@ -72,21 +72,23 @@ module Say
   # banners.
   MAX_COLUMNS = 80
 
+  # The default message to display in {.footer}s, if none is provided.
   DONE_MESSAGE = "Done"
+  # The default message to display in {.progress} blocks, if none is provided.
   START_MESSAGE = "Start"
 
   # Prints either a one-line message of the given type or executes a block of
   # code and surrounds it with header and footer banner messages.
   #
-  # @param text [String] (optional) The message to be printed.
-  # @param type [Symbol] (optional) The type of the message.
+  # @param text [String] The message to be printed.
+  # @param type [Symbol] The type of the message.
   #   (see Say::Message::TYPES)
   #   Note: `type` is ignored if a block is given.
-  # @param block [Proc] (optional) A block of code to be called with header and
-  #   footer banners.
+  # @param block [Proc] A block of code to be called with header and footer
+  #   banners.
   #
-  # @return [] Returns the result of the called block if a block is given.
-  # @return [String] Returns the built message if no block is given.
+  # @return The result of the called block, if a block is given.
+  # @return [String] The built message, if no block is given.
   #
   # @example No Block Given
   #   Say.("Hello, World!")  # => " -> Hello, World!"
@@ -119,20 +121,25 @@ module Say
   end
 
   # rubocop:disable Style/SingleLineMethods
+  # Output :debug "type" text. Same as `line(text, type: :debug)`.
   def self.debug(text) line(text, type: :debug) end
+  # Output :error "type" text. Same as `line(text, type: :error)`.
   def self.error(text) line(text, type: :error) end
+  # Output :info "type" text. Same as `line(text, type: :info)`.
   def self.info(text) line(text, type: :info) end
+  # Output :success "type" text. Same as `line(text, type: :success)`.
   def self.success(text) line(text, type: :success) end
+  # Output :warn "type" text. Same as `line(text, type: :warn)`.
   def self.warn(text) line(text, type: :warn) end
   # rubocop:enable Style/SingleLineMethods
 
   # Prints a built one-line message of the given type using {Say.write}.
   #
-  # @param text [String] (optional) The message to be printed.
-  # @param kwargs [Hash] Additional keyword arguments to be passed to the
-  #   `message` method of the same class/module.
+  # @param text [String] The message to be printed.
+  # @param message_kwargs [Hash] Additional keyword arguments to be passed to
+  #   the `message` method of the same class/module.
   #
-  # @return [String] Returns the built message.
+  # @return [String] The built message.
   #
   # @example
   #   Say.line("Hello, World!")  # => " -> Hello, World!"
@@ -146,12 +153,12 @@ module Say
   # messages.
   #
   # @param header [String] The message to be printed in the header.
-  # @param footer [String] (optional) The message to be printed in the footer.
+  # @param footer [String] The message to be printed in the footer.
   #   Default is {Say::DONE_MESSAGE}.
   #
   # @yield [] The block of code to be called.
   #
-  # @return [] Returns the result of the called block.
+  # @return The result of the called block.
   #
   # @raise [ArgumentError] Raises an ArgumentError if no block is given.
   #
@@ -196,13 +203,15 @@ module Say
   # `columns` number of columns. This serves as, e.g., a visual break point at
   # the start of a processing task.
   #
-  # @param text [String] (optional) The message to be printed as the header.
-  # @param kwargs [Hash] Additional keyword arguments to be passed to the
+  # @param text [String] The message to be printed as the header.
+  # @param banner_kwargs [Hash] Additional keyword arguments to be passed to the
   #   `banner` method of the same class/module.
-  # @option kwargs [Symbol] :columns The maximum *preferred* column length of
-  #   the header message.
+  # @option banner_kwargs [Integer] :columns The maximum *preferred* column
+  #   length of the header message.
+  # @option banner_kwargs [Symbol] :justify The text justification to use for
+  #   the banner.
   #
-  # @return [String] Returns the built banner message.
+  # @return [String] The built banner message.
   #
   # @example Default (though non-standard) usage
   #   Say.header
@@ -223,12 +232,14 @@ module Say
   # point at the end of a processing task.
   #
   # @param text [String] The message to be printed as the footer.
-  # @param kwargs [Hash] Additional keyword arguments to be passed to the
+  # @param banner_kwargs [Hash] Additional keyword arguments to be passed to the
   #   `banner` method of the same class/module.
-  # @option kwargs [Symbol] :columns The maximum *preferred* column length of
-  #   the footer message.
+  # @option banner_kwargs [Integer] :columns The maximum *preferred* column
+  #   length of the header message.
+  # @option banner_kwargs [Symbol] :justify The text justification to use for
+  #   the banner.
   #
-  # @return [String] Returns the built banner message.
+  # @return [String] The built banner message.
   #
   # @example Default usage
   #   Say.footer
@@ -252,11 +263,11 @@ module Say
   # Prints a banner String with the specified message using {Say.write}. If no
   # message is supplied, just prints a full-width banner String.
   #
-  # @param text [String] (optional) The message to be included in the banner.
+  # @param text [String] The message to be included in the banner.
   # @param columns [Integer] The maximum length of the banner line.
   #   Default value is the constant `MAX_COLUMNS`.
   #
-  # @return [String] Returns the formatted banner String.
+  # @return [String] The formatted banner String.
   #
   # @example Default usage
   #   Say.banner
@@ -280,12 +291,11 @@ module Say
   # String. The final banner string is printed using {Say.footer}, so includes
   # an extra newline character.
   #
-  # @param text [String] (optional) The message to be included in the 2nd
-  #   banner.
+  # @param text [String] The message to be included in the 2nd banner.
   # @param columns [Integer] The maximum length of the banner lines.
   #   Default value is the constant `MAX_COLUMNS`.
   #
-  # @return [String] Returns the formatted banner String.
+  # @return [String] The formatted banner String.
   #
   # @example Default usage
   #   Say.section  # =>
@@ -330,9 +340,9 @@ module Say
   #
   # @yield [Say::Progress::Interval] The interval upon which to `say` things.
   #
-  # @return [] Returns the result of the called block.
+  # @return The result of the called block.
   #
-  # @example Simple Example
+  # @example A Simple Example
   #   Say.progress do |interval|
   #     3.times do
   #       interval.update
@@ -377,14 +387,13 @@ module Say
     end
   end
 
-  # Prints a {#progress_message} (one that includes the original text plus an
+  # Prints a {.progress_message} (one that includes the original text plus an
   # indicator of the given `index`) via {Say.say}.
   #
   # @param text [String] The String to be printed, which will be appended with
   #   an indicator of the given `index`.
-  # @param type [Symbol] (optional) The type of the message.
-  #   (see Say::Message::TYPES)
-  # @param index [Integer] (optional)
+  # @param type [Symbol] The type of the message. (see Say::Message::TYPES)
+  # @param index [Integer]
   #
   # @example Typical Usage
   #   Say.progress_line("TEST", index: 3)
@@ -407,7 +416,7 @@ module Say
     write(full_message)
   end
 
-  # @param message [Say::Message, #to_s] the message text to be output
+  # @param message [Say::Message, #to_s] The message text to be output.
   #
   # @example
   #   Say.__send__(:progress_message, "TEST")
@@ -434,7 +443,7 @@ module Say
   #
   # @param messages [Array<String>] The messages to be printed.
   #
-  # @return [String] Returns the messages joined by newline characters.
+  # @return [String] The messages, joined by newline characters.
   def self.write(*messages)
     puts(*messages)
     messages.join("\n")
@@ -466,9 +475,9 @@ module Say
   # rubocop:enable Style/SingleLineMethods
 
   # :nocov:
+  # @!visibility private
 
   # Usage: Say.test;
-  # @!visibility private
   def self.test
     Say::InterpolationTemplate.test
     Say::Progress::Interval.test

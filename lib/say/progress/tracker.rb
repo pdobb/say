@@ -5,6 +5,9 @@
 #
 # @see Say::Progress::Interval
 class Say::Progress::Tracker
+  # The default "interval" to use for ticks in a loop if no `interval` is
+  # provided. i.e. the default is to provide continuous ticking/updating for
+  # every loop iteration.
   DEFAULT_INTERVAL = 1
 
   attr_reader :interval,
@@ -12,7 +15,7 @@ class Say::Progress::Tracker
 
   # @param interval [Integer] Indexes at which the current tick in a loop will
   #   be considered on-interval.
-  # @param index [Integer] the current iteration through a loop.
+  # @param index [Integer] The current iteration through a loop.
   def initialize(interval: DEFAULT_INTERVAL, index: 0)
     @interval = Integer(interval)
     @index = Integer(index)
@@ -54,9 +57,9 @@ class Say::Progress::Tracker
 
   # rubocop:disable all
   # :nocov:
+  # @!visibility private
 
   # Usage: Say::Progress::Tracker.test;
-  # @!visibility private
   def self.test
     Say.("Say::Progress::Tracker.test") do
       i1 = Say::Progress::Tracker.new

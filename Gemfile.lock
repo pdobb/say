@@ -82,6 +82,7 @@ GEM
     stringio (3.0.8)
     timecop (0.9.8)
     unicode-display_width (2.5.0)
+    yard (0.9.34)
 
 PLATFORMS
   arm64-darwin-22
@@ -104,6 +105,7 @@ DEPENDENCIES
   say!
   simplecov
   timecop
+  yard
 
 BUNDLED WITH
    2.4.13

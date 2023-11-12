@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-# Say::Message represents the user-supplied text and type, to be output by the
-# various Say.* methods.
+# Say::Message represents the user-supplied text and output type, to be
+# outputted by the various Say.* methods.
 #
 # @example Default Output, given no text or type
 #   Say::Message.new.to_s  # => " ..."
@@ -18,6 +18,7 @@
 #   Say::Message.new("Test", type: :warn).to_s     # => " !¡ Test"
 #   Say::Message.new.to_s                          # => " ..."
 class Say::Message
+  # The default Message "TYPE" if no `type` name is provided.
   DEFAULT_TYPE = :success
 
   # Mapping of message types to their corresponding prefixes for the `say`
@@ -35,25 +36,28 @@ class Say::Message
       debug: " >> ",
       error: " ** ",
       info: " -- ",
-      success: hash.default,
+      DEFAULT_TYPE => hash.default,
       warn: " !¡ ")
   }.freeze
 
   # The default message to use when one is not supplied.
   DEFAULT_MESSAGE = " ..."
 
-  attr_reader :type,
-              :text
+  attr_reader :text,
+              :type
+
+  # :reek:ControlParameter
 
   # @param text [String] (DEFAULT_MESSAGE) The user-supplied text.
-  # @param type [Symbol] (optional) One of Say::Message::TYPES.keys
-  # :reek:ControlParameter
+  # @param type [Symbol] One of Say::Message::TYPES.keys
   def initialize(text = nil, type: DEFAULT_TYPE)
     @text = text
     @type = type || DEFAULT_TYPE
   end
 
-  # @return [String] Returns the built message String.
+  # Return the built message as a String.
+  #
+  # @return [String]
   def to_s
     return DEFAULT_MESSAGE unless text
 

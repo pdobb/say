@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# :reek:TooManyInstanceVariables
+# :reek:DataClump
+
 # Say::InterpolationTemplate is a value object that represents an
 # interpolation template for interpolating text and creating banners of a
 # specified length.
@@ -7,16 +10,16 @@
 # Each segment of the interpolation template affects the output string as
 # specified:
 # - {#left_bookend} always anchored to left side of the output string; does
-#     not factor into string length for justification purposes.
+#   not factor into string length for justification purposes.
 # - {#left_fill} the repeatable portion of the string to the left of the spacer
-#     and the given text.
+#   and the given text.
 # - {#left_spacer} a static string inserted to the left of the given text.
 # - `text` is the given text that is to be interpolated into the template.
 # - {#right_spacer} a static string inserted to the right of the given text.
 # - {#right_fill} the repeatable portion of the string to the right of the
-#     spacer and the given text.
+#   spacer and the given text.
 # - {#right_bookend} always anchored to right side of the output string; does
-#     not factor into string length for justification purposes.
+#   not factor into string length for justification purposes.
 #
 # @example Default Template
 #   interpolation_template = Say::InterpolationTemplate.new
@@ -33,14 +36,9 @@
 #       right_bookend: "RBE")
 #   interpolation_template.interpolate("TEST")  # => "LBE< TEST >RBE"
 #
-# @see Say::InterpolationTemplate::Builder For built-in/pre-defined
-#   templates.
-#
-# :reek:TooManyInstanceVariables
-# :reek:DataClump
+# @see Say::InterpolationTemplate::Builder Say::InterpolationTemplate::Builder
+#   -- for built-in/pre-defined templates.
 class Say::InterpolationTemplate
-  DEFAULT_LENGTH = Say::MAX_COLUMNS
-
   # A symbolic representation of the portion of the interpolation template
   # string that should be replaced with the given `text` during interpolation.
   INTERPOLATION_SENTINEL = "{}"
@@ -52,12 +50,10 @@ class Say::InterpolationTemplate
               :right_fill,
               :right_bookend
 
-  # @return [Say::InterpolationTemplate] The newly created interpolation
-  #   template object.
-  #
   # rubocop:disable Metrics/ParameterLists
   # :reek:LongParameterList
   # :reek:TooManyStatements
+
   def initialize(
         left_bookend: nil,
         left_fill: nil,
@@ -120,19 +116,37 @@ class Say::InterpolationTemplate
     ].join
   end
 
-  def left_justify(text = "", length: DEFAULT_LENGTH)
+  # Output a left-justified banner of the given `length`.
+  #
+  # @param text [String]
+  # @param length [Integer]
+  #
+  # @return [String]
+  def left_justify(text = "", length: Say::MAX_COLUMNS)
     justifier =
       Say::LeftJustifier.new(interpolation_template: self, length: length)
     justifier.call(text)
   end
 
-  def center_justify(text = "", length: DEFAULT_LENGTH)
+  # Output a center-justified banner of the given `length`.
+  #
+  # @param text [String]
+  # @param length [Integer]
+  #
+  # @return [String]
+  def center_justify(text = "", length: Say::MAX_COLUMNS)
     justifier =
       Say::CenterJustifier.new(interpolation_template: self, length: length)
     justifier.call(text)
   end
 
-  def right_justify(text = "", length: DEFAULT_LENGTH)
+  # Output a right-justified banner of the given `length`.
+  #
+  # @param text [String]
+  # @param length [Integer]
+  #
+  # @return [String]
+  def right_justify(text = "", length: Say::MAX_COLUMNS)
     justifier =
       Say::RightJustifier.new(interpolation_template: self, length: length)
     justifier.call(text)
@@ -171,15 +185,17 @@ class Say::InterpolationTemplate
   #
   # The default Interpolation Template class is {Say::InterpolationTemplate}.
   module Builder
-    DEFAULT_INTERPOLATION_TEMPLATE_CLASS = Say::InterpolationTemplate
+    # The default Predefined Interpolation Template to use, if no other name is
+    # provided.
+    DEFAULT_INTERPOLATION_TEMPLATE_NAME = :title
 
-    DEFAULT_TYPE = :title
-    TYPES = {
+    # Predefined Interpolation Templates by name and attributes hash.
+    DEFAULT_INTERPOLATION_TEMPLATES = {
+      DEFAULT_INTERPOLATION_TEMPLATE_NAME => {
+        left_fill: "=", left_spacer: " ", right_spacer: " ", right_fill: "="
+      },
       hr: {
         left_fill: "=", right_fill: "="
-      },
-      DEFAULT_TYPE => {
-        left_fill: "=", left_spacer: " ", right_spacer: " ", right_fill: "="
       },
       wtf: {
         left_fill: "?", left_spacer: " ", right_spacer: " ", right_fill: "?"
@@ -187,7 +203,7 @@ class Say::InterpolationTemplate
     }.freeze
 
     # rubocop:disable Style/CommentedKeyword
-    TYPES.each_key do |type_name|
+    DEFAULT_INTERPOLATION_TEMPLATES.each_key do |type_name|
       define_singleton_method(type_name) do   # def self.<type_name>
         call(type_name)                       #   call(<type_name))
       end                                     # end
@@ -200,33 +216,36 @@ class Say::InterpolationTemplate
     #   through untouched.
     def self.call(
           type_or_template = nil,
-          interpolation_template_class: DEFAULT_INTERPOLATION_TEMPLATE_CLASS)
+          interpolation_template_class: Say::InterpolationTemplate)
       if type_or_template.is_a?(interpolation_template_class)
         return type_or_template
       end
 
       interpolation_template_attributes =
-        to_interpolation_template_attributes(type_or_template || DEFAULT_TYPE)
+        to_interpolation_template_attributes(
+          type_or_template || DEFAULT_INTERPOLATION_TEMPLATE_NAME)
       interpolation_template_class.new(**interpolation_template_attributes)
     end
 
-    # @param type_or_template [#to_sym] one of `TYPES.keys`.
+    # @param type_name_or_template_attributes [#to_sym] One of
+    #   `DEFAULT_INTERPOLATION_TEMPLATES.keys`.
     def self.to_interpolation_template_attributes(
           type_name_or_template_attributes)
       case type_name_or_template_attributes
       when Hash
         type_name_or_template_attributes
       else
-        TYPES.fetch(type_name_or_template_attributes.to_sym)
+        DEFAULT_INTERPOLATION_TEMPLATES.fetch(
+          type_name_or_template_attributes.to_sym)
       end
     end
   end
 
   # rubocop:disable all
   # :nocov:
+  # @!visibility private
 
   # Usage: Say::InterpolationTemplate.test;
-  # @!visibility private
   def self.test
     Say.("Say::InterpolationTemplate.test") do
       interpolation_template_attributes_set = [

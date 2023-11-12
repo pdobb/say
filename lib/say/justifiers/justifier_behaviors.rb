@@ -1,29 +1,32 @@
 # frozen_string_literal: true
 
+# :reek:ModuleInitialize
+
 # Say::JustifierBehaviors is a mix-in that defines common
 # left/center/right-justification behaviors.
 #
 # @see Say::LeftJustifier
 # @see Say::CenterJustifier
 # @see Say::RightJustifier
-#
-# :reek:ModuleInitialize
 module Say::JustifierBehaviors
+  # The default fill pattern to use if {#left_fill} or {#right_fill} is not
+  # provided. It's important to use a space in this case, so that
+  # left/center/right-justification can still work--as an empty string cannot
+  # effectively shift a string over one way or another.
   DEFAULT_FILL_PATTERN = " "
-  DEFAULT_LENGTH = Say::MAX_COLUMNS
 
   attr_reader :interpolation_template,
               :total_length
 
   # @param interpolation_template [Say::InterpolationTemplate]
-  # @param length [Integer] how long the output String should aim to be, at
+  # @param length [Integer] How long the output String should aim to be, at
   #   most. Will not truncate.
-  def initialize(interpolation_template:, length: DEFAULT_LENGTH)
+  def initialize(interpolation_template:, length: Say::MAX_COLUMNS)
     @interpolation_template = interpolation_template
     @total_length = Integer(length)
   end
 
-  # Justify the given {#text} and wrap with left/right bookends. If a block is
+  # Justify the given `text` and wrap with left/right bookends. If a block is
   # given, then this will override anything passed by the `text` attribute.
   #
   # @return [String]

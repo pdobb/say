@@ -24,12 +24,12 @@ class Say::Progress::Interval
   # no block is given) if this is an on-interval tick. If a block is given it
   # will always be called, regardless.
   #
-  # @param text [String] (optional) The message to be printed.
-  # @param type [Symbol] (optional) The type of the message.
+  # @param text [String] The message to be printed.
+  # @param type [Symbol] The type of the message.
   #   (see Say::Message::TYPES)
   #   Note: `type` is ignored if a block is given.
-  # @param block [Proc] (optional) A block of code to be called with header and
-  #   footer banners.
+  # @param block [Proc] A block of code to be called with header and footer
+  #   banners.
   #
   # @return [] Returns the result of the called block if a block is given.
   def say(text = nil, type = nil, index: self.index, &block)
@@ -52,7 +52,7 @@ class Say::Progress::Interval
   # Must be called manually by the client code because automatic index updating
   # is less reliable.
   #
-  # @param index [Integer, nil] the current index number we're on for this
+  # @param index [Integer, nil] The current index number we're on for this
   #   Interval.
   #
   # @return [self]
@@ -78,9 +78,9 @@ class Say::Progress::Interval
 
   # rubocop:disable all
   # :nocov:
+  # @!visibility private
 
   # Usage: Say::Progress::Interval.test;
-  # @!visibility private
   def self.test
     require "timecop"
     Timecop.freeze(Say::Time.test_sample)

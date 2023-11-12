@@ -9,6 +9,7 @@ task :default do
     test
     rubocop
     reek
+    yard
   ])
 end
 
