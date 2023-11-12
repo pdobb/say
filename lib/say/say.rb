@@ -264,17 +264,8 @@ module Say
   #   Say.banner("Test", columns: 20, justify: :right)
   #   # => "============= Test ="
   def self.banner(text = nil, columns: MAX_COLUMNS, justify: :left)
-    write(generate_banner(text, columns: columns, justify: justify))
+    write(Say::BannerGenerator.(text, columns: columns, justify: justify))
   end
-
-  # TODO: Extract out to a Say::Banner factory method.
-  def self.generate_banner(text = nil, columns: MAX_COLUMNS, justify: :left)
-    type = text ? :title : :hr
-    interpolation_template = Say::InterpolationTemplate::Builder.call(type)
-    interpolation_template.public_send(
-      "#{justify}_justify", text, length: columns)
-  end
-  private_class_method :generate_banner
 
   # Prints a set of 3 banner Strings with the specified message using
   # {Say.write}. If no message is supplied, just prints 3 full-width banner
@@ -312,8 +303,9 @@ module Say
   #
   # :reek:DuplicateMethodCall
   def self.section(text = nil, columns: MAX_COLUMNS, justify: :left)
-    banner = generate_banner(text, columns: columns, justify: justify)
-    decorative_banner = generate_banner(columns: banner.length)
+    banner = Say::BannerGenerator.(text, columns: columns, justify: justify)
+    decorative_banner =
+      Say::BannerGenerator.(nil, columns: banner.length, justify: :left)
 
     [
       write(decorative_banner),

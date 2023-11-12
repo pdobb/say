@@ -10,6 +10,10 @@ require "say/message"
 require "say/time"
 require "say/version"
 
+# GENERATORS
+
+require "say/generators/banner_generator"
+
 # JUSTIFIERS
 
 require "say/justifiers/justifier_behaviors"
