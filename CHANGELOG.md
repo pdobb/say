@@ -1,3 +1,13 @@
+## Unreleased
+
+#### Public API Updates!
+- Add `Say.<type>` convenience methods. These are single-argument alternatives to `Say.line(text, type)`:
+  - `Say.debug("TEST")   # => " >> TEST"`
+  - `Say.error("TEST")   # => " ** TEST"`
+  - `Say.info("TEST")    # => " -- TEST"`
+  - `Say.success("TEST") # => " -> TEST"`
+  - `Say.warn("TEST")    # => " !¡ TEST"`
+
 ## [0.5.0] - 2023-11-11
 
 Complete rewrite of Say::InterpolationTemplate.

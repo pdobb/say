@@ -63,7 +63,7 @@ result  # => "The Result!"
 
 ### `Say.<method>`
 
-For quick-access usage, you can just call `Say.<method>` without including `Say`.
+For quick-access usage, you can just call `Say.<method>` without needing to `include Say`.
 
 ```ruby
 require "say"
@@ -97,7 +97,7 @@ result  # => "The Result!"
 ```
 
 ### Say Types
-When calling `Say.call(<message>, <type>)`, the available types and output representations are:
+When using `Say.(<message>, <type>)`, the available types and output representations are:
 
 - `:debug`   -> `" >> "`
 - `:error`   -> `" ** "`
@@ -117,6 +117,17 @@ The default type is `:success`.
 
 ```ruby
 Say.("TEST")  # => " -> TEST"
+```
+
+### `Say.<type>` Methods
+Single-argument alternatives for each of the `<type>` calls in the previous section:
+
+```ruby
+Say.debug("TEST")   # => " >> TEST"
+Say.error("TEST")   # => " ** TEST"
+Say.info("TEST")    # => " -- TEST"
+Say.success("TEST") # => " -> TEST"
+Say.warn("TEST")    # => " !¡ TEST"
 ```
 
 ### `Say.section`

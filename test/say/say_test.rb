@@ -61,6 +61,42 @@ class SayTest < Minitest::Spec
       end
     end
 
+    describe "Say.<type> convenience methods" do
+      before do
+        MuchStub.on_call($stdout, :puts) { |call| @puts_call = call }
+      end
+
+      describe ".debug" do
+        it "returns the expected String, GIVEN text" do
+          value(Say.debug("TEST")).must_equal(" >> TEST")
+        end
+      end
+
+      describe ".error" do
+        it "returns the expected String, GIVEN text" do
+          value(Say.error("TEST")).must_equal(" ** TEST")
+        end
+      end
+
+      describe ".info" do
+        it "returns the expected String, GIVEN text" do
+          value(Say.info("TEST")).must_equal(" -- TEST")
+        end
+      end
+
+      describe ".success" do
+        it "returns the expected String, GIVEN text" do
+          value(Say.success("TEST")).must_equal(" -> TEST")
+        end
+      end
+
+      describe ".warn" do
+        it "returns the expected String, GIVEN text" do
+          value(Say.warn("TEST")).must_equal(" !¡ TEST")
+        end
+      end
+    end
+
     describe ".line" do
       before do
         MuchStub.on_call($stdout, :puts) { |call| @puts_call = call }

@@ -118,6 +118,14 @@ module Say
     end
   end
 
+  # rubocop:disable Style/SingleLineMethods
+  def self.debug(text) line(text, type: :debug) end
+  def self.error(text) line(text, type: :error) end
+  def self.info(text) line(text, type: :info) end
+  def self.success(text) line(text, type: :success) end
+  def self.warn(text) line(text, type: :warn) end
+  # rubocop:enable Style/SingleLineMethods
+
   # Prints a built one-line message of the given type using {Say.write}.
   #
   # @param text [String] (optional) The message to be printed.
