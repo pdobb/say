@@ -1,4 +1,4 @@
-## [Unreleased]
+## [0.5.0] - 2023-11-11
 
 Complete rewrite of Say::InterpolationTemplate.
 - Say::InterpolationTemplate is now defined through piecemeal attributes, instead of by passing in a representative interpolation template String. This allows for very obvious and fine-grained control of which parts of the template are which.
