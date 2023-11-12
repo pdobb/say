@@ -1,4 +1,4 @@
-## Unreleased
+## [0.5.1] - 2023-11-11
 
 #### Public API Updates!
 - Add `Say.<type>` convenience methods. These are single-argument alternatives to `Say.line(text, type)`:
