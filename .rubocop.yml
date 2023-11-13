@@ -24,6 +24,9 @@ Gemspec/DevelopmentDependencies:
 Layout/DotPosition:
   EnforcedStyle: trailing
 
+Layout/EmptyLineAfterGuardClause:
+  Enabled: true
+
 Layout/EndOfLine:
   EnforcedStyle: lf
 
@@ -53,6 +56,16 @@ Layout/LineLength:
     # YARD doc `@example` output.
     - !ruby/regexp /\A *#   \# => /
     - !ruby/regexp /\A *#   =/
+
+Layout/MultilineAssignmentLayout:
+  Enabled: true
+  SupportedTypes:
+    - block
+    - case
+    - class
+    - if
+    # - kwbegin
+    - module
 
 Layout/MultilineMethodCallBraceLayout:
   EnforcedStyle: same_line
