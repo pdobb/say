@@ -19,6 +19,17 @@ And then execute:
 bundle
 ```
 
+## Compatibility
+
+Tested MRI Ruby Versions:
+* 2.7
+* 3.0
+* 3.1
+* 3.2
+
+Say has no other dependencies.
+
+
 ## Usage
 
 ### `include Say`
