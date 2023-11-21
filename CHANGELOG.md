@@ -1,3 +1,6 @@
+## [0.5.2] - 2023-11-21
+- Internal updates to style, etc. No outward-facing changes.
+
 ## [0.5.1] - 2023-11-11
 
 #### Public API Updates!
