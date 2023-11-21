@@ -191,9 +191,9 @@ module Say
     result
   end
 
-  def self.benchmark_block_run(message, &block)
+  def self.benchmark_block_run(message)
     result = nil
-    time = Benchmark.measure { result = block.call }
+    time = Benchmark.measure { result = yield }
     time_string = "%.4fs" % time.real
     [result, "#{message} (#{time_string})"]
   end

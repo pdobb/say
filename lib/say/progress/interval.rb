@@ -40,7 +40,7 @@ class Say::Progress::Interval
         Say.progress_line(text, type, index: index)
       end
     elsif block
-      block.call
+      yield
     else
       # Nothing to do.
     end
