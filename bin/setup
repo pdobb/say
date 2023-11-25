@@ -1,4 +1,10 @@
 #!/usr/bin/env bash
+
+# Recompile and install Gemwork locally.
+if [ -n "$REBUILD_GEMWORK" ]; then
+  ( cd ~/dev/gemwork && rake install:local )
+fi
+
 set -euo pipefail
 IFS=$'\n\t'
 set -vx
