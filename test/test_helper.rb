@@ -1,23 +1,14 @@
 # frozen_string_literal: true
 
-require "support/simplecov"
+require "gemwork/test/support/simplecov"
 
 $LOAD_PATH.unshift File.expand_path("../lib", __dir__)
 require "say"
 
 require "minitest/autorun"
-require "support/reporters"
 
-require "much-stub"
+require "gemwork/test/support/reporters"
+require "gemwork/test/support/much_stub"
+require "gemwork/test/support/spec_dsl"
 
 require "timecop"
-
-class Minitest::Spec
-  after do
-    MuchStub.unstub!
-  end
-end
-
-def context(...)
-  describe(...)
-end
