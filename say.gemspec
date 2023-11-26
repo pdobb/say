@@ -37,9 +37,7 @@ Gem::Specification.new do |spec|
   # guide at: https://bundler.io/guides/creating_gem.html
 
   spec.add_development_dependency "amazing_print"
-  spec.add_development_dependency "debug"
   spec.add_development_dependency "gemwork"
-  spec.add_development_dependency "pry"
   spec.add_development_dependency "rake"
   spec.add_development_dependency "timecop"
 end
