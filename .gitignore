@@ -6,6 +6,7 @@
 /pkg/
 /tmp/
 
+/script/playground.rb
+
 .DS_Store
 /.vscode
-/script/playground.rb
