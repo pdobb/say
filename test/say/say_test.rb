@@ -240,7 +240,7 @@ class SayTest < Minitest::Spec
           "= Done ========================================================================="
         # rubocop:enable Layout/LineLength
         value(subject.footer).must_equal(expected_result)
-        value(@puts_calls.map(&:args).flatten).must_equal(
+        value(@puts_calls.map(&:args).tap(&:flatten!)).must_equal(
           [expected_result, "\n"])
       end
 
@@ -250,7 +250,7 @@ class SayTest < Minitest::Spec
           "= TEST ========================================================================="
         # rubocop:enable Layout/LineLength
         value(subject.footer("TEST")).must_equal(expected_result)
-        value(@puts_calls.map(&:args).flatten).must_equal(
+        value(@puts_calls.map(&:args).tap(&:flatten!)).must_equal(
           [expected_result, "\n"])
       end
 
@@ -261,7 +261,7 @@ class SayTest < Minitest::Spec
             "= TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT ="
           # rubocop:enable Layout/LineLength
           value(subject.footer("T" * 90)).must_equal(expected_result)
-          value(@puts_calls.map(&:args).flatten).must_equal(
+          value(@puts_calls.map(&:args).tap(&:flatten!)).must_equal(
             [expected_result, "\n"])
         end
       end
@@ -328,7 +328,7 @@ class SayTest < Minitest::Spec
         ]
         # rubocop:enable Layout/LineLength
         value(subject.section).must_equal(expected_result)
-        value(@puts_calls.map(&:args).flatten).must_equal(
+        value(@puts_calls.map(&:args).tap(&:flatten!)).must_equal(
           expected_result + ["\n"])
       end
 
@@ -341,7 +341,7 @@ class SayTest < Minitest::Spec
         ]
         # rubocop:enable Layout/LineLength
         value(subject.section("")).must_equal(expected_result)
-        value(@puts_calls.map(&:args).flatten).must_equal(
+        value(@puts_calls.map(&:args).tap(&:flatten!)).must_equal(
           expected_result + ["\n"])
       end
 
@@ -354,7 +354,7 @@ class SayTest < Minitest::Spec
         ]
         # rubocop:enable Layout/LineLength
         value(subject.section("TEST")).must_equal(expected_result)
-        value(@puts_calls.map(&:args).flatten).must_equal(
+        value(@puts_calls.map(&:args).tap(&:flatten!)).must_equal(
           expected_result + ["\n"])
       end
 
@@ -367,7 +367,7 @@ class SayTest < Minitest::Spec
         ]
         # rubocop:enable Layout/LineLength
         value(subject.section("T" * 90)).must_equal(expected_result)
-        value(@puts_calls.map(&:args).flatten).must_equal(
+        value(@puts_calls.map(&:args).tap(&:flatten!)).must_equal(
           expected_result + ["\n"])
       end
     end

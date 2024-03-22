@@ -15,7 +15,7 @@ module Say::BannerGenerator
   def self.call(text, columns:, justify:)
     interpolation_template = build_interpolation_template(text)
     interpolation_template.public_send(
-      "#{justify}_justify", text, length: columns)
+      :"#{justify}_justify", text, length: columns)
   end
 
   def self.build_interpolation_template(text)

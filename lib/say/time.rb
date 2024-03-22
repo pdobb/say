@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Say::Time assists with outputting Timestamps.
-class Say::Time
+module Say::Time
   # The default {.timestamp} format name, if none is provided.
   DEFAULT_TIMESTAMP_FORMAT_NAME = :web_service
 
