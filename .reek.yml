@@ -18,4 +18,4 @@ detectors:
 
 exclude_paths:
   - script
-  - test
+  - test/**/*
