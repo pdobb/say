@@ -10,14 +10,14 @@ class Say::InterpolationTemplateTest < Minitest::Spec
       context "GIVEN no args" do
         it "has the expected default attributes" do
           result = subject.new
-          value(result.inspect).must_equal("{}")
+          _(result.inspect).must_equal("{}")
 
-          value(result.left_bookend).must_equal("")
-          value(result.left_fill).must_equal("")
-          value(result.left_spacer).must_equal("")
-          value(result.right_spacer).must_equal("")
-          value(result.right_fill).must_equal("")
-          value(result.right_bookend).must_equal("")
+          _(result.left_bookend).must_equal("")
+          _(result.left_fill).must_equal("")
+          _(result.left_spacer).must_equal("")
+          _(result.right_spacer).must_equal("")
+          _(result.right_fill).must_equal("")
+          _(result.right_bookend).must_equal("")
         end
       end
 
@@ -31,15 +31,15 @@ class Say::InterpolationTemplateTest < Minitest::Spec
               right_spacer: "_RS_",
               right_fill: "RF",
               right_bookend: "RBE")
-          value(result.inspect).must_equal(
+          _(result.inspect).must_equal(
             "LBE['LF', ...]_LS_{}_RS_['RF', ...]RBE")
 
-          value(result.left_bookend).must_equal("LBE")
-          value(result.left_fill).must_equal("LF")
-          value(result.left_spacer).must_equal("_LS_")
-          value(result.right_spacer).must_equal("_RS_")
-          value(result.right_fill).must_equal("RF")
-          value(result.right_bookend).must_equal("RBE")
+          _(result.left_bookend).must_equal("LBE")
+          _(result.left_fill).must_equal("LF")
+          _(result.left_spacer).must_equal("_LS_")
+          _(result.right_spacer).must_equal("_RS_")
+          _(result.right_fill).must_equal("RF")
+          _(result.right_bookend).must_equal("RBE")
         end
       end
     end
@@ -49,7 +49,7 @@ class Say::InterpolationTemplateTest < Minitest::Spec
 
       it "returns the expected Hash" do
         result = subject.new
-        value(result.to_h).must_equal({
+        _(result.to_h).must_equal({
           left_bookend: "",
           left_fill: "",
           left_spacer: "",
@@ -66,7 +66,7 @@ class Say::InterpolationTemplateTest < Minitest::Spec
       context "GIVEN an empty interpolation template" do
         it "returns the expected String" do
           result = subject.new
-          value(result.inspect).must_equal("{}")
+          _(result.inspect).must_equal("{}")
         end
       end
 
@@ -82,7 +82,7 @@ class Say::InterpolationTemplateTest < Minitest::Spec
         }
 
         it "returns the expected String" do
-          value(subject.inspect).must_equal("=['~', ...] {} ['~', ...]=")
+          _(subject.inspect).must_equal("=['~', ...] {} ['~', ...]=")
         end
       end
     end
@@ -92,11 +92,11 @@ class Say::InterpolationTemplateTest < Minitest::Spec
         subject { Say::InterpolationTemplate.new }
 
         it "returns the expected String" do
-          value(subject.interpolate("TEST")).must_equal("TEST")
+          _(subject.interpolate("TEST")).must_equal("TEST")
         end
 
         it "returns an empty String, GIVEN nil" do
-          value(subject.interpolate(nil)).must_equal("")
+          _(subject.interpolate(nil)).must_equal("")
         end
       end
 
@@ -112,11 +112,11 @@ class Say::InterpolationTemplateTest < Minitest::Spec
         }
 
         it "returns the expected String" do
-          value(subject.interpolate("TEST")).must_equal("=~ TEST ~=")
+          _(subject.interpolate("TEST")).must_equal("=~ TEST ~=")
         end
 
         it "returns just the decoration string, GIVEN nil" do
-          value(subject.interpolate(nil)).must_equal("=~  ~=")
+          _(subject.interpolate(nil)).must_equal("=~  ~=")
         end
       end
     end
@@ -126,11 +126,11 @@ class Say::InterpolationTemplateTest < Minitest::Spec
         subject { Say::InterpolationTemplate.new }
 
         it "returns the expected String" do
-          value(subject.wrap("TEST")).must_equal("TEST")
+          _(subject.wrap("TEST")).must_equal("TEST")
         end
 
         it "returns an empty String, GIVEN nil" do
-          value(subject.wrap(nil)).must_equal("")
+          _(subject.wrap(nil)).must_equal("")
         end
       end
 
@@ -146,11 +146,11 @@ class Say::InterpolationTemplateTest < Minitest::Spec
         }
 
         it "returns the expected String" do
-          value(subject.wrap("TEST")).must_equal("~ TEST ~")
+          _(subject.wrap("TEST")).must_equal("~ TEST ~")
         end
 
         it "returns just the decoration string, GIVEN nil" do
-          value(subject.wrap(nil)).must_equal("~  ~")
+          _(subject.wrap(nil)).must_equal("~  ~")
         end
       end
     end
@@ -167,8 +167,8 @@ class Say::InterpolationTemplateTest < Minitest::Spec
 
       it "collaborates with Say::LeftJustifier" do
         result = subject.left_justify("TEST")
-        value(@left_justifier_new_call).wont_be_nil
-        value(result).must_equal("TEST")
+        _(@left_justifier_new_call).wont_be_nil
+        _(result).must_equal("TEST")
       end
     end
 
@@ -184,8 +184,8 @@ class Say::InterpolationTemplateTest < Minitest::Spec
 
       it "collaborates with Say::LeftJustifier" do
         result = subject.center_justify("TEST")
-        value(@center_justifier_new_call).wont_be_nil
-        value(result).must_equal("TEST")
+        _(@center_justifier_new_call).wont_be_nil
+        _(result).must_equal("TEST")
       end
     end
 
@@ -201,8 +201,8 @@ class Say::InterpolationTemplateTest < Minitest::Spec
 
       it "collaborates with Say::LeftJustifier" do
         result = subject.right_justify("TEST")
-        value(@right_justifier_new_call).wont_be_nil
-        value(result).must_equal("TEST")
+        _(@right_justifier_new_call).wont_be_nil
+        _(result).must_equal("TEST")
       end
     end
 
@@ -213,7 +213,7 @@ class Say::InterpolationTemplateTest < Minitest::Spec
         }
 
         it "returns false" do
-          value(subject.left_fill?).must_equal(false)
+          _(subject.left_fill?).must_equal(false)
         end
       end
 
@@ -221,7 +221,7 @@ class Say::InterpolationTemplateTest < Minitest::Spec
         subject { Say::InterpolationTemplate.new(left_fill: " ") }
 
         it "returns true" do
-          value(subject.left_fill?).must_equal(true)
+          _(subject.left_fill?).must_equal(true)
         end
       end
     end
@@ -233,7 +233,7 @@ class Say::InterpolationTemplateTest < Minitest::Spec
         }
 
         it "returns false" do
-          value(subject.right_fill?).must_equal(false)
+          _(subject.right_fill?).must_equal(false)
         end
       end
 
@@ -241,7 +241,7 @@ class Say::InterpolationTemplateTest < Minitest::Spec
         subject { Say::InterpolationTemplate.new(right_fill: " ") }
 
         it "returns true" do
-          value(subject.right_fill?).must_equal(true)
+          _(subject.right_fill?).must_equal(true)
         end
       end
     end
@@ -252,7 +252,7 @@ class Say::InterpolationTemplateTest < Minitest::Spec
 
         it "returns the expected Say::InterpolationTemplate" do
           result = subject.hr
-          value(result.to_h).must_equal({
+          _(result.to_h).must_equal({
             left_bookend: "",
             left_fill: "=",
             left_spacer: "",
@@ -268,7 +268,7 @@ class Say::InterpolationTemplateTest < Minitest::Spec
 
         it "returns the expected Say::InterpolationTemplate" do
           result = subject.title
-          value(result.to_h).must_equal({
+          _(result.to_h).must_equal({
             left_bookend: "",
             left_fill: "=",
             left_spacer: " ",
@@ -284,7 +284,7 @@ class Say::InterpolationTemplateTest < Minitest::Spec
 
         it "returns the expected Say::InterpolationTemplate" do
           result = subject.wtf
-          value(result.to_h).must_equal({
+          _(result.to_h).must_equal({
             left_bookend: "",
             left_fill: "?",
             left_spacer: " ",
@@ -305,7 +305,7 @@ class Say::InterpolationTemplateTest < Minitest::Spec
 
           it "returns the given object" do
             result = subject.call(interpolation_template1)
-            value(result.to_h.fetch(:left_bookend)).must_equal("TEST")
+            _(result.to_h.fetch(:left_bookend)).must_equal("TEST")
           end
         end
 
@@ -319,7 +319,7 @@ class Say::InterpolationTemplateTest < Minitest::Spec
               subject.call(
                 interpolation_template_attributes1,
                 interpolation_template_class: Say::InterpolationTemplate)
-            value(result.to_h.fetch(:left_bookend)).must_equal("TEST")
+            _(result.to_h.fetch(:left_bookend)).must_equal("TEST")
           end
         end
       end

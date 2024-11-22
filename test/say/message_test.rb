@@ -6,12 +6,12 @@ class Say::MessageTest < Minitest::Spec
   describe "Say::Message" do
     describe "::TYPES" do
       it "defines the expected type keys" do
-        value(Say::Message::TYPES.keys).must_equal(
+        _(Say::Message::TYPES.keys).must_equal(
           %i[debug error info success warn])
       end
 
       it "defaults to :success" do
-        value(Say::Message::TYPES.default).must_equal(
+        _(Say::Message::TYPES.default).must_equal(
           Say::Message::TYPES[:success])
       end
 
@@ -27,7 +27,7 @@ class Say::MessageTest < Minitest::Spec
         subject { Say::Message.new }
 
         it "returns nil" do
-          value(subject.text).must_be_nil
+          _(subject.text).must_be_nil
         end
       end
 
@@ -35,7 +35,7 @@ class Say::MessageTest < Minitest::Spec
         subject { Say::Message.new("TEST") }
 
         it "returns the expected String" do
-          value(subject.text).must_equal("TEST")
+          _(subject.text).must_equal("TEST")
         end
       end
     end
@@ -45,7 +45,7 @@ class Say::MessageTest < Minitest::Spec
         subject { Say::Message.new("TEST") }
 
         it "returns the expected String" do
-          value(subject.type).must_equal(:success)
+          _(subject.type).must_equal(:success)
         end
       end
 
@@ -53,7 +53,7 @@ class Say::MessageTest < Minitest::Spec
         subject { Say::Message.new("TEST", type: :error) }
 
         it "returns the expected String" do
-          value(subject.type).must_equal(:error)
+          _(subject.type).must_equal(:error)
         end
       end
 
@@ -61,7 +61,7 @@ class Say::MessageTest < Minitest::Spec
         subject { Say::Message.new("TEST", type: nil) }
 
         it "returns the expected String" do
-          value(subject.type).must_equal(:success)
+          _(subject.type).must_equal(:success)
         end
       end
     end
@@ -71,7 +71,7 @@ class Say::MessageTest < Minitest::Spec
         subject { Say::Message.new }
 
         it "returns the expected String" do
-          value(subject.to_s).must_equal(" ...")
+          _(subject.to_s).must_equal(" ...")
         end
       end
 
@@ -80,7 +80,7 @@ class Say::MessageTest < Minitest::Spec
           subject { Say::Message.new("TEST") }
 
           it "returns the expected String" do
-            value(subject.to_s).must_equal(" -> TEST")
+            _(subject.to_s).must_equal(" -> TEST")
           end
         end
 
@@ -88,7 +88,7 @@ class Say::MessageTest < Minitest::Spec
           subject { Say::Message.new("TEST", type: :error) }
 
           it "returns the expected String" do
-            value(subject.to_s).must_equal(" ** TEST")
+            _(subject.to_s).must_equal(" ** TEST")
           end
         end
       end

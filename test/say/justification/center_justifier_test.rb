@@ -14,7 +14,7 @@ class Say::CenterJustifierTest < Minitest::Spec
         context "GIVEN no args" do
           it "returns the expected String" do
             # rubocop:disable Layout/LineLength
-            value(subject.call).must_equal(
+            _(subject.call).must_equal(
               "=======================================  =======================================")
             # rubocop:enable Layout/LineLength
           end
@@ -24,7 +24,7 @@ class Say::CenterJustifierTest < Minitest::Spec
           context "GIVEN a short String" do
             it "returns the expected String" do
               # rubocop:disable Layout/LineLength
-              value(subject.call("TEST")).must_equal(
+              _(subject.call("TEST")).must_equal(
                 "===================================== TEST =====================================")
               # rubocop:enable Layout/LineLength
             end
@@ -33,7 +33,7 @@ class Say::CenterJustifierTest < Minitest::Spec
           context "GIVEN an extra-long String" do
             it "returns the expected String" do
               # rubocop:disable Layout/LineLength
-              value(subject.call("T" * 90)).must_equal(
+              _(subject.call("T" * 90)).must_equal(
                 "= TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT =")
               # rubocop:enable Layout/LineLength
             end
@@ -49,13 +49,13 @@ class Say::CenterJustifierTest < Minitest::Spec
 
           context "GIVEN a short String" do
             it "returns the expected String" do
-              value(subject.call("TEST")).must_equal("======= TEST =======")
+              _(subject.call("TEST")).must_equal("======= TEST =======")
             end
           end
 
           context "GIVEN an extra-long String" do
             it "returns the expected String" do
-              value(subject.call("T" * 30)).must_equal(
+              _(subject.call("T" * 30)).must_equal(
                 "= TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT =")
             end
           end
@@ -69,7 +69,7 @@ class Say::CenterJustifierTest < Minitest::Spec
           }
 
           it "returns the expected String" do
-            value(subject.call("TEST")).must_equal("= TEST =")
+            _(subject.call("TEST")).must_equal("= TEST =")
           end
         end
       end
@@ -84,7 +84,7 @@ class Say::CenterJustifierTest < Minitest::Spec
         context "GIVEN no args" do
           it "returns the expected String" do
             # rubocop:disable Layout/LineLength
-            value(subject.call).must_equal(
+            _(subject.call).must_equal(
               "--------------------------------------------------------------------------------")
             # rubocop:enable Layout/LineLength
           end
@@ -99,7 +99,7 @@ class Say::CenterJustifierTest < Minitest::Spec
           context "GIVEN a short String" do
             it "returns the expected String" do
               # rubocop:disable Layout/LineLength
-              value(subject.call("TEST")).must_equal(
+              _(subject.call("TEST")).must_equal(
                 "======================================TEST======================================")
               # rubocop:enable Layout/LineLength
             end
@@ -108,7 +108,7 @@ class Say::CenterJustifierTest < Minitest::Spec
           context "GIVEN an extra-long String" do
             it "returns the expected String" do
               # rubocop:disable Layout/LineLength
-              value(subject.call("T" * 30)).must_equal(
+              _(subject.call("T" * 30)).must_equal(
                 "=========================TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT=========================")
               # rubocop:enable Layout/LineLength
             end
@@ -124,13 +124,13 @@ class Say::CenterJustifierTest < Minitest::Spec
 
           context "GIVEN a short String" do
             it "returns the expected String" do
-              value(subject.call("TEST")).must_equal("========TEST========")
+              _(subject.call("TEST")).must_equal("========TEST========")
             end
           end
 
           context "GIVEN an extra-long String" do
             it "returns the expected String" do
-              value(subject.call("T" * 30)).must_equal(
+              _(subject.call("T" * 30)).must_equal(
                 "=TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT=")
             end
           end
@@ -145,7 +145,7 @@ class Say::CenterJustifierTest < Minitest::Spec
         }
 
         it "uses the result of the block as the text for the banner" do
-          value(subject.call("NOPE") { "TEST_BLOCK" }).must_equal(
+          _(subject.call("NOPE") { "TEST_BLOCK" }).must_equal(
             "= TEST_BLOCK =")
         end
       end
