@@ -485,7 +485,34 @@ After checking out the repo, run `bin/setup` to install dependencies. Then, run 
 
 To install this gem onto your local machine, run `bundle exec rake install`.
 
-To release a new version, update the version number in `version.rb`, bump the latest ruby target versions etc. with `rake bump`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and attempt to push the `.gem` file to [rubygems.org](https://rubygems.org) -- NOTE: this gem doesn't live on rubygems.org because of a naming conflict, so the upload attempt can be aborted when 2FA is requested.
+### Testing
+
+To test this gem:
+
+```bash
+rake
+```
+
+#### Linters
+
+```bash
+rubocop
+
+reek
+
+npx prettier . --check
+npx prettier . --write
+```
+
+### Releases
+
+To release a new version of this gem to RubyGems:
+
+1. Update the version number in `version.rb`
+2. Update `CHANGELOG.md`
+3. Run `bundle` to update Gemfile.lock with the latest version info
+4. Commit the changes. e.g. `Bump to vX.Y.Z`
+5. Run `rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 
 ### Documentation
 
