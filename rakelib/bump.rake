@@ -64,11 +64,10 @@ end
 # -- which specifies the Ruby releases that will be listed on
 # https://www.ruby-lang.org/en/downloads/
 module RubyVersions
-  MINOR_VERSION_REGEX = /\d+\.\d+/.freeze
+  MINOR_VERSION_REGEX = /\d+\.\d+/
   RUBY_VERSIONS_YAML_PATH =
     "https://raw.githubusercontent.com/ruby/www.ruby-lang.org/HEAD/_data/downloads.yml"
   VERSION_TYPES = %i[
-    eol
     security_maintenance
     stable
   ].freeze
