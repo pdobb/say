@@ -22,12 +22,12 @@ bundle
 ## Compatibility
 
 Tested MRI Ruby Versions:
-* 3.1
-* 3.2
-* 3.3
+
+- 3.1
+- 3.2
+- 3.3
 
 Say has no other dependencies.
-
 
 ## Usage
 
@@ -107,13 +107,16 @@ result  # => "The Result!"
 ```
 
 ### Say Types
+
 When using `Say.(<message>, <type>)`, the available types and output representations are:
 
-- `:debug`   -> `" >> "`
-- `:error`   -> `" ** "`
-- `:info`    -> `" -- "`
-- `:success` -> `" -> "`
-- `:warn`    -> `" !¡ "`
+| Type       | Output Prefix |
+| ---------- | ------------- |
+| `:debug`   | `" >> "`      |
+| `:error`   | `" ** "`      |
+| `:info`    | `" -- "`      |
+| `:success` | `" -> "`      |
+| `:warn`    | `" !¡ "`      |
 
 ```ruby
 Say.("TEST", :debug)   # => " >> TEST"
@@ -130,6 +133,7 @@ Say.("TEST")  # => " -> TEST"
 ```
 
 ### `Say.<type>` Methods
+
 Single-argument alternatives for each of the `<type>` calls in the previous section:
 
 ```ruby
@@ -162,6 +166,7 @@ Say.section("TEST", columns: 0)
 ```
 
 ### Justifiers
+
 The various banner-producing methods also support left/center/right justification. Just pass in e.g. `justify: :left`, `justify: :center`, or `justify: :right`. The default, if nothing is supplied, is `justify: :left`.
 
 ```ruby
@@ -345,6 +350,7 @@ interpolation_template.right_justify("TEST")
 Use `Say.progress` to track long-running processing loops on a given interval. Set the interval to receive `say` updates only during on-interval ticks through the loop. The default interval is `1`, meaning every loop is considered on-interval.
 
 #### Simple
+
 ```ruby
 # The default interval is 1.
 Say.progress do |interval|
@@ -363,6 +369,7 @@ end
 ```
 
 #### Advanced
+
 ```ruby
 Say.progress("Progress Tracking Test", interval: 3) do |interval|
   0.upto(6) do |index|
@@ -422,6 +429,7 @@ Say.progress_line(index: 3)
 ## Namespace Pollution
 
 If you choose to `include Say` then your class will gain the following instance methods:
+
 - `say`
 - `say_banner`
 - `say_footer`
@@ -454,6 +462,7 @@ Say.("Instance methods added by `include Say`: #{added_instance_methods}")
 ## Integration
 
 ### iTerm2
+
 The standardized nature of Say's logging methods lends itself well to highlighting output types using iTerm2's Text Highlighting Triggers. To set this up, go to Settings for iTerm2 -> Profiles -> Advanced -> Triggers section: "Edit" Button.
 
 ![iTerm2 Triggers Setup](/screenshots/iterm2-triggers.png?raw=true "iTerm2 Triggers Setup")
@@ -481,6 +490,7 @@ To release a new version, update the version number in `version.rb`, bump the la
 ### Documentation
 
 [YARD documentation](https://yardoc.org/index.html) can be generated and viewed live:
+
 1. Install YARD: `gem install yard`
 2. Run the YARD server: `yard server --reload`
 3. Open the live documentation site: `open http://localhost:8808`
