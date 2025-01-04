@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+- Update minimum Ruby version from 3.1 -> 3.2
+
 ## [0.6.0] - 2024-11-22
 
 - Update minimum Ruby version from 2.7 -> 3.1

@@ -23,9 +23,21 @@ bundle
 
 Tested MRI Ruby Versions:
 
-- 3.1
 - 3.2
 - 3.3
+- 3.4
+
+For Ruby 2.7 support, install say gem version 0.5.2.
+
+```ruby
+gem "say", github: "pdobb/say", "0.5.2"
+```
+
+For Ruby 3.1 support, install say gem version 0.6.0.
+
+```ruby
+gem "say", github: "pdobb/say", "0.6.0"
+```
 
 Say has no other dependencies.
 
