@@ -10,7 +10,7 @@ Say gives you the API and the output style you already know and love from [Activ
 Add this line to your application's Gemfile:
 
 ```ruby
-gem "say", github: "pdobb/say"
+gem "say", github: "pdobb/say" # Not published to RubyGems.
 ```
 
 And then execute:
@@ -30,13 +30,13 @@ Tested MRI Ruby Versions:
 For Ruby 2.7 support, install say gem version 0.5.2.
 
 ```ruby
-gem "say", github: "pdobb/say", "0.5.2"
+gem "say", github: "pdobb/say", tag: "v0.5.2" # Not published to RubyGems.
 ```
 
 For Ruby 3.1 support, install say gem version 0.6.0.
 
 ```ruby
-gem "say", github: "pdobb/say", "0.6.0"
+gem "say", github: "pdobb/say", tag: "v0.6.0" # Not published to RubyGems.
 ```
 
 Say has no other dependencies.
