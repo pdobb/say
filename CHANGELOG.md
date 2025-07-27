@@ -1,10 +1,16 @@
 ## [Unreleased]
 
+## [0.7.1] - 2025-7-27
+
 - Add `Say.clear_esc` method for clearing `^C` (`ctrl+c` output) from $stdout.
 
 ## [0.7.0] - 2025-1-4
 
 - Update minimum Ruby version from 3.1 -> 3.2
+
+## [0.6.1] - 2025-07-27
+
+- Backport: Add `Say.clear_esc` method for clearing `^C` (`ctrl+c` output) from $stdout.
 
 ## [0.6.0] - 2024-11-22
 
