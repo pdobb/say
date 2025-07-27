@@ -488,6 +488,19 @@ class SayTest < Minitest::Spec
       end
     end
 
+    describe ".clear_esc" do
+      before do
+        MuchStub.on_call($stdout, :puts) { |call| @puts_call = call }
+      end
+
+      subject { Say }
+
+      it "puts the expected String and returns self" do
+        _(subject.clear_esc).must_be_same_as(subject)
+        _(@puts_call.args).must_equal(["\e[2K\r"])
+      end
+    end
+
     describe "#say" do
       before do
         MuchStub.on_call(Say, :call) { |call| @say_call_call = call }

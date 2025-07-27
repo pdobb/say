@@ -77,6 +77,10 @@ module Say
   # The default message to display in {.progress} blocks, if none is provided.
   START_MESSAGE = "Start"
 
+  # Clears `^C`, which is output when a user presses `ctrl+c`, e.g. during a
+  # long-running task.
+  CLEAR_OUTPUT_ESC_CODE = "\e[2K\r"
+
   # Prints either a one-line message of the given type or executes a block of
   # code and surrounds it with header and footer banner messages.
   #
@@ -447,6 +451,17 @@ module Say
   def self.write(*messages)
     puts(*messages)
     messages.join("\n")
+  end
+
+  # Clear `^C` interrupt output.
+  #
+  # @example
+  #   Say.clear_esc.warn("...")
+  #
+  # @return [self]
+  def self.clear_esc
+    puts(CLEAR_OUTPUT_ESC_CODE)
+    self
   end
 
   # PUBLIC INTERFACE FOR `include Say`
