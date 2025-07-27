@@ -30,13 +30,15 @@ class Say::JustifierBehaviorsTest < Minitest::Spec
           exception = _(-> { subject.new }).must_raise(ArgumentError)
 
           _(exception.message).must_equal(
-            "missing keyword: :interpolation_template")
+            "missing keyword: :interpolation_template",
+          )
         end
       end
 
       context "GIVEN all required arguments" do
         it "uses the expected default for #total_length" do
           result = subject.new(interpolation_template: Object.new)
+
           _(result.total_length).must_equal(80)
         end
       end
@@ -44,6 +46,7 @@ class Say::JustifierBehaviorsTest < Minitest::Spec
       context "GIVEN all required and optional arguments" do
         it "uses the given value for #total_length" do
           result = subject.new(interpolation_template: Object.new, length: 20)
+
           _(result.total_length).must_equal(20)
         end
       end
@@ -60,6 +63,7 @@ class Say::JustifierBehaviorsTest < Minitest::Spec
         context "GIVEN no text" do
           it "uses the expected default" do
             result = subject.call
+
             _(result).must_equal("__")
           end
         end
@@ -67,6 +71,7 @@ class Say::JustifierBehaviorsTest < Minitest::Spec
         context "GIVEN text" do
           it "uses the block result" do
             result = subject.call("TEXT")
+
             _(result).must_equal("_TEXT_")
           end
         end
@@ -74,6 +79,7 @@ class Say::JustifierBehaviorsTest < Minitest::Spec
         context "GIVEN a block" do
           it "uses the block result" do
             result = subject.call("TEXT") { "BLOCK_RESULT" }
+
             _(result).must_equal("_BLOCK_RESULT_")
           end
         end

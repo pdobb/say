@@ -47,7 +47,8 @@ class SayTest < Minitest::Spec
         it "puts the expected header and footer banner Strings, "\
            "and returns the value from the block" do
           _(subject.call("TEST") { "TEST_BLOCK_RETURN_VALUE" }).must_equal(
-            "TEST_BLOCK_RETURN_VALUE")
+            "TEST_BLOCK_RETURN_VALUE",
+          )
 
           # rubocop:disable Layout/LineLength
           _(@puts_calls[0].args).must_equal([
@@ -149,8 +150,8 @@ class SayTest < Minitest::Spec
         context "GIVEN no messages" do
           it "puts the expected header and footer banner Strings, "\
              "and returns the value from the block" do
-            _(subject.with_block { "TEST_RESULT" }).
-              must_equal("TEST_RESULT")
+            _(subject.with_block { "TEST_RESULT" })
+              .must_equal("TEST_RESULT")
 
             # rubocop:disable Layout/LineLength
             _(@puts_calls[0].args).must_equal([
@@ -241,7 +242,8 @@ class SayTest < Minitest::Spec
         # rubocop:enable Layout/LineLength
         _(subject.footer).must_equal(expected_result)
         _(@puts_calls.map(&:args).tap(&:flatten!)).must_equal(
-          [expected_result, "\n"])
+          [expected_result, "\n"],
+        )
       end
 
       it "puts and returns the expected String, GIVEN a message" do
@@ -251,7 +253,8 @@ class SayTest < Minitest::Spec
         # rubocop:enable Layout/LineLength
         _(subject.footer("TEST")).must_equal(expected_result)
         _(@puts_calls.map(&:args).tap(&:flatten!)).must_equal(
-          [expected_result, "\n"])
+          [expected_result, "\n"],
+        )
       end
 
       context "GIVEN an extra long String" do
@@ -262,7 +265,8 @@ class SayTest < Minitest::Spec
           # rubocop:enable Layout/LineLength
           _(subject.footer("T" * 90)).must_equal(expected_result)
           _(@puts_calls.map(&:args).tap(&:flatten!)).must_equal(
-            [expected_result, "\n"])
+            [expected_result, "\n"],
+          )
         end
       end
     end
@@ -329,7 +333,8 @@ class SayTest < Minitest::Spec
         # rubocop:enable Layout/LineLength
         _(subject.section).must_equal(expected_result)
         _(@puts_calls.map(&:args).tap(&:flatten!)).must_equal(
-          expected_result + ["\n"])
+          expected_result + ["\n"],
+        )
       end
 
       it "returns the expected String, GIVEN an empty message" do
@@ -342,7 +347,8 @@ class SayTest < Minitest::Spec
         # rubocop:enable Layout/LineLength
         _(subject.section("")).must_equal(expected_result)
         _(@puts_calls.map(&:args).tap(&:flatten!)).must_equal(
-          expected_result + ["\n"])
+          expected_result + ["\n"],
+        )
       end
 
       it "returns the expected String, GIVEN a short message" do
@@ -355,7 +361,8 @@ class SayTest < Minitest::Spec
         # rubocop:enable Layout/LineLength
         _(subject.section("TEST")).must_equal(expected_result)
         _(@puts_calls.map(&:args).tap(&:flatten!)).must_equal(
-          expected_result + ["\n"])
+          expected_result + ["\n"],
+        )
       end
 
       it "returns the expected String, GIVEN a long message" do
@@ -368,7 +375,8 @@ class SayTest < Minitest::Spec
         # rubocop:enable Layout/LineLength
         _(subject.section("T" * 90)).must_equal(expected_result)
         _(@puts_calls.map(&:args).tap(&:flatten!)).must_equal(
-          expected_result + ["\n"])
+          expected_result + ["\n"],
+        )
       end
     end
 
@@ -392,6 +400,7 @@ class SayTest < Minitest::Spec
 
       it "forwards all args except message to Say::Progress::Tracker.new" do
         subject.progress("TEST", interval: 10)
+
         _(@progress_tracker_new_call.args).must_equal([{ interval: 10 }])
       end
 
@@ -399,9 +408,11 @@ class SayTest < Minitest::Spec
         it "calls Say.with_block and "\
            "passes the block to Say::Progress::Tracker#call" do
           subject.progress("TEST", interval: 10) { "TEST_BLOCK" }
+
           _(@say_with_bock_call).wont_be_nil
           _(@progress_tracker_object_call_call.block.call).must_equal(
-            "TEST_BLOCK")
+            "TEST_BLOCK",
+          )
         end
       end
 
@@ -409,6 +420,7 @@ class SayTest < Minitest::Spec
         it "calls Say.with_block and "\
            "passes nil to Say::Progress::Tracker#call" do
           subject.progress("TEST", interval: 10)
+
           _(@say_with_bock_call).wont_be_nil
           _(@progress_tracker_object_call_call.block).must_be_nil
         end
@@ -425,7 +437,8 @@ class SayTest < Minitest::Spec
       it "puts and returns the expected String, GIVEN no index" do
         Timecop.freeze(Say::Time.test_sample) do
           _(subject.progress_line).must_equal(
-            "[12340506123456]  ...")
+            "[12340506123456]  ...",
+          )
           _(@puts_call.args).must_equal(["[12340506123456]  ..."])
         end
       end
@@ -433,7 +446,8 @@ class SayTest < Minitest::Spec
       it "puts and returns the expected String, GIVEN no message" do
         Timecop.freeze(Say::Time.test_sample) do
           _(subject.progress_line(index: 9)).must_equal(
-            "[12340506123456]  ... (i=9)")
+            "[12340506123456]  ... (i=9)",
+          )
           _(@puts_call.args).must_equal(["[12340506123456]  ... (i=9)"])
         end
       end
@@ -441,15 +455,16 @@ class SayTest < Minitest::Spec
       it "puts and returns the expected String, GIVEN a message" do
         Timecop.freeze(Say::Time.test_sample) do
           _(subject.progress_line("TEST", index: 9)).must_equal(
-            "[12340506123456]  -- TEST (i=9)")
+            "[12340506123456]  -- TEST (i=9)",
+          )
           _(@puts_call.args).must_equal(["[12340506123456]  -- TEST (i=9)"])
         end
       end
 
       it "puts and returns the expected String, GIVEN a message and type" do
         Timecop.freeze(Say::Time.test_sample) do
-          _(subject.progress_line("TEST", :success, index: 9)).
-            must_match("[12340506123456]  -> TEST (i=9)")
+          _(subject.progress_line("TEST", :success, index: 9))
+            .must_match("[12340506123456]  -> TEST (i=9)")
           _(@puts_call.args).must_equal(["[12340506123456]  -> TEST (i=9)"])
         end
       end
@@ -482,6 +497,7 @@ class SayTest < Minitest::Spec
 
       it "forwards args and the given block to Say.call" do
         subject.say("TEST", :type) { "BLOCK" }
+
         _(@say_call_call.args).must_equal(["TEST", :type])
         _(@say_call_call.block).wont_be_nil
       end
@@ -496,6 +512,7 @@ class SayTest < Minitest::Spec
 
       it "forwards all args to Say.line" do
         subject.say_line("TEST")
+
         _(@say_line_call.args).must_equal(["TEST"])
       end
     end
@@ -511,8 +528,10 @@ class SayTest < Minitest::Spec
 
       it "forwards args and the given block to Say.with_block" do
         subject.say_with_block(header: "HEADER", footer: "FOOTER") { "BLOCK" }
+
         _(@say_with_block_call.kargs).must_equal(
-          header: "HEADER", footer: "FOOTER")
+          header: "HEADER", footer: "FOOTER",
+        )
         _(@say_with_block_call.block).wont_be_nil
       end
     end
@@ -526,6 +545,7 @@ class SayTest < Minitest::Spec
 
       it "forwards all args to Say.header" do
         subject.say_header("TEST")
+
         _(@say_header_call.args).must_equal(["TEST"])
       end
     end
@@ -539,6 +559,7 @@ class SayTest < Minitest::Spec
 
       it "forwards all args to Say.footer" do
         subject.say_footer("TEST")
+
         _(@say_footer_call.args).must_equal(["TEST"])
       end
     end
@@ -552,6 +573,7 @@ class SayTest < Minitest::Spec
 
       it "forwards all args to Say.banner" do
         subject.say_banner("TEST")
+
         _(@say_banner_call.args).must_equal(["TEST"])
       end
     end
@@ -565,6 +587,7 @@ class SayTest < Minitest::Spec
 
       it "forwards all args to Say.section" do
         subject.say_section("TEST")
+
         _(@say_section_call.args).must_equal(["TEST"])
       end
     end
@@ -580,8 +603,10 @@ class SayTest < Minitest::Spec
 
       it "forwards all args to Say.progress" do
         subject.say_progress("TEST", index: 9, interval: 5)
+
         _(@say_progress_call.args).must_equal(
-          ["TEST", { index: 9, interval: 5 }])
+          ["TEST", { index: 9, interval: 5 }],
+        )
       end
     end
 
@@ -596,6 +621,7 @@ class SayTest < Minitest::Spec
 
       it "forwards all args to Say.progress_line" do
         subject.say_progress_line("TEST", index: 9)
+
         _(@say_progress_line_call.args).must_equal(["TEST", { index: 9 }])
       end
     end

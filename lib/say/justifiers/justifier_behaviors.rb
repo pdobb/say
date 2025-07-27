@@ -45,7 +45,7 @@ module Say::JustifierBehaviors
 
   # :reek:UnusedParameters
   def justify(text)
-    raise NotImplementedError
+    raise(NotImplementedError)
   end
 
   def justification_length

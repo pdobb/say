@@ -8,14 +8,16 @@ class Say::CenterJustifierTest < Minitest::Spec
       context "GIVEN the default interpolation template" do
         subject {
           Say::CenterJustifier.new(
-            interpolation_template: Say::InterpolationTemplate::Builder.title)
+            interpolation_template: Say::InterpolationTemplate::Builder.title,
+          )
         }
 
         context "GIVEN no args" do
           it "returns the expected String" do
             # rubocop:disable Layout/LineLength
             _(subject.call).must_equal(
-              "=======================================  =======================================")
+              "=======================================  =======================================",
+            )
             # rubocop:enable Layout/LineLength
           end
         end
@@ -25,7 +27,8 @@ class Say::CenterJustifierTest < Minitest::Spec
             it "returns the expected String" do
               # rubocop:disable Layout/LineLength
               _(subject.call("TEST")).must_equal(
-                "===================================== TEST =====================================")
+                "===================================== TEST =====================================",
+              )
               # rubocop:enable Layout/LineLength
             end
           end
@@ -34,7 +37,8 @@ class Say::CenterJustifierTest < Minitest::Spec
             it "returns the expected String" do
               # rubocop:disable Layout/LineLength
               _(subject.call("T" * 90)).must_equal(
-                "= TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT =")
+                "= TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT =",
+              )
               # rubocop:enable Layout/LineLength
             end
           end
@@ -44,7 +48,8 @@ class Say::CenterJustifierTest < Minitest::Spec
           subject {
             Say::CenterJustifier.new(
               interpolation_template: Say::InterpolationTemplate::Builder.title,
-              length: 20)
+              length: 20,
+            )
           }
 
           context "GIVEN a short String" do
@@ -56,7 +61,8 @@ class Say::CenterJustifierTest < Minitest::Spec
           context "GIVEN an extra-long String" do
             it "returns the expected String" do
               _(subject.call("T" * 30)).must_equal(
-                "= TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT =")
+                "= TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT =",
+              )
             end
           end
         end
@@ -65,7 +71,8 @@ class Say::CenterJustifierTest < Minitest::Spec
           subject {
             Say::CenterJustifier.new(
               interpolation_template: Say::InterpolationTemplate::Builder.title,
-              length: 0)
+              length: 0,
+            )
           }
 
           it "returns the expected String" do
@@ -78,14 +85,16 @@ class Say::CenterJustifierTest < Minitest::Spec
         subject {
           Say::CenterJustifier.new(
             interpolation_template:
-              Say::InterpolationTemplate.new(left_fill: "-", right_fill: "-"))
+              Say::InterpolationTemplate.new(left_fill: "-", right_fill: "-"),
+          )
         }
 
         context "GIVEN no args" do
           it "returns the expected String" do
             # rubocop:disable Layout/LineLength
             _(subject.call).must_equal(
-              "--------------------------------------------------------------------------------")
+              "--------------------------------------------------------------------------------",
+            )
             # rubocop:enable Layout/LineLength
           end
         end
@@ -93,14 +102,16 @@ class Say::CenterJustifierTest < Minitest::Spec
         context "GIVEN no length arg" do
           subject {
             Say::CenterJustifier.new(
-              interpolation_template: Say::InterpolationTemplate::Builder.hr)
+              interpolation_template: Say::InterpolationTemplate::Builder.hr,
+            )
           }
 
           context "GIVEN a short String" do
             it "returns the expected String" do
               # rubocop:disable Layout/LineLength
               _(subject.call("TEST")).must_equal(
-                "======================================TEST======================================")
+                "======================================TEST======================================",
+              )
               # rubocop:enable Layout/LineLength
             end
           end
@@ -109,7 +120,8 @@ class Say::CenterJustifierTest < Minitest::Spec
             it "returns the expected String" do
               # rubocop:disable Layout/LineLength
               _(subject.call("T" * 30)).must_equal(
-                "=========================TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT=========================")
+                "=========================TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT=========================",
+              )
               # rubocop:enable Layout/LineLength
             end
           end
@@ -119,7 +131,8 @@ class Say::CenterJustifierTest < Minitest::Spec
           subject {
             Say::CenterJustifier.new(
               interpolation_template: Say::InterpolationTemplate::Builder.hr,
-              length: 20)
+              length: 20,
+            )
           }
 
           context "GIVEN a short String" do
@@ -131,7 +144,8 @@ class Say::CenterJustifierTest < Minitest::Spec
           context "GIVEN an extra-long String" do
             it "returns the expected String" do
               _(subject.call("T" * 30)).must_equal(
-                "=TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT=")
+                "=TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT=",
+              )
             end
           end
         end
@@ -141,12 +155,14 @@ class Say::CenterJustifierTest < Minitest::Spec
         subject {
           Say::CenterJustifier.new(
             interpolation_template: Say::InterpolationTemplate::Builder.title,
-            length: 0)
+            length: 0,
+          )
         }
 
         it "uses the result of the block as the text for the banner" do
           _(subject.call("NOPE") { "TEST_BLOCK" }).must_equal(
-            "= TEST_BLOCK =")
+            "= TEST_BLOCK =",
+          )
         end
       end
     end

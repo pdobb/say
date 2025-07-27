@@ -13,7 +13,7 @@ task :bump do
   ])
 end
 
-namespace :bump do
+namespace :bump do # rubocop:disable Metrics/BlockLength
   desc "Update Bundler version to latest in Gemfile.lock"
   task :bundler do
     version = Gem.latest_version_for("bundler").to_s
@@ -24,17 +24,21 @@ namespace :bump do
   task :ruby do
     replace_in_file(
       "say.gemspec",
-      /ruby_version = .*">= (.*)"/ => RubyVersions.lowest_supported_minor)
+      /ruby_version = .*">= (.*)"/ => RubyVersions.lowest_supported_minor,
+    )
     replace_in_file(
       ".rubocop.yml",
-      /TargetRubyVersion: (.*)/ => RubyVersions.lowest_supported_minor)
+      /TargetRubyVersion: (.*)/ => RubyVersions.lowest_supported_minor,
+    )
     replace_in_file(
       ".github/workflows/ci.yml",
-      /ruby-version: "([\d.]+)"/ => RubyVersions.latest)
+      /ruby-version: "([\d.]+)"/ => RubyVersions.latest,
+    )
     replace_in_file(
       ".github/workflows/ci.yml",
       /ruby-version: (\[(?:"[\d.]+"(?:, )?)*\])/ =>
-        RubyVersions.latest_supported_minors.to_s)
+        RubyVersions.latest_supported_minors.to_s,
+    )
   end
 
   desc "Update year to current in LICENSE.txt"
@@ -48,7 +52,7 @@ def replace_in_file(path, replacements)
   original_file_contents = file_contents.dup
 
   replacements.each do |regex, text|
-    raise "Can't find #{regex} in #{path}" unless regex.match?(file_contents)
+    raise("Can't find #{regex} in #{path}") unless regex.match?(file_contents)
 
     file_contents.gsub!(regex) do |match|
       match[regex, 1] = text

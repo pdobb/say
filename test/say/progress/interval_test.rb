@@ -17,7 +17,8 @@ class Say::Progress::IntervalTest < Minitest::Spec
     describe "#say" do
       subject {
         Say::Progress::Interval.new(
-          tracker: Say::Progress::Tracker.new(interval: 5))
+          tracker: Say::Progress::Tracker.new(interval: 5),
+        )
       }
 
       context "GIVEN an on-interval tick" do
@@ -39,7 +40,8 @@ class Say::Progress::IntervalTest < Minitest::Spec
 
             _(result).wont_be_nil
             _(@say_progress_call.args).must_equal(
-              ["TEST", { index: current_index }])
+              ["TEST", { index: current_index }],
+            )
             _(@say_progress_call.block.call).must_equal("TEST_BLOCK")
           end
         end
@@ -74,18 +76,21 @@ class Say::Progress::IntervalTest < Minitest::Spec
     describe "#update" do
       subject {
         Say::Progress::Interval.new(
-          tracker: Say::Progress::Tracker.new)
+          tracker: Say::Progress::Tracker.new,
+        )
       }
 
       it "increments tracker.index, GIVEN no arg" do
         _(subject.tracker.index).must_equal(0)
         subject.update
+
         _(subject.tracker.index).must_equal(1)
       end
 
       it "sets tracker.index, GIVEN an Integer" do
         _(subject.tracker.index).must_equal(0)
         subject.update(2)
+
         _(subject.tracker.index).must_equal(2)
       end
 

@@ -182,7 +182,7 @@ module Say
   #    -> Huzzah!
   #   =============================================================== Done (0.0000s) =
   def self.with_block(header: nil, footer: DONE_MESSAGE, justify: :left, &block)
-    raise ArgumentError, "block expected" unless block
+    raise(ArgumentError, "block expected") unless block
 
     self.header(header, justify: justify)
     result, footer_with_runtime_string = benchmark_block_run(footer, &block)

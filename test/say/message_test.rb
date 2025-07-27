@@ -7,12 +7,14 @@ class Say::MessageTest < Minitest::Spec
     describe "::TYPES" do
       it "defines the expected type keys" do
         _(Say::Message::TYPES.keys).must_equal(
-          %i[debug error info success warn])
+          %i[debug error info success warn],
+        )
       end
 
       it "defaults to :success" do
         _(Say::Message::TYPES.default).must_equal(
-          Say::Message::TYPES[:success])
+          Say::Message::TYPES[:success],
+        )
       end
 
       it "has an immutable default value" do

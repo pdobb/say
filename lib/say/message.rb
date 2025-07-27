@@ -37,7 +37,8 @@ class Say::Message
       error: " ** ",
       info: " -- ",
       DEFAULT_TYPE => hash.default,
-      warn: " !¡ ")
+      warn: " !¡ ",
+    )
   }.freeze
 
   # The default message to use when one is not supplied.

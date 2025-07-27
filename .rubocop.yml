@@ -1,5 +1,5 @@
 # Load Rubocop plugins.
-require:
+plugins:
   - rubocop-rake
   - rubocop-minitest
   - rubocop-performance
@@ -9,3 +9,6 @@ inherit_gem:
 
 AllCops:
   TargetRubyVersion: 3.2
+
+Minitest/MultipleAssertions:
+  Enabled: false

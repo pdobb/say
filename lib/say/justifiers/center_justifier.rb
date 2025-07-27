@@ -9,9 +9,9 @@ class Say::CenterJustifier
   private
 
   def justify(text)
-    text.
-      rjust(left_justification_length(text.length), left_fill_pattern).
-      ljust(justification_length, right_fill_pattern)
+    text
+      .rjust(left_justification_length(text.length), left_fill_pattern)
+      .ljust(justification_length, right_fill_pattern)
   end
 
   def left_justification_length(text_length)

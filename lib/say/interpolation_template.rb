@@ -55,12 +55,13 @@ class Say::InterpolationTemplate
   # :reek:TooManyStatements
 
   def initialize(
-        left_bookend: nil,
-        left_fill: nil,
-        left_spacer: nil,
-        right_spacer: nil,
-        right_fill: nil,
-        right_bookend: nil)
+    left_bookend: nil,
+    left_fill: nil,
+    left_spacer: nil,
+    right_spacer: nil,
+    right_fill: nil,
+    right_bookend: nil
+  )
     @left_bookend = String(left_bookend).freeze
     @left_fill = String(left_fill).freeze
     @left_spacer = String(left_spacer).freeze
@@ -215,28 +216,32 @@ class Say::InterpolationTemplate
     #   Or, an object of type `interpolation_template_class` -- to be passed
     #   through untouched.
     def self.call(
-          type_or_template = nil,
-          interpolation_template_class: Say::InterpolationTemplate)
+      type_or_template = nil,
+      interpolation_template_class: Say::InterpolationTemplate
+    )
       if type_or_template.is_a?(interpolation_template_class)
         return type_or_template
       end
 
       interpolation_template_attributes =
         to_interpolation_template_attributes(
-          type_or_template || DEFAULT_INTERPOLATION_TEMPLATE_NAME)
+          type_or_template || DEFAULT_INTERPOLATION_TEMPLATE_NAME,
+        )
       interpolation_template_class.new(**interpolation_template_attributes)
     end
 
     # @param type_name_or_template_attributes [#to_sym] One of
     #   `DEFAULT_INTERPOLATION_TEMPLATES.keys`.
     def self.to_interpolation_template_attributes(
-          type_name_or_template_attributes)
+      type_name_or_template_attributes
+    )
       case type_name_or_template_attributes
       when Hash
         type_name_or_template_attributes
       else
         DEFAULT_INTERPOLATION_TEMPLATES.fetch(
-          type_name_or_template_attributes.to_sym)
+          type_name_or_template_attributes.to_sym,
+        )
       end
     end
   end

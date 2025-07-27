@@ -62,11 +62,13 @@ class Say::Progress::TrackerTest < Minitest::Spec
 
       it "updates #index, GIVEN an Integer" do
         subject.update(9)
+
         _(subject.index).must_equal(9)
       end
 
       it "updates #index, GIVEN a castable Integer type" do
         subject.update("9")
+
         _(subject.index).must_equal(9)
       end
 
@@ -86,6 +88,7 @@ class Say::Progress::TrackerTest < Minitest::Spec
 
       it "increments #index" do
         subject.increment
+
         _(subject.index).must_equal(1)
       end
 
@@ -103,11 +106,13 @@ class Say::Progress::TrackerTest < Minitest::Spec
 
       it "returns true, GIVEN #index is a multiple of #interval" do
         subject.update(5)
+
         _(subject.tick?).must_equal(true)
       end
 
       it "returns false, GIVEN #index is not a multiple of #interval" do
         subject.update(1)
+
         _(subject.tick?).must_equal(false)
       end
     end
