@@ -559,7 +559,8 @@ To release a new version of this gem to RubyGems:
 2. Update `CHANGELOG.md`
 3. Run `bundle` to update Gemfile.lock with the latest version info
 4. Commit the changes. e.g. `Bump to vX.Y.Z`
-5. Run `rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+5. Run `rake release`, which will create a git tag for the version, push git commits and the created tag, and then attempt to push the `.gem` file to [rubygems.org](https://rubygems.org).
+  - NOTE: This will fail, as there is already a `say` gem and this one is not it. This gem must be installed form github source.
 
 ### Documentation
 
