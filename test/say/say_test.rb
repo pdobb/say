@@ -154,11 +154,10 @@ class SayTest < Minitest::Spec
               .must_equal("TEST_RESULT")
 
             # rubocop:disable Layout/LineLength
-            _(@puts_calls[0].args).must_equal([
+            _(@puts_calls.map(&:args).flatten!).must_equal([
               "================================================================================",
-            ])
-            _(@puts_calls[1].args).must_equal([
               "= Done (0.0000s) ===============================================================",
+              "\n",
             ])
             # rubocop:enable Layout/LineLength
           end
@@ -169,8 +168,10 @@ class SayTest < Minitest::Spec
             subject.with_block(header: "TEST_HEADER") { nil }
 
             # rubocop:disable Layout/LineLength
-            _(@puts_calls[0].args).must_equal([
+            _(@puts_calls.map(&:args).flatten!).must_equal([
               "= TEST_HEADER ==================================================================",
+              "= Done (0.0000s) ===============================================================",
+              "\n",
             ])
             # rubocop:enable Layout/LineLength
           end
@@ -181,8 +182,10 @@ class SayTest < Minitest::Spec
             subject.with_block(footer: "TEST_FOOTER") { nil }
 
             # rubocop:disable Layout/LineLength
-            _(@puts_calls[1].args).must_equal([
+            _(@puts_calls.map(&:args).flatten!).must_equal([
+              "================================================================================",
               "= TEST_FOOTER (0.0000s) ========================================================",
+              "\n",
             ])
             # rubocop:enable Layout/LineLength
           end

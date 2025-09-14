@@ -70,7 +70,7 @@ class IncludeProcessor
   end
 end
 
-result = IncludeProcessor.new.run
+IncludeProcessor.new.run
 = IncludeProcessor =============================================================
  -> Successfully did the thing!
  ...
@@ -80,7 +80,7 @@ result = IncludeProcessor.new.run
  ** Failed to do a thing ...
 = Done (0.0001s) ===============================================================
 
-result  # => "The Result!"
+# => "The Result!"
 ```
 
 ### `Say.<method>`
@@ -105,7 +105,7 @@ class DirectAccessProcessor
   end
 end
 
-result = DirectAccessProcessor.new.run
+DirectAccessProcessor.new.run
 = DirectAccessProcessor ========================================================
  -> Successfully did the thing!
  ...
@@ -115,7 +115,7 @@ result = DirectAccessProcessor.new.run
  ** Failed to do a thing ...
 = Done (0.0001s) ===============================================================
 
-result  # => "The Result!"
+# => "The Result!"
 ```
 
 ### Say Types

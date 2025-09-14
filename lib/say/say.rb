@@ -36,7 +36,7 @@ require "benchmark"
 #    ** Failed to do a thing ...
 #   = Done (0.0000s) ===============================================================
 #
-#   result  # => "The Result!"
+#   # => "The Result!"
 #
 # @example Direct access via `Say.<method>`
 #   require "say"
@@ -66,7 +66,7 @@ require "benchmark"
 #    ** Failed to do a thing ...
 #   = Done (0.0000s) ===============================================================
 #
-#   result  # => "The Result!"
+#   # => "The Result!"
 module Say
   # The maximum number of columns for message types that support it, e.g.
   # banners.
@@ -95,27 +95,33 @@ module Say
   # @return [String] The built message, if no block is given.
   #
   # @example No Block Given
-  #   Say.("Hello, World!")  # => " -> Hello, World!"
-  #   Say.("Oops", :error)   # => " ** Oops"
-  #   Say.()                 # => " ..."
+  #   Say.("Hello!")       # => " -> Hello!"
+  #   Say.("Oops", :error) # => " ** Oops"
+  #   Say.()               # => " ..."
   #
   # @example Given a Block, Left-Justified (Default)
-  #   Say.("Hello, World!")  { Say.("Huzzah!") }
-  #   = Hello, World! ================================================================
+  #   Say.("Hello!")  { Say.("Huzzah!") }
+  #   = Hello! =======================================================================
   #    -> Huzzah!
   #   = Done (0.0000s) ===============================================================
   #
+  #   => " -> Huzzah!"
+  #
   # @example Given a Block, Center-Justified
-  #   Say.("Hello, World!", justify: :center) { Say.("Huzzah!") }
-  #   ================================ Hello, World! =================================
+  #   Say.("Hello!", justify: :center) { Say.("Huzzah!") }
+  #   ==================================== Hello! ====================================
   #    -> Huzzah!
   #   ================================ Done (0.0000s) ================================
   #
+  #   => " -> Huzzah!"
+  #
   # @example Given a Block, Right-Justified
-  #   Say.("Hello, World!", justify: :right) { Say.("Huzzah!") }
-  #   ================================================================ Hello, World! =
+  #   Say.("Hello!", justify: :right) { Say.("Huzzah!") }
+  #   ======================================================================= Hello! =
   #    -> Huzzah!
   #   =============================================================== Done (0.0000s) =
+  #
+  #   # => " -> Huzzah!"
   def self.call(text = nil, type = nil, **with_block_kwargs, &block)
     if block
       with_block(header: text, **with_block_kwargs, &block)
@@ -137,7 +143,7 @@ module Say
   def self.warn(text) line(text, type: :warn) end
   # rubocop:enable Style/SingleLineMethods
 
-  # Prints a built one-line message of the given type using {Say.write}.
+  # Prints a formatted one-line message of the given type using {.write}.
   #
   # @param text [String] The message to be printed.
   # @param message_kwargs [Hash] Additional keyword arguments to be passed to
@@ -146,9 +152,9 @@ module Say
   # @return [String] The built message.
   #
   # @example
-  #   Say.line("Hello, World!")  # => " -> Hello, World!"
-  #   Say.line("Oops", :error)   # => " ** Oops"
-  #   Say.line                   # => " ..."
+  #   Say.line("Hello!")       # => " -> Hello!"
+  #   Say.line("Oops", :error) # => " ** Oops"
+  #   Say.line                 # => " ..."
   def self.line(text = nil, **message_kwargs)
     write(Say::Message.new(text, **message_kwargs))
   end
@@ -167,24 +173,28 @@ module Say
   # @raise [ArgumentError] Raises an ArgumentError if no block is given.
   #
   # @example Left-Justified (Default)
-  #   Say.with_block(header: "Start") { Say.("Hello, World!") }
+  #   Say.with_block(header: "Start") { Say.("Hello!") }
   #   = Start ========================================================================
-  #    -> Hello, World!
+  #    -> Hello!
   #   = Done (0.0000s) ===============================================================
   #
+  #   # => " -> Hello!"
+  #
   # @example Center-Justified
-  #   Say.with_block(header: "Start", justify: :center) {
-  #     Say.("Hello, World!")
-  #   }
-  #   ==================================== Start =====================================
-  #    -> Hello, World!
+  #   Say.with_block(header: "Start", justify: :center) { Say.("Hello!") }
+  #   ===================================== Start ====================================
+  #    -> Hello!
   #   ================================ Done (0.0000s) ================================
   #
+  #   # => " -> Hello!"
+  #
   # @example Right-Justified
-  #   Say.with_block(header: "Start", justify: :right) { Say.("Hello, World!") }
-  #   ================================================================ Hello, World! =
-  #    -> Huzzah!
+  #   Say.with_block(header: "Start", justify: :right) { Say.("Hello!") }
+  #   ======================================================================== Start =
+  #    -> Hello!
   #   =============================================================== Done (0.0000s) =
+  #
+  #   # => " -> Hello!"
   def self.with_block(header: nil, footer: DONE_MESSAGE, justify: :left, &block)
     raise(ArgumentError, "block expected") unless block
 
@@ -219,10 +229,12 @@ module Say
   #
   # @example Default (though non-standard) usage
   #   Say.header
+  #   ================================================================================
   #   # => "================================================================================"
   #
   # @example Custom (standard) usage
   #   Say.header("Head")
+  #   = Head =========================================================================
   #   # => "= Head ========================================================================="
   #
   #   Say.header("Head", columns: 20)
@@ -231,7 +243,7 @@ module Say
     banner(text, **banner_kwargs)
   end
 
-  # Prints a footer banner (using {Say.write}) that fills at least the passed in
+  # Prints a footer banner (using {.write}) that fills at least the passed in
   # `columns` number of columns. This serves as, e.g., a visual break
   # point at the end of a processing task.
   #
@@ -251,20 +263,26 @@ module Say
   #
   # @example Custom usage
   #   Say.footer("Foot", columns: 20)
-  #   # => "= Foot =============\n\n"
+  #   = Foot =============
+  #
+  #   # => "= Foot ============="
   #
   #   Say.footer("Foot", columns: 20, justify: :center)
-  #   # => "======= Foot =======\n\n"
+  #   ======= Foot =======
+  #
+  #   # => "======= Foot ======="
   #
   #   Say.footer("Foot", columns: 20, justify: :right)
-  #   # => "============= Foot =\n\n"
+  #   ============= Foot =
+  #
+  #   # => "============= Foot ="
   def self.footer(text = DONE_MESSAGE, **banner_kwargs)
-    result = banner(text, **banner_kwargs)
-    write("\n")
-    result
+    banner(text, **banner_kwargs).tap {
+      write("\n")
+    }.strip
   end
 
-  # Prints a banner String with the specified message using {Say.write}. If no
+  # Prints a banner String with the specified message using {.write}. If no
   # message is supplied, just prints a full-width banner String.
   #
   # @param text [String] The message to be included in the banner.
@@ -275,23 +293,27 @@ module Say
   #
   # @example Default usage
   #   Say.banner
+  #   ================================================================================
   #   # => "================================================================================"
   #
   # @example Custom usage
   #   Say.banner("Test", columns: 20)
+  #   = Test =============
   #   # => "= Test ============="
   #
   #   Say.banner("Test", columns: 20, justify: :center)
+  #   ======= Test =======
   #   # => "======= Test ======="
   #
   #   Say.banner("Test", columns: 20, justify: :right)
+  #   ============= Test =
   #   # => "============= Test ="
   def self.banner(text = nil, columns: MAX_COLUMNS, justify: :left)
     write(Say::BannerGenerator.(text, columns: columns, justify: justify))
   end
 
   # Prints a set of 3 banner Strings with the specified message using
-  # {Say.write}. If no message is supplied, just prints 3 full-width banner
+  # {.write}. If no message is supplied, just prints 3 full-width banner
   # String. The final banner string is printed using {Say.footer}, so includes
   # an extra newline character.
   #
@@ -302,23 +324,23 @@ module Say
   # @return [String] The formatted banner String.
   #
   # @example Default usage
-  #   Say.section  # =>
+  #   Say.section
   #   ================================================================================
   #   ================================================================================
   #   ================================================================================
   #
   # @example Custom usage
-  #   Say.section("Test", columns: 20)  # =>
+  #   Say.section("Test", columns: 20)
   #   ====================
   #   = Test =============
   #   ====================
   #
-  #   Say.section("Test", columns: 20, justify: :center)  # =>
+  #   Say.section("Test", columns: 20, justify: :center)
   #   ====================
   #   ======= Test =======
   #   ====================
   #
-  #   Say.section("Test", columns: 20, justify: :right)  # =>
+  #   Say.section("Test", columns: 20, justify: :right)
   #   ====================
   #   ============= TEST =
   #   ====================
@@ -401,17 +423,21 @@ module Say
   #
   # @example Typical Usage
   #   Say.progress_line("TEST", index: 3)
+  #   [20250914165723]  -- TEST (i=3)
   #   # => "[12340506123456]  -- TEST (i=3)"
   #
   #   Say.progress_line("TEST", :success, index: 3)
+  #   [20250914165735]  -> TEST (i=3)
   #   # => "[12340506123456]  -> TEST (i=3)"
   #
   # @example Given no Index
   #   Say.progress_line("TEST", :success)
+  #   [12340506123456]  -> TEST
   #   # => "[12340506123456]  -> TEST"
   #
   # @example Given No Message
   #   Say.progress_line(index: 3)
+  #   [12340506123456]  ... (i=3)
   #   # => "[12340506123456]  ... (i=3)"
   def self.progress_line(text = nil, type = :info, index: nil)
     message = Say::Message.new(text, type: type)
@@ -424,12 +450,15 @@ module Say
   #
   # @example
   #   Say.__send__(:progress_message, "TEST")
+  #   [12340506123456] TEST
   #   # => "[12340506123456] TEST"
   #
   #   Say.__send__(:progress_message, "TEST", index: 1)
+  #   [12340506123456] TEST (i=1)
   #   # => "[12340506123456] TEST (i=1)"
   #
   #   Say.__send__(:progress_message, "TEST", index: 1, time_format: :long)
+  #   [05/06/1234 12:34:56 CST] TEST (i=1)
   #   # => "[05/06/1234 12:34:56 CST] TEST (i=1)"
   def self.progress_message(message, index: nil, time_format: :web_service)
     timestamp = Say::Time.timestamp(format: time_format)
