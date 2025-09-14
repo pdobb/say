@@ -94,8 +94,7 @@ class Say::CenterJustifierTest < Minitest::Spec
           subject {
             Say::CenterJustifier.new(
               interpolation_template:
-                Say::InterpolationTemplate::Builder.double_line,
-            )
+                Say::InterpolationTemplate::Builder.double_line)
           }
 
           context "GIVEN a short String" do
@@ -122,8 +121,7 @@ class Say::CenterJustifierTest < Minitest::Spec
             Say::CenterJustifier.new(
               interpolation_template:
                 Say::InterpolationTemplate::Builder.double_line,
-              length: 20,
-            )
+              length: 20)
           }
 
           context "GIVEN a short String" do

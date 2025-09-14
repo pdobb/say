@@ -189,6 +189,76 @@ class SayTest < Minitest::Spec
       end
     end
 
+    describe ".hr" do
+      before do
+        @puts_calls = []
+        MuchStub.on_call($stdout, :puts) { |call| @puts_calls << call }
+      end
+
+      subject { Say }
+
+      it "puts and returns the expected String" do
+        # rubocop:disable Layout/LineLength
+        expected_result =
+          "--------------------------------------------------------------------------------"
+        # rubocop:enable Layout/LineLength
+        _(subject.hr).must_equal(expected_result)
+        _(@puts_calls.map(&:args).flatten!).must_equal([
+          "\n#{expected_result}\n",
+          "\n",
+        ])
+      end
+
+      it "puts and returns the expected String, GIVEN a custom fill" do
+        # rubocop:disable Layout/LineLength
+        expected_result =
+          "-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*"
+        # rubocop:enable Layout/LineLength
+        _(subject.hr("-*")).must_equal(expected_result)
+        _(@puts_calls.map(&:args).flatten!).must_equal([
+          "\n#{expected_result}\n",
+          "\n",
+        ])
+      end
+
+      it "puts and returns the expected String, GIVEN a bare template" do
+        # rubocop:disable Layout/LineLength
+        expected_result =
+          "--------------------------------------------------------------------------------"
+        # rubocop:enable Layout/LineLength
+        _(subject.hr(template: "%s")).must_equal(expected_result)
+        _(@puts_calls.map(&:args).flatten!).must_equal([expected_result])
+      end
+
+      it "puts and returns the expected String, GIVEN a custom template" do
+        # rubocop:disable Layout/LineLength
+        expected_result =
+          "|------------------------------------------------------------------------------|"
+        # rubocop:enable Layout/LineLength
+        _(subject.hr(template: "|%s|")).must_equal(expected_result)
+        _(@puts_calls.map(&:args).flatten!).must_equal([expected_result])
+      end
+
+      it "puts and returns the expected String, GIVEN a custom columns value" do
+        expected_result = "--------------------"
+        _(subject.hr(columns: 20)).must_equal(expected_result)
+        _(@puts_calls.map(&:args).flatten!).must_equal([
+          "\n#{expected_result}\n",
+          "\n",
+        ])
+      end
+
+      it "puts and returns the expected String, "\
+         "GIVEN a custom fill + template + columns value" do
+        expected_result = "|-+-+-+-+-+-+-+-+-+|"
+        _(subject.hr("-+", template: "\n|%s|", columns: 20)).must_equal(
+          expected_result)
+        _(@puts_calls.map(&:args).flatten!).must_equal([
+          "\n#{expected_result}",
+        ])
+      end
+    end
+
     describe ".header" do
       before do
         MuchStub.on_call($stdout, :puts) { |call| @puts_call = call }

@@ -67,10 +67,13 @@ require "benchmark"
 #   = Done (0.0000s) ===============================================================
 #
 #   result  # => "The Result!"
-module Say
+module Say # rubocop:disable Metrics/ModuleLength
   # The maximum number of columns for message types that support it, e.g.
   # banners.
   MAX_COLUMNS = 80
+
+  # The default template used by {.hr}, if none is provided.
+  DEFAULT_HR_TEMPLATE = "\n%s\n"
 
   # The default message to display in {.footer}s, if none is provided.
   DONE_MESSAGE = "Done"
@@ -203,7 +206,69 @@ module Say
   end
   private_class_method :benchmark_block_run
 
-  # Prints a header banner (using {Say.write}) that fills at least the passed in
+  # :reek:TooManyStatements
+
+  # Prints a horizontal rule (just a simple line), like the `<hr>` tag in HTML.
+  #
+  # @param columns [Integer] The maximum length of the horizontal line.
+  #   Default value is the constant `MAX_COLUMNS`.
+  #
+  # @return [String] The horizontal rule String.
+  #
+  # rubocop:disable Layout/LineLength
+  # @example Default usage
+  #   Say.hr
+  #
+  #   --------------------------------------------------------------------------------
+  #
+  #   # => "--------------------------------------------------------------------------------"
+  # rubocop:enable Layout/LineLength
+  #
+  # @example Custom columns (length)
+  #   Say.hr(columns: 20)
+  #
+  #   --------------------
+  #
+  #   # => "--------------------"
+  #
+  # @example Custom fill
+  #   Say.hr("-*-++", columns: 20)
+  #
+  #   -*-++-*-++-*-++-*-++
+  #
+  #   # => "-*-++-*-++-*-++-*-++"
+  #
+  # @example Custom template ()
+  #   Say.hr("-*-++", template: "%s", columns: 20)
+  #   -*-++-*-++-*-++-*-++
+  #   # => "-*-++-*-++-*-++-*-++"
+  def self.hr(fill = "-", template: DEFAULT_HR_TEMPLATE, columns: MAX_COLUMNS)
+    filler = (fill * columns)
+
+    truncate_at =
+      if template == DEFAULT_HR_TEMPLATE
+        columns
+      else
+        # Truncate `filler` enough so that any non-whitespace
+        # (`\n`), non-template(`%s`) characters can be included in the
+        # horizontal rule without causing the final result to exceed `columns`
+        # in length.
+        # rubocop:disable Performance/StringReplacement
+        non_template_characters_count =
+          template.gsub("\n", "").gsub("%s", "").length
+        # rubocop:enable Performance/StringReplacement
+        columns - non_template_characters_count
+      end
+
+    write(template % filler[...truncate_at]).tap {
+      # Make it so `\n` at the beginning and `\n` at the end of the template
+      # behave the same: They both create a single empty line in the output--as
+      # one would expect.
+      write("\n") if template.end_with?("\n")
+    }.strip
+  end
+
+  # Prints a header banner (using {.write}) that fills at least the passed in
   # `columns` number of columns. This serves as, e.g., a visual break point at
   # the start of a processing task.
   #
@@ -474,6 +539,8 @@ module Say
   def say_line(...) Say.line(...) end
   # @see .with_block Forwards to Say.with_block
   def say_with_block(...) Say.with_block(...) end
+  # @see .hr Forwards to Say.hr
+  def say_hr(...) Say.hr(...) end
   # @see .header Forwards to Say.header
   def say_header(...) Say.header(...) end
   # @see .footer Forwards to Say.footer
@@ -495,7 +562,9 @@ module Say
   # Usage: Say.test;
   def self.test
     Say::InterpolationTemplate.test
+    Say.hr(template: "%s\n")
     Say::Progress::Interval.test
+    Say.hr(template: "%s\n")
     Say::Progress::Tracker.test
   end
 
