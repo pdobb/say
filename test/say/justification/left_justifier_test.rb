@@ -124,7 +124,8 @@ class Say::LeftJustifierTest < Minitest::Spec
         context "GIVEN a length arg" do
           subject {
             Say::LeftJustifier.new(
-              interpolation_template: Say::InterpolationTemplate::Builder.hr,
+              interpolation_template:
+                Say::InterpolationTemplate::Builder.double_line,
               length: 20,
             )
           }

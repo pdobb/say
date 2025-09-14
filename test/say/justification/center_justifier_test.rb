@@ -102,7 +102,8 @@ class Say::CenterJustifierTest < Minitest::Spec
         context "GIVEN no length arg" do
           subject {
             Say::CenterJustifier.new(
-              interpolation_template: Say::InterpolationTemplate::Builder.hr,
+              interpolation_template:
+                Say::InterpolationTemplate::Builder.double_line,
             )
           }
 
@@ -130,7 +131,8 @@ class Say::CenterJustifierTest < Minitest::Spec
         context "GIVEN a length arg" do
           subject {
             Say::CenterJustifier.new(
-              interpolation_template: Say::InterpolationTemplate::Builder.hr,
+              interpolation_template:
+                Say::InterpolationTemplate::Builder.double_line,
               length: 20,
             )
           }

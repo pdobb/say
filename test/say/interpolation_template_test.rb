@@ -259,11 +259,11 @@ class Say::InterpolationTemplateTest < Minitest::Spec
     end
 
     describe "Say::InterpolationTemplate::Builder" do
-      describe ".hr" do
+      describe ".double_line" do
         subject { Say::InterpolationTemplate::Builder }
 
         it "returns the expected Say::InterpolationTemplate" do
-          result = subject.hr
+          result = subject.double_line
 
           _(result.to_h).must_equal({
             left_bookend: "",

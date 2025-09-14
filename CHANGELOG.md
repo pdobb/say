@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+- Rename `Say::InterpolationTemplate::Builder.hr` -> `Say::InterpolationTemplate::Builder.double_line`
+
 ## [0.7.1] - 2025-7-27
 
 - Add `Say.clear_esc` method for clearing `^C` (`ctrl+c` output) from $stdout.
