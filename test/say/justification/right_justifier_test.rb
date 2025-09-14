@@ -113,8 +113,10 @@ class Say::RightJustifierTest < Minitest::Spec
         context "GIVEN a length arg" do
           subject {
             Say::RightJustifier.new(
-              interpolation_template: Say::InterpolationTemplate::Builder.hr,
-              length: 20)
+              interpolation_template:
+                Say::InterpolationTemplate::Builder.double_line,
+              length: 20,
+            )
           }
 
           context "GIVEN a short String" do

@@ -194,7 +194,7 @@ class Say::InterpolationTemplate
       DEFAULT_INTERPOLATION_TEMPLATE_NAME => {
         left_fill: "=", left_spacer: " ", right_spacer: " ", right_fill: "="
       },
-      hr: {
+      double_line: {
         left_fill: "=", right_fill: "="
       },
       wtf: {

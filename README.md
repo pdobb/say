@@ -272,8 +272,8 @@ All of the above examples are using the default interpolation template accessed 
 #### Predefined interpolation templates
 
 ```ruby
-# :hr
-interpolation_template = Say::InterpolationTemplate::Builder.hr
+# :double_line
+interpolation_template = Say::InterpolationTemplate::Builder.double_line
 
 interpolation_template.inspect                            # => "['=', ...]{}['=', ...]"
 interpolation_template.interpolate                        # => "=="

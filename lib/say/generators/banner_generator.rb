@@ -5,7 +5,7 @@ module Say::BannerGenerator
   # Generate a justified banner String.
   #
   # @param text [String] The text to be included in the banner.
-  #   If `text` is empty, the banner will be of type `:hr`.
+  #   If `text` is empty, the banner will be of type `:double_line`.
   #   Else the banner will be of type `:title`.
   # @param columns [Integer] The desired overall String length; may not be
   #   respected if the `text` + minimal banner elements are greater than
@@ -28,7 +28,7 @@ module Say::BannerGenerator
   #
   # :reek:ControlParameter
   def self.determine_banner_type(text)
-    text ? :title : :hr
+    text ? :title : :double_line
   end
   private_class_method :determine_banner_type
 end
