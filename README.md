@@ -156,6 +156,41 @@ Say.success("TEST") # => " -> TEST"
 Say.warn("TEST")    # => " !¡ TEST"
 ```
 
+### `Say.hr` (Horizontal Rule)
+
+Use `Say.hr` for thin, 1-line separators + padding on top/bottom.
+
+```ruby
+Say.info("Before")
+Say.hr
+Say.("After")
+ -- Before
+
+--------------------------------------------------------------------------------
+
+ -> After
+```
+
+#### Horizontal Rule -- Customization
+
+The fill line, template, and length can all be customized:
+
+```ruby
+Say.info("Before")
+Say.hr("-*", template: "%s", columns: 20) # `template` defaults to: `"\n%s\n"
+Say.("After")
+ -- Before
+-*-*-*-*-*-*-*-*-*-*
+ -> After
+```
+
+Template can also include book-ends:
+
+```ruby
+Say.hr("-*", template: "|%s|")
+|-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*|
+```
+
 ### `Say.section`
 
 Use `Say.section` for 3-line banners to really visually split up your output into major sections.

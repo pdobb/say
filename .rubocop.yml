@@ -12,3 +12,13 @@ AllCops:
 
 Minitest/MultipleAssertions:
   Enabled: false
+
+Minitest/EmptyLineBeforeAssertionMethods:
+  Enabled: false
+
+Style/FormatStringToken:
+  # Prefer "%{my_template_value}" # <- Same style as is used in YAML
+  # Over:
+  # - "%<my_template_value>"
+  # - "%s"
+  EnforcedStyle: template
