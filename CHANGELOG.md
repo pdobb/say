@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+## [0.6.2] - 2025-09-14
+
 - Add `Say.hr` and `say_hr` methods for outputting a horizontal rule. See README for usage.
 - Rename `Say::InterpolationTemplate::Builder.hr` -> `Say::InterpolationTemplate::Builder.double_line`
 
