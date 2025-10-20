@@ -43,12 +43,48 @@ Say has no other dependencies.
 
 ## Usage
 
+### `Say.<method>`
+
+Typical usage is to just call `Say.<method>` directly, though it is possible to `include Say` if you prefer. (See below.)
+
+When called with a block, `say` will output both Start and Finish banners, then return the result of the block to the caller.
+When called without a block, `say` will output a string of the specified type (defaults to `:success`).
+
+
+```ruby
+require "say"
+
+class DirectAccessProcessor
+  def run
+    Say.("DirectAccessProcessor") {
+      Say.("Successfully did the thing!")
+      Say.() # Or: Say.call
+      Say.("Debug details about this ...", :debug)
+      Say.("Info about stuff ...", :info)
+      Say.("Maybe look into this thing ...", :warn)
+      Say.("Failed to do a thing ...", :error)
+
+      "The Result!"
+    }
+  end
+end
+
+result = DirectAccessProcessor.new.run
+= DirectAccessProcessor ========================================================
+ -> Successfully did the thing!
+ ...
+ >> Debug details about this ...
+ -- Info about stuff ...
+ !¡ Maybe look into this thing ...
+ ** Failed to do a thing ...
+= Done (0.0001s) ===============================================================
+
+# => "The Result!"
+```
+
 ### `include Say`
 
-Typical usage is to `include Say` in your object and then call the `say` method as needed.
-
-When called with a block, `say` will output both Start and Finish banners, while still returning the result of the block.
-When called without a block, `say` will output a string of the specified type (defaults to `:success`).
+Use `include Say` to gain access to the instance-level `say` methods.
 
 ```ruby
 require "say"
@@ -70,43 +106,8 @@ class IncludeProcessor
   end
 end
 
-IncludeProcessor.new.run
+result = IncludeProcessor.new.run
 = IncludeProcessor =============================================================
- -> Successfully did the thing!
- ...
- >> Debug details about this ...
- -- Info about stuff ...
- !¡ Maybe look into this thing ...
- ** Failed to do a thing ...
-= Done (0.0001s) ===============================================================
-
-# => "The Result!"
-```
-
-### `Say.<method>`
-
-For quick-access usage, you can just call `Say.<method>` without needing to `include Say`.
-
-```ruby
-require "say"
-
-class DirectAccessProcessor
-  def run
-    Say.("DirectAccessProcessor") {
-      Say.("Successfully did the thing!")
-      Say.() # Or: Say.call
-      Say.("Debug details about this ...", :debug)
-      Say.("Info about stuff ...", :info)
-      Say.("Maybe look into this thing ...", :warn)
-      Say.("Failed to do a thing ...", :error)
-
-      "The Result!"
-    }
-  end
-end
-
-DirectAccessProcessor.new.run
-= DirectAccessProcessor ========================================================
  -> Successfully did the thing!
  ...
  >> Debug details about this ...
@@ -131,29 +132,30 @@ When using `Say.(<message>, <type>)`, the available types and output representat
 | `:warn`    | `" !¡ "`      |
 
 ```ruby
-Say.("TEST", :debug)   # => " >> TEST"
-Say.("TEST", :error)   # => " ** TEST"
-Say.("TEST", :info)    # => " -- TEST"
-Say.("TEST", :success) # => " -> TEST"
-Say.("TEST", :warn)    # => " !¡ TEST"
-```
-
-The default type is `:success`.
-
-```ruby
-Say.("TEST")  # => " -> TEST"
-```
-
-### `Say.<type>` Methods
-
-Single-argument alternatives for each of the `<type>` calls in the previous section:
-
-```ruby
 Say.debug("TEST")   # => " >> TEST"
 Say.error("TEST")   # => " ** TEST"
 Say.info("TEST")    # => " -- TEST"
 Say.success("TEST") # => " -> TEST"
 Say.warn("TEST")    # => " !¡ TEST"
+```
+
+The default type if `call` is used is `:success`.
+
+```ruby
+Say.call("TEST") # => " -> TEST"
+Say.("TEST")     # => " -> TEST"
+```
+
+### `say(<message>, <type>)` Methods
+
+The `include Say` alternatives for each of the `<type>` calls in the previous section are:
+
+```ruby
+Say.("TEST", :debug)   # => " >> TEST"
+Say.("TEST", :error)   # => " ** TEST"
+Say.("TEST", :info)    # => " -- TEST"
+Say.("TEST", :success) # => " -> TEST"
+Say.("TEST", :warn)    # => " !¡ TEST"
 ```
 
 ### `Say.hr` (Horizontal Rule)
