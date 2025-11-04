@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+- Fix: `warning: benchmark was loaded from the standard library, but will no longer be part of the default gems starting from Ruby 3.5.0.`
+
 ## [0.7.2] - 2025-9-14
 
 - Add `Say.hr` and `say_hr` methods for outputting a horizontal rule. See README for usage.
