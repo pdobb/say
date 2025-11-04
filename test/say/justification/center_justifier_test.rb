@@ -14,22 +14,18 @@ class Say::CenterJustifierTest < Minitest::Spec
 
         context "GIVEN no args" do
           it "returns the expected String" do
-            # rubocop:disable Layout/LineLength
             _(subject.call).must_equal(
               "=======================================  =======================================",
             )
-            # rubocop:enable Layout/LineLength
           end
         end
 
         context "GIVEN no length arg" do
           context "GIVEN a short String" do
             it "returns the expected String" do
-              # rubocop:disable Layout/LineLength
               _(subject.call("TEST")).must_equal(
                 "===================================== TEST =====================================",
               )
-              # rubocop:enable Layout/LineLength
             end
           end
 
@@ -91,11 +87,9 @@ class Say::CenterJustifierTest < Minitest::Spec
 
         context "GIVEN no args" do
           it "returns the expected String" do
-            # rubocop:disable Layout/LineLength
             _(subject.call).must_equal(
               "--------------------------------------------------------------------------------",
             )
-            # rubocop:enable Layout/LineLength
           end
         end
 
@@ -109,21 +103,17 @@ class Say::CenterJustifierTest < Minitest::Spec
 
           context "GIVEN a short String" do
             it "returns the expected String" do
-              # rubocop:disable Layout/LineLength
               _(subject.call("TEST")).must_equal(
                 "======================================TEST======================================",
               )
-              # rubocop:enable Layout/LineLength
             end
           end
 
           context "GIVEN an extra-long String" do
             it "returns the expected String" do
-              # rubocop:disable Layout/LineLength
               _(subject.call("T" * 30)).must_equal(
                 "=========================TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT=========================",
               )
-              # rubocop:enable Layout/LineLength
             end
           end
         end

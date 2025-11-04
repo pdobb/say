@@ -50,14 +50,12 @@ class SayTest < Minitest::Spec
             "TEST_BLOCK_RETURN_VALUE",
           )
 
-          # rubocop:disable Layout/LineLength
           _(@puts_calls[0].args).must_equal([
             "= TEST =========================================================================",
           ])
           _(@puts_calls[1].args).must_equal([
             "= Done (0.0000s) ===============================================================",
           ])
-          # rubocop:enable Layout/LineLength
         end
       end
     end
@@ -153,13 +151,11 @@ class SayTest < Minitest::Spec
             _(subject.with_block { "TEST_RESULT" })
               .must_equal("TEST_RESULT")
 
-            # rubocop:disable Layout/LineLength
             _(@puts_calls.map(&:args).flatten!).must_equal([
               "================================================================================",
               "= Done (0.0000s) ===============================================================",
               "\n",
             ])
-            # rubocop:enable Layout/LineLength
           end
         end
 
@@ -167,13 +163,11 @@ class SayTest < Minitest::Spec
           it "returns the expected header banner String" do
             subject.with_block(header: "TEST_HEADER") { nil }
 
-            # rubocop:disable Layout/LineLength
             _(@puts_calls.map(&:args).flatten!).must_equal([
               "= TEST_HEADER ==================================================================",
               "= Done (0.0000s) ===============================================================",
               "\n",
             ])
-            # rubocop:enable Layout/LineLength
           end
         end
 
@@ -181,13 +175,11 @@ class SayTest < Minitest::Spec
           it "returns the expected footer banner String" do
             subject.with_block(footer: "TEST_FOOTER") { nil }
 
-            # rubocop:disable Layout/LineLength
             _(@puts_calls.map(&:args).flatten!).must_equal([
               "================================================================================",
               "= TEST_FOOTER (0.0000s) ========================================================",
               "\n",
             ])
-            # rubocop:enable Layout/LineLength
           end
         end
       end
@@ -202,10 +194,8 @@ class SayTest < Minitest::Spec
       subject { Say }
 
       it "puts and returns the expected String" do
-        # rubocop:disable Layout/LineLength
         expected_result =
           "--------------------------------------------------------------------------------"
-        # rubocop:enable Layout/LineLength
         _(subject.hr).must_equal(expected_result)
         _(@puts_calls.map(&:args).flatten!).must_equal([
           "\n#{expected_result}\n",
@@ -214,10 +204,8 @@ class SayTest < Minitest::Spec
       end
 
       it "puts and returns the expected String, GIVEN a custom fill" do
-        # rubocop:disable Layout/LineLength
         expected_result =
           "-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*"
-        # rubocop:enable Layout/LineLength
         _(subject.hr("-*")).must_equal(expected_result)
         _(@puts_calls.map(&:args).flatten!).must_equal([
           "\n#{expected_result}\n",
@@ -226,19 +214,15 @@ class SayTest < Minitest::Spec
       end
 
       it "puts and returns the expected String, GIVEN a bare template" do
-        # rubocop:disable Layout/LineLength
         expected_result =
           "--------------------------------------------------------------------------------"
-        # rubocop:enable Layout/LineLength
         _(subject.hr(template: "%s")).must_equal(expected_result)
         _(@puts_calls.map(&:args).flatten!).must_equal([expected_result])
       end
 
       it "puts and returns the expected String, GIVEN a custom template" do
-        # rubocop:disable Layout/LineLength
         expected_result =
           "|------------------------------------------------------------------------------|"
-        # rubocop:enable Layout/LineLength
         _(subject.hr(template: "|%s|")).must_equal(expected_result)
         _(@puts_calls.map(&:args).flatten!).must_equal([expected_result])
       end
@@ -272,19 +256,15 @@ class SayTest < Minitest::Spec
       subject { Say }
 
       it "puts and returns the expected String, GIVEN no message" do
-        # rubocop:disable Layout/LineLength
         expected_result =
           "================================================================================"
-        # rubocop:enable Layout/LineLength
         _(subject.header).must_equal(expected_result)
         _(@puts_call.args).must_equal([expected_result])
       end
 
       it "puts and returns the expected String, GIVEN a message" do
-        # rubocop:disable Layout/LineLength
         expected_result =
           "= TEST ========================================================================="
-        # rubocop:enable Layout/LineLength
         _(subject.header("TEST")).must_equal(expected_result)
         _(@puts_call.args).must_equal([expected_result])
       end
@@ -310,10 +290,8 @@ class SayTest < Minitest::Spec
       subject { Say }
 
       it "puts and returns the expected String, GIVEN no message" do
-        # rubocop:disable Layout/LineLength
         expected_result =
           "= Done ========================================================================="
-        # rubocop:enable Layout/LineLength
         _(subject.footer).must_equal(expected_result)
         _(@puts_calls.map(&:args).tap(&:flatten!)).must_equal(
           [expected_result, "\n"],
@@ -321,10 +299,8 @@ class SayTest < Minitest::Spec
       end
 
       it "puts and returns the expected String, GIVEN a message" do
-        # rubocop:disable Layout/LineLength
         expected_result =
           "= TEST ========================================================================="
-        # rubocop:enable Layout/LineLength
         _(subject.footer("TEST")).must_equal(expected_result)
         _(@puts_calls.map(&:args).tap(&:flatten!)).must_equal(
           [expected_result, "\n"],
@@ -353,28 +329,22 @@ class SayTest < Minitest::Spec
       subject { Say }
 
       it "returns the expected String, GIVEN no message" do
-        # rubocop:disable Layout/LineLength
         expected_result =
           "================================================================================"
-        # rubocop:enable Layout/LineLength
         _(subject.banner).must_equal(expected_result)
         _(@puts_call.args).must_equal([expected_result])
       end
 
       it "returns the expected String, GIVEN an empty message" do
-        # rubocop:disable Layout/LineLength
         expected_result =
           "=  ============================================================================="
-        # rubocop:enable Layout/LineLength
         _(subject.banner("")).must_equal(expected_result)
         _(@puts_call.args).must_equal([expected_result])
       end
 
       it "returns the expected String, GIVEN a short message" do
-        # rubocop:disable Layout/LineLength
         expected_result =
           "= TEST ========================================================================="
-        # rubocop:enable Layout/LineLength
         _(subject.banner("TEST")).must_equal(expected_result)
         _(@puts_call.args).must_equal([expected_result])
       end
@@ -398,13 +368,11 @@ class SayTest < Minitest::Spec
       subject { Say }
 
       it "returns the expected String, GIVEN no message" do
-        # rubocop:disable Layout/LineLength
         expected_result = [
           "================================================================================",
           "================================================================================",
           "================================================================================",
         ]
-        # rubocop:enable Layout/LineLength
         _(subject.section).must_equal(expected_result)
         _(@puts_calls.map(&:args).tap(&:flatten!)).must_equal(
           expected_result + ["\n"],
@@ -412,13 +380,11 @@ class SayTest < Minitest::Spec
       end
 
       it "returns the expected String, GIVEN an empty message" do
-        # rubocop:disable Layout/LineLength
         expected_result = [
           "================================================================================",
           "=  =============================================================================",
           "================================================================================",
         ]
-        # rubocop:enable Layout/LineLength
         _(subject.section("")).must_equal(expected_result)
         _(@puts_calls.map(&:args).tap(&:flatten!)).must_equal(
           expected_result + ["\n"],
@@ -426,13 +392,11 @@ class SayTest < Minitest::Spec
       end
 
       it "returns the expected String, GIVEN a short message" do
-        # rubocop:disable Layout/LineLength
         expected_result = [
           "================================================================================",
           "= TEST =========================================================================",
           "================================================================================",
         ]
-        # rubocop:enable Layout/LineLength
         _(subject.section("TEST")).must_equal(expected_result)
         _(@puts_calls.map(&:args).tap(&:flatten!)).must_equal(
           expected_result + ["\n"],

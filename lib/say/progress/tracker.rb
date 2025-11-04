@@ -9,6 +9,7 @@ class Say::Progress::Tracker
   # provided. i.e. the default is to provide continuous ticking/updating for
   # every loop iteration.
   DEFAULT_INTERVAL = 1
+  private_constant :DEFAULT_INTERVAL
 
   attr_reader :interval,
               :index

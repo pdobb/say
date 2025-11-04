@@ -4,12 +4,14 @@
 module Say::Time
   # The default {.timestamp} format name, if none is provided.
   DEFAULT_TIMESTAMP_FORMAT_NAME = :web_service
+  private_constant :DEFAULT_TIMESTAMP_FORMAT_NAME
 
   # Predefined DateTime format names and values. Referenced by {.timestamp}.
   DATETIME_FORMATS = {
     long: "%m/%d/%Y %H:%M:%S %Z",                    # 06/03/2023 01:51:23 CDT
     DEFAULT_TIMESTAMP_FORMAT_NAME => "%Y%m%d%H%M%S", # 20230603014511
   }.freeze
+  private_constant :DATETIME_FORMATS
 
   # :nocov:
   # @!visibility private

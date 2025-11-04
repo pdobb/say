@@ -67,22 +67,28 @@ require "benchmark"
 #   = Done (0.0000s) ===============================================================
 #
 #   # => "The Result!"
-module Say
+module Say # rubocop:disable Metrics/ModuleLength
   # The maximum number of columns for message types that support it, e.g.
   # banners.
   MAX_COLUMNS = 80
+  public_constant :MAX_COLUMNS
 
   # The default template used by {.hr}, if none is provided.
   DEFAULT_HR_TEMPLATE = "\n%s\n"
+  private_constant :DEFAULT_HR_TEMPLATE
 
   # The default message to display in {.footer}s, if none is provided.
   DONE_MESSAGE = "Done"
+  private_constant :DONE_MESSAGE
+
   # The default message to display in {.progress} blocks, if none is provided.
   START_MESSAGE = "Start"
+  private_constant :START_MESSAGE
 
   # Clears `^C`, which is output when a user presses `ctrl+c`, e.g. during a
   # long-running task.
   CLEAR_OUTPUT_ESC_CODE = "\e[2K\r"
+  private_constant :CLEAR_OUTPUT_ESC_CODE
 
   # Prints either a one-line message of the given type or executes a block of
   # code and surrounds it with header and footer banner messages.
@@ -129,7 +135,7 @@ module Say
     if block
       with_block(header: text, **with_block_kwargs, &block)
     else
-      line(text, type: type)
+      line(text, type:)
     end
   end
 
@@ -201,9 +207,9 @@ module Say
   def self.with_block(header: nil, footer: DONE_MESSAGE, justify: :left, &block)
     raise(ArgumentError, "block expected") unless block
 
-    self.header(header, justify: justify)
+    self.header(header, justify:)
     result, footer_with_runtime_string = benchmark_block_run(footer, &block)
-    self.footer(footer_with_runtime_string, justify: justify)
+    self.footer(footer_with_runtime_string, justify:)
 
     result
   end
@@ -223,14 +229,12 @@ module Say
   #
   # @return [String] The horizontal rule String.
   #
-  # rubocop:disable Layout/LineLength
   # @example Default usage
   #   Say.hr
   #
   #   --------------------------------------------------------------------------------
   #
   #   # => "--------------------------------------------------------------------------------"
-  # rubocop:enable Layout/LineLength
   #
   # @example Custom columns (length)
   #   Say.hr(columns: 20)
@@ -372,7 +376,7 @@ module Say
   #   ============= Test =
   #   # => "============= Test ="
   def self.banner(text = nil, columns: MAX_COLUMNS, justify: :left)
-    write(Say::BannerGenerator.(text, columns: columns, justify: justify))
+    write(Say::BannerGenerator.(text, columns:, justify:))
   end
 
   # Prints a set of 3 banner Strings with the specified message using
@@ -410,7 +414,7 @@ module Say
   #
   # :reek:DuplicateMethodCall
   def self.section(text = nil, columns: MAX_COLUMNS, justify: :left)
-    banner = Say::BannerGenerator.(text, columns: columns, justify: justify)
+    banner = Say::BannerGenerator.(text, columns:, justify:)
     decorative_banner =
       Say::BannerGenerator.(nil, columns: banner.length, justify: :left)
 
@@ -471,7 +475,7 @@ module Say
 
     header = progress_message(text, index: tracker.index)
 
-    with_block(header: header) do
+    with_block(header:) do
       tracker.call(&block)
     end
   end
@@ -503,8 +507,8 @@ module Say
   #   [12340506123456]  ... (i=3)
   #   # => "[12340506123456]  ... (i=3)"
   def self.progress_line(text = nil, type = :info, index: nil)
-    message = Say::Message.new(text, type: type)
-    full_message = progress_message(message, index: index)
+    message = Say::Message.new(text, type:)
+    full_message = progress_message(message, index:)
 
     write(full_message)
   end

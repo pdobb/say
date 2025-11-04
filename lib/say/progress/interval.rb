@@ -35,9 +35,9 @@ class Say::Progress::Interval
   def say(text = nil, type = nil, index: self.index, &block)
     if tick?
       if block
-        Say.progress(text, index: index, &block)
+        Say.progress(text, index:, &block)
       else
-        Say.progress_line(text, type, index: index)
+        Say.progress_line(text, type, index:)
       end
     elsif block
       yield

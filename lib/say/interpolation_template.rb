@@ -42,6 +42,7 @@ class Say::InterpolationTemplate
   # A symbolic representation of the portion of the interpolation template
   # string that should be replaced with the given `text` during interpolation.
   INTERPOLATION_SENTINEL = "{}"
+  private_constant :INTERPOLATION_SENTINEL
 
   attr_reader :left_bookend,
               :left_fill,
@@ -76,15 +77,15 @@ class Say::InterpolationTemplate
   # @return [Hash]
   def to_h
     {
-      left_bookend: left_bookend,
-      left_fill: left_fill,
-      left_spacer: left_spacer,
-      right_spacer: right_spacer,
-      right_fill: right_fill,
-      right_bookend: right_bookend,
+      left_bookend:,
+      left_fill:,
+      left_spacer:,
+      right_spacer:,
+      right_fill:,
+      right_bookend:,
     }
   end
-  alias_method :attributes, :to_h
+  alias attributes to_h
 
   # A "template"-style String representation of all attributes in this object.
   #
@@ -125,7 +126,7 @@ class Say::InterpolationTemplate
   # @return [String]
   def left_justify(text = "", length: Say::MAX_COLUMNS)
     justifier =
-      Say::LeftJustifier.new(interpolation_template: self, length: length)
+      Say::LeftJustifier.new(interpolation_template: self, length:)
     justifier.call(text)
   end
 
@@ -137,7 +138,7 @@ class Say::InterpolationTemplate
   # @return [String]
   def center_justify(text = "", length: Say::MAX_COLUMNS)
     justifier =
-      Say::CenterJustifier.new(interpolation_template: self, length: length)
+      Say::CenterJustifier.new(interpolation_template: self, length:)
     justifier.call(text)
   end
 
@@ -149,7 +150,7 @@ class Say::InterpolationTemplate
   # @return [String]
   def right_justify(text = "", length: Say::MAX_COLUMNS)
     justifier =
-      Say::RightJustifier.new(interpolation_template: self, length: length)
+      Say::RightJustifier.new(interpolation_template: self, length:)
     justifier.call(text)
   end
 
@@ -189,6 +190,7 @@ class Say::InterpolationTemplate
     # The default Predefined Interpolation Template to use, if no other name is
     # provided.
     DEFAULT_INTERPOLATION_TEMPLATE_NAME = :title
+    private_constant :DEFAULT_INTERPOLATION_TEMPLATE_NAME
 
     # Predefined Interpolation Templates by name and attributes hash.
     DEFAULT_INTERPOLATION_TEMPLATES = {
@@ -202,6 +204,7 @@ class Say::InterpolationTemplate
         left_fill: "?", left_spacer: " ", right_spacer: " ", right_fill: "?"
       },
     }.freeze
+    private_constant :DEFAULT_INTERPOLATION_TEMPLATES
 
     # rubocop:disable Style/CommentedKeyword
     DEFAULT_INTERPOLATION_TEMPLATES.each_key do |type_name|
@@ -219,9 +222,7 @@ class Say::InterpolationTemplate
       type_or_template = nil,
       interpolation_template_class: Say::InterpolationTemplate
     )
-      if type_or_template.is_a?(interpolation_template_class)
-        return type_or_template
-      end
+      return type_or_template if type_or_template.is_a?(interpolation_template_class)
 
       interpolation_template_attributes =
         to_interpolation_template_attributes(

@@ -10,11 +10,18 @@ inherit_gem:
 AllCops:
   TargetRubyVersion: 3.2
 
+Layout/LineLength:
+  Max: 100
+
 Minitest/MultipleAssertions:
   Enabled: false
 
 Minitest/EmptyLineBeforeAssertionMethods:
   Enabled: false
+
+Naming/BlockParameterName:
+  Exclude:
+    - say.gemspec
 
 Style/FormatStringToken:
   # Prefer "%{my_template_value}" # <- Same style as is used in YAML

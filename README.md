@@ -50,7 +50,6 @@ Typical usage is to just call `Say.<method>` directly, though it is possible to 
 When called with a block, `say` will output both Start and Finish banners, then return the result of the block to the caller.
 When called without a block, `say` will output a string of the specified type (defaults to `:success`).
 
-
 ```ruby
 require "say"
 
@@ -562,7 +561,8 @@ To release a new version of this gem to RubyGems:
 3. Run `bundle` to update Gemfile.lock with the latest version info
 4. Commit the changes. e.g. `Bump to vX.Y.Z`
 5. Run `rake release`, which will create a git tag for the version, push git commits and the created tag, and then attempt to push the `.gem` file to [rubygems.org](https://rubygems.org).
-  - NOTE: This will fail, as there is already a `say` gem and this one is not it. This gem must be installed form github source.
+
+- NOTE: This will fail, as there is already a `say` gem and this one is not it. This gem must be installed form github source.
 
 ### Documentation
 

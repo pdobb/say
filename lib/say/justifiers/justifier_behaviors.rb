@@ -14,6 +14,7 @@ module Say::JustifierBehaviors
   # left/center/right-justification can still work--as an empty string cannot
   # effectively shift a string over one way or another.
   DEFAULT_FILL_PATTERN = " "
+  private_constant :DEFAULT_FILL_PATTERN
 
   attr_reader :interpolation_template,
               :total_length

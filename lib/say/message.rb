@@ -20,6 +20,7 @@
 class Say::Message
   # The default Message "TYPE" if no `type` name is provided.
   DEFAULT_TYPE = :success
+  private_constant :DEFAULT_TYPE
 
   # Mapping of message types to their corresponding prefixes for the `say`
   # method. Defaults to `:success` given an unknown key.
@@ -40,9 +41,11 @@ class Say::Message
       warn: " !¡ ",
     )
   }.freeze
+  public_constant :TYPES
 
   # The default message to use when one is not supplied.
   DEFAULT_MESSAGE = " ..."
+  private_constant :DEFAULT_MESSAGE
 
   attr_reader :text,
               :type

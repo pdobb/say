@@ -13,7 +13,7 @@ task :bump do
   ])
 end
 
-namespace :bump do # rubocop:disable Metrics/BlockLength
+namespace :bump do
   desc "Update Bundler version to latest in Gemfile.lock"
   task :bundler do
     version = Gem.latest_version_for("bundler").to_s
@@ -52,7 +52,7 @@ def replace_in_file(path, replacements)
   original_file_contents = file_contents.dup
 
   replacements.each do |regex, text|
-    raise("Can't find #{regex} in #{path}") unless regex.match?(file_contents)
+    raise(StandardError, "Can't find #{regex} in #{path}") unless regex.match?(file_contents)
 
     file_contents.gsub!(regex) do |match|
       match[regex, 1] = text
@@ -69,12 +69,17 @@ end
 # https://www.ruby-lang.org/en/downloads/
 module RubyVersions
   MINOR_VERSION_REGEX = /\d+\.\d+/
+  private_constant :MINOR_VERSION_REGEX
+
   RUBY_VERSIONS_YAML_PATH =
     "https://raw.githubusercontent.com/ruby/www.ruby-lang.org/HEAD/_data/downloads.yml"
+  private_constant :RUBY_VERSIONS_YAML_PATH
+
   VERSION_TYPES = %i[
     security_maintenance
     stable
   ].freeze
+  private_constant :VERSION_TYPES
 
   def self.latest
     latest_supported_patches.last
