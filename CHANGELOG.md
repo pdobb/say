@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+- Revert minimum Ruby version from 3.2 -> 3.1
+
 ## [0.7.3] - 2025-11-4
 
 - Fix: `warning: benchmark was loaded from the standard library, but will no longer be part of the default gems starting from Ruby 3.5.0.`
