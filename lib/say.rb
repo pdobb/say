@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 # Say is the top-level namespace/module for this gem.
-module Say
+module Say # rubocop:disable Style/ClassAndModuleChildren
+  # Empty namespace holder.
+  module Progress; end
 end
 
 require "say/say"
@@ -22,10 +24,6 @@ require "say/justifiers/center_justifier"
 require "say/justifiers/right_justifier"
 
 # PROGRESS
-
-# Empty namespace holder.
-module Say::Progress
-end
 
 require "say/progress/tracker"
 require "say/progress/interval"

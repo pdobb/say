@@ -262,19 +262,16 @@ module Say # rubocop:disable Metrics/ModuleLength
         columns
       else
         # Truncate `filler` enough so that any non-whitespace
-        # (`\n`), non-template(`%s`) characters can be included in the
+        # (`\n`) / non-template(`%s`) characters can be included in the
         # horizontal rule without causing the final result to exceed `columns`
         # in length.
-        # rubocop:disable Performance/StringReplacement
-        non_template_characters_count =
-          template.gsub("\n", "").gsub("%s", "").length
-        # rubocop:enable Performance/StringReplacement
+        non_template_characters_count = template.gsub(/\n|%s/, "").length
         columns - non_template_characters_count
       end
 
     write(template % filler[...truncate_at]).tap {
       # Make it so `\n` at the beginning and `\n` at the end of the template
-      # behave the same: They both create a single empty line in the output--as
+      # behave the same: They both create a single empty line in the output, as
       # one would expect.
       write("\n") if template.end_with?("\n")
     }.strip
