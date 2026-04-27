@@ -4,6 +4,6 @@
 
 module Say
   # The current Say gem version.
-  VERSION = "0.7.3"
+  VERSION = "0.7.4"
   public_constant :VERSION
 end

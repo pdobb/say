@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+## [0.7.4] - 2026-04-26
+
 - Revert minimum Ruby version from 3.2 -> 3.1
 
 ## [0.7.3] - 2025-11-4
